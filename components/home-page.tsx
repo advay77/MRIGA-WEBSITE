@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
 
 const POSTS = [
   {
@@ -96,6 +97,23 @@ function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: 
 
 export function HomePage() {
   const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [colourId, setColourId] = useState<MiraColourId>("pink");
+  const [specOpen, setSpecOpen] = useState(false);
+  const colour = MIRA_COLOURS.find((item) => item.id === colourId) ?? MIRA_COLOURS[0];
+
+  useEffect(() => {
+    if (!specOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSpecOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [specOpen]);
+
+  function openSpecs(id: MiraColourId) {
+    setColourId(id);
+    setSpecOpen(true);
+  }
 
 
   return (
@@ -145,42 +163,22 @@ export function HomePage() {
               </div>
             </div>
 
-            <div className="stage-h fade-up d2" aria-hidden="true">
-              <div className="arch">
-                <div className="arch-in" />
-                <div className="arch-in two" />
-                <div className="sun" />
-                <div className="road" />
-              </div>
-              <div className="shadow" />
-              <svg className="scooter" viewBox="0 0 420 300">
-                <path className="beam" d="M318 58 L420 30 L420 92 Z" fill="var(--accent-glow)" opacity=".22" />
-                <Wheels />
-                <path d="M50 206 C42 150 86 116 150 120 L208 126 C222 164 232 186 268 192 L282 198 C266 222 140 230 56 216 Z" fill="#EFE6CF" />
-                <path d="M64 196 C70 168 100 150 140 150" stroke="#fff" strokeWidth="5" strokeLinecap="round" fill="none" opacity=".7" />
-                <path d="M140 196 L268 192 L272 206 L140 212 Z" fill="#cfc4ac" />
-                <path d="M258 198 C254 148 270 96 288 66 L306 70 C296 110 290 160 306 206 Z" fill="#EFE6CF" />
-                <path d="M268 214 C278 184 352 184 360 216 L346 216 C336 198 290 198 282 216 Z" fill="#EFE6CF" />
-                <path d="M92 118 C110 96 190 96 212 110 C212 126 100 130 92 118 Z" fill="#A8642F" />
-                <path d="M104 112 C130 104 178 104 200 110" stroke="#c8864c" strokeWidth="2" fill="none" />
-                <path d="M292 68 L284 36" stroke="#3a3330" strokeWidth="6" strokeLinecap="round" />
-                <path d="M256 36 L318 32" stroke="#3a3330" strokeWidth="6" strokeLinecap="round" />
-                <circle cx="304" cy="54" r="15" fill="#EFE6CF" />
-                <circle cx="306" cy="54" r="9" fill="#fff8e6" stroke="#b9ad92" strokeWidth="2" />
-                <path d="M60 200 C120 210 200 206 272 196" stroke="var(--accent)" strokeWidth="3" fill="none" />
-                <text x="180" y="176" fontFamily="Georgia, serif" fontStyle="italic" fontSize="15" fill="#8a7a5c">Mriga</text>
-              </svg>
-              <div className="badge b1">
-                <div>
-                  <div className="num"><span className="count c185" /><small>km</small></div>
-                  <div className="cap">Certified Range</div>
-                </div>
-              </div>
-              <div className="badge b2">
-                <div>
-                  <div className="num"><span className="count c0" /><small>g</small></div>
-                  <div className="cap">Emissions · CO₂</div>
-                </div>
+            <div className="stage-h hero-film fade-up d2">
+              <video
+                className="hero-video"
+                src="/mira.mp4"
+                poster="/mira/pink.png"
+                playsInline
+                muted
+                loop
+                autoPlay
+                onError={(event) => {
+                  event.currentTarget.hidden = true;
+                  event.currentTarget.nextElementSibling?.removeAttribute("hidden");
+                }}
+              />
+              <div className="hero-video-fallback" hidden>
+                <img src="/mira/pink.png" alt="MIRA" />
               </div>
             </div>
           </div>
@@ -188,7 +186,7 @@ export function HomePage() {
             <div className="mq">
               {[0, 1].map((copy) => (
                 <span key={copy}>
-                  Crafted in Bengaluru <i /> Silent Kinetic Luxury <i /> 185 km Certified Range <i /> Bespoke Vegan Saddlery <i /> 18 Metropolitan Hubs <i />
+                  MIRA by MRIGA <i /> Star Product <i /> Pink · Orange · Brown Beige <i /> 70–80 km Lithium <i /> Rohini, New Delhi <i />
                 </span>
               ))}
             </div>
@@ -242,24 +240,23 @@ export function HomePage() {
               <div className="stack">
                 <article className="card lift mini rv-s">
                   <div>
-                    <span className="tag">Urban Purist</span>
+                    <span className="tag">Star Product</span>
                     <h3 className="mname">MRIGA MIRA</h3>
-                    <p className="mtag">Wild Intuition</p>
-                    <p className="desc">Lightweight, hyper-agile city cruiser engineered for tight alleys and vibrant café strips. Radiant peach-tangerine accents.</p>
-                    <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#F2A27A" }} /><i style={{ background: "#F5E7D6" }} /><i style={{ background: "#6B4A3A" }} /></div>
-                    <a href="#book" className="explore">
-                      Explore MIRA <Arrow size={14} />
-                    </a>
+                    <p className="mtag">Smart Mobility. Sustainable Future.</p>
+                    <p className="desc">60V 30Ah lithium-ion, 70–80 km on a charge, about 5 hours to charge. Lead-acid is 60 km. Pink, orange, and brown beige.</p>
+                    <div className="pills" style={{ marginTop: 14 }}>
+                      <span className="pill">Lithium <b>₹75,000 · 3 yr</b></span>
+                      <span className="pill">Lead-acid <b>₹62,000 · 1 yr</b></span>
+                    </div>
+                    <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#E7A0B8" }} /><i style={{ background: "#E36A2C" }} /><i style={{ background: "#C4A484" }} /></div>
+                    <button type="button" className="explore" onClick={() => openSpecs("pink")}>
+                      View specifications <Arrow size={14} />
+                    </button>
                   </div>
-                  <div className="prod">
-                    <svg viewBox="0 0 420 300" aria-hidden="true">
-                      <Wheels light="#e9dccb" spoke="#a08a74" cross={false} />
-                      <CreamScooter body="#F2A27A" deck="#e3c2a6" seat="#6B4A3A" />
-                      <path d="M268 214 C278 184 352 184 360 216 L346 216 C336 198 290 198 282 216 Z" fill="#F5E7D6" />
-                      <circle cx="304" cy="54" r="15" fill="#F5E7D6" />
-                    </svg>
-                    <span className="ptag">Urban Agility</span>
-                  </div>
+                  <button type="button" className="prod mira-prod" onClick={() => openSpecs("pink")} aria-label="Open MIRA specifications">
+                    <img src="/mira/pink.png" alt="MIRA in pink" />
+                    <span className="ptag">Pink</span>
+                  </button>
                 </article>
 
                 <article className="card lift mini rv-s">
@@ -294,6 +291,68 @@ export function HomePage() {
             </div>
           </div>
         </section>
+
+        <section className="sec mira-sec" id="mira">
+          <div className="wrap">
+            <div className="sec-head rv">
+              <div>
+                <div className="kicker">Star Product · Three Colours</div>
+                <h2 className="h2">MIRA, in the colour you ride.</h2>
+                <p className="sub">Pink, orange, and brown beige. Choose a finish and the specifications open with it.</p>
+              </div>
+            </div>
+            <div className="mira-row">
+              {MIRA_COLOURS.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={item.id === colourId ? "mira-card on" : "mira-card"}
+                  style={{ background: item.wash, animationDelay: `${index * 0.12}s` }}
+                  onClick={() => openSpecs(item.id)}
+                >
+                  <img src={item.src} alt="" />
+                  <span className="mira-meta">
+                    <i style={{ background: item.swatch }} />
+                    {item.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {specOpen ? (
+          <div className="modal" onClick={() => setSpecOpen(false)}>
+            <div className="sheet mira-sheet" role="dialog" aria-modal="true" aria-label={`${colour.name} MIRA specifications`} onClick={(event) => event.stopPropagation()}>
+              <div className="mira-sheet-grid">
+                <div className="mira-sheet-photo" style={{ background: colour.wash }}>
+                  <img src={colour.src} alt={`MIRA in ${colour.name}`} />
+                </div>
+                <div>
+                  <span className="eyebrow"><span className="dot" />{colour.name}</span>
+                  <h3>MIRA specifications</h3>
+                  <p className="sub" style={{ fontSize: 14 }}>Smart mobility. Sustainable future. The range follows the battery.</p>
+                  <ul className="mira-specs">
+                    <li><b>Battery</b><span>60V 30Ah lithium-ion, or lead-acid</span></li>
+                    <li><b>Lithium</b><span>₹75,000 · 70–80 km · 3-year guarantee on the scooter, battery, motor, controller, and digital display</span></li>
+                    <li><b>Lead-acid</b><span>₹62,000 · 60 km · 1-year guarantee</span></li>
+                    <li><b>Charging</b><span>About 5 hours. Charger warranty is 1 year.</span></li>
+                    <li><b>Colour</b><span>{colour.name}. Also available in pink, orange, and brown beige.</span></li>
+                  </ul>
+                  <div className="mira-sheet-acts">
+                    {MIRA_COLOURS.map((item) => (
+                      <button key={item.id} type="button" className={item.id === colour.id ? "swatch-btn on" : "swatch-btn"} onClick={() => setColourId(item.id)} aria-label={item.name}>
+                        <i style={{ background: item.swatch }} />
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                  <a href="#book" className="btn btn-p" onClick={() => setSpecOpen(false)}>Book a test ride <Arrow size={14} /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <section className="sec mani" id="manifesto">
           <div className="wrap mani-grid">

@@ -88,7 +88,7 @@ export function CollectionPage() {
 {visible("mira") ? (<>
 <article className="model flip">
 <div className="m-media">
-<div className="m-top"><span className="series">Series II · Urban Purist</span><span className="idx">02</span></div>
+<div className="m-top"><span className="series">Star Product · MIRA</span><span className="idx">02</span></div>
 <div className="m-img" style={{background: "linear-gradient(180deg, var(--stone), var(--stone2))"}}>
 <svg viewBox="0 0 420 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style={{width: "100%", height: "100%", position: "absolute", inset: "0"}}>
 <rect x="0" y="0" width="420" height="230" fill="var(--stone)"></rect>
@@ -109,20 +109,20 @@ export function CollectionPage() {
 </svg>
 </div>
 <div className="m-stats">
-<div><div className="cap">Range (City)</div><div className="num"><span className="count c145"></span><small>km</small></div></div>
-<div><div className="cap">Curb Weight</div><div className="num"><span className="count c88"></span><small>kg</small></div></div>
-<div><div className="cap">Turn Radius</div><div className="num">1.4<small>m</small></div></div>
+<div><div className="cap">Lithium Range</div><div className="num">70–80<small>km</small></div></div>
+<div><div className="cap">Lead-acid Range</div><div className="num">60<small>km</small></div></div>
+<div><div className="cap">Charge Time</div><div className="num">5<small>hr</small></div></div>
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Urban Intuition &amp; Poise</div>
+<div className="kicker">Star Product</div>
 <h2>MIRA</h2>
-<p className="mtag">Wild Intuition</p>
-<p className="desc" style={{marginTop: "18px"}}>A lightweight featherweight maestro tailored for historical boulevards, café avenues, and spontaneous detours. Infused with sun-drenched peach accents and an ultra-nimble step-through architecture that turns urban congestion into personal runway theater.</p>
+<p className="mtag">Smart Mobility. Sustainable Future.</p>
+<p className="desc" style={{marginTop: "18px"}}>MIRA by MRIGA is the first model we are building. Three colours: pink, orange, and brown beige. Range follows the battery you choose.</p>
 <div className="m-list">
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="13" cy="4" r="2"></circle><path d="M7 21l3-6 3 2v4M10 15l1-5 4 2 3-1"></path></svg></span><div><h4>Agile Monocoque Chassis</h4><p>Ultralight aeronautic aluminum core weighing just 88 kg dry.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8"></path></svg></span><div><h4>Café Telemetry Concierge</h4><p>Integrated haptic screen with smart route-stowaway &amp; valet lock.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path></svg></span><div><h4>Tangerine Regeneration</h4><p>Single-pedal glide recovering up to 14% urban kinetic energy.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><div><h4>Lithium-ion · ₹75,000</h4><p>60V 30Ah battery. Up to 70–80 km on a single charge. About 5 hours to charge. 3-year guarantee on the scooter: battery, motor, controller, and digital display. Charger warranty is 1 year.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></span><div><h4>Lead-acid · ₹62,000</h4><p>Same MIRA, lead-acid battery. Range is 60 km on a single charge, with a 1-year guarantee.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><h4>Colours</h4><p>Pink, orange, and brown beige.</p></div></div>
 </div>
 <div className="m-acts">
 <a href="#book" className="btn btn-p btn-sm">Explore MIRA</a>
@@ -195,7 +195,7 @@ export function CollectionPage() {
 </div>
 <div className="cmp-cards">
 <div className="cmp-card"><span className="foot-note">RIVA · Grand Tourer</span><h4>Up to 185 km Range</h4><p>Optimal for dual touring &amp; highway cruising</p></div>
-<div className="cmp-card"><span className="foot-note">MIRA · Urban Purist</span><h4>88 kg Ultra-Agile Frame</h4><p>Bespoke step-through for boutique commutes</p></div>
+<div className="cmp-card"><span className="foot-note">MIRA · Star Product</span><h4>70–80 km Lithium · 60 km Lead-acid</h4><p>Pink, orange, and brown beige</p></div>
 <div className="cmp-card"><span className="foot-note">VIRA · Apex Corsa</span><h4>125 km/h Top Velocity</h4><p>Twin inverted forks &amp; launch control</p></div>
 </div>
 {cmpOpen ? (<>
@@ -205,7 +205,7 @@ export function CollectionPage() {
 <b>Range</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>185 km</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "78%"}}></div></div><span>145 km</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "43%"}}></div></div><span>80 km</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "65%"}}></div></div><span>120 km</span></div>
 </div>
 </div>
@@ -214,7 +214,7 @@ export function CollectionPage() {
 <b>Top Speed</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "68%"}}></div></div><span>85 km/h</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "56%"}}></div></div><span>70 km/h</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>125 km/h</span></div>
 </div>
 </div>
@@ -223,7 +223,7 @@ export function CollectionPage() {
 <b>Weight</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "88%"}}></div></div><span>112 kg</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "69%"}}></div></div><span>88 kg</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>128 kg</span></div>
 </div>
 </div>
@@ -232,7 +232,7 @@ export function CollectionPage() {
 <b>Peak Torque</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "49%"}}></div></div><span>42 Nm</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "35%"}}></div></div><span>30 Nm</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>86 Nm</span></div>
 </div>
 </div>
@@ -241,7 +241,7 @@ export function CollectionPage() {
 <b>Fast Charge 0–80%</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>45 min</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "89%"}}></div></div><span>40 min</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "100%"}}></div></div><span>5 hr</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "78%"}}></div></div><span>35 min</span></div>
 </div>
 </div>
@@ -250,7 +250,7 @@ export function CollectionPage() {
 <b>Under-seat Storage</b>
 <div className="bars">
 <div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>32 L</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "69%"}}></div></div><span>22 L</span></div>
+<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
 <div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "56%"}}></div></div><span>18 L</span></div>
 </div>
 </div>

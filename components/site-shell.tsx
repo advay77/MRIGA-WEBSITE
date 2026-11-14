@@ -3,36 +3,30 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
+import { INSTAGRAM } from "@/lib/mira";
 
 type Model = "RIVA" | "MIRA" | "VIRA";
 
 const NAV = [
   { href: "/", label: "Home" },
+  { href: "/#mira", label: "MIRA" },
   { href: "/collection", label: "Collection" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "Our Story" },
   { href: "/dealers", label: "Dealers" },
 ];
 
 function activeLabel(pathname: string) {
   if (pathname.startsWith("/collection")) return "Collection";
-  if (pathname.startsWith("/about")) return "About";
+  if (pathname.startsWith("/about")) return "Our Story";
   if (pathname.startsWith("/dealers")) return "Dealers";
   if (pathname === "/") return "Home";
   return "";
 }
 
-function Bolt({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
-    </svg>
-  );
-}
-
 function Logo() {
   return (
     <a href="/" className="logo" aria-label="MRIGA home">
-      <span className="logo-mark"><Bolt /></span>
+      <img src="/logo.png" alt="" className="logo-mark" />
       MRIGA
     </a>
   );
@@ -120,8 +114,10 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
                 {item.label}
               </a>
             ))}
+            <a href={INSTAGRAM} target="_blank" rel="noreferrer">Instagram</a>
           </nav>
           <div className="nav-r">
+            <a className="nav-phone" href="tel:+917303042004">+91 73030 42004</a>
             <a href="/login" className="icon-btn login" aria-label={user ? `${user.name} lounge` : "Customer lounge sign in"}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="8" r="4" />
@@ -148,6 +144,8 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
               {item.label}
             </a>
           ))}
+          <a href={INSTAGRAM} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Instagram</a>
+          <a href="tel:+917303042004" onClick={() => setMenuOpen(false)}>+91 73030 42004</a>
           <a href="/login" onClick={() => setMenuOpen(false)}>Customer Lounge</a>
           {user?.role === "ADMIN" ? <a href="/admin" onClick={() => setMenuOpen(false)}>Atelier Desk</a> : null}
           <a href="#book" className="btn btn-p">Book Test Ride</a>
@@ -159,20 +157,34 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
           <div className="foot-grid">
             <div>
               <Logo />
-              <p style={{ maxWidth: 320, lineHeight: 1.7, margin: "18px 0 0" }}>Haute electric mobility, crafted in Bengaluru for the boulevards of India.</p>
+              <p style={{ maxWidth: 340, lineHeight: 1.7, margin: "18px 0 0" }}>
+                MIRA by MRIGA. Smart mobility. Sustainable future. E-1/93, Sector-7, Rohini, New Delhi 110085, near M2K Rohini.
+              </p>
+              <a href="tel:+917303042004" style={{ display: "inline-block", marginTop: 10, fontWeight: 700 }}>+91 73030 42004</a>
+              <a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontWeight: 700 }}>Instagram · @ridemriga</a>
             </div>
             <div>
-              <h5>Collection</h5>
+              <h5>MIRA</h5>
               <ul>
-                <li><a href="/collection">RIVA · Grand Tourer</a></li>
-                <li><a href="/collection">MIRA · Urban Purist</a></li>
-                <li><a href="/collection">VIRA · Apex Corsa</a></li>
+                <li><a href="/#mira">Pink · Orange · Brown Beige</a></li>
+                <li><a href="/#mira">Lithium ₹75,000 · 70–80 km · 3 yr</a></li>
+                <li><a href="/#mira">Lead-acid ₹62,000 · 60 km · 1 yr</a></li>
+                <li><a href="/collection">60V 30Ah · charge about 5 hr</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5>Founders</h5>
+              <ul>
+                <li><a href="/about">Pankaj Jain</a></li>
+                <li><a href="/about">Ashish Jain</a></li>
+                <li><a href="/about">Jiten Jain</a></li>
               </ul>
             </div>
             <div>
               <h5>Company</h5>
               <ul>
                 <li><a href="/about">Our Story</a></li>
+                <li><a href="/collection">Collection</a></li>
                 <li><a href="/dealers">Become a Dealer</a></li>
                 <li><a href="#book">Book Test Ride</a></li>
               </ul>
@@ -242,7 +254,8 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
                   <div className="fgrid">
                     <div className="fld">
                       <label htmlFor="bk-city">City</label>
-                      <select id="bk-city" name="city" className="plain-in" defaultValue="Bengaluru">
+                      <select id="bk-city" name="city" className="plain-in" defaultValue="Rohini, New Delhi">
+                        <option>Rohini, New Delhi</option>
                         <option>Bengaluru</option>
                         <option>Mumbai</option>
                         <option>Delhi NCR</option>

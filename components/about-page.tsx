@@ -188,11 +188,11 @@ export function AboutPage() {
 <div style={{position: "relative"}}>
 <span className="eyebrow">Philosophy · Founders’ Desk</span>
 <blockquote>“We built MRIGA not to be another sterile gadget on wheels, but an extension of your tailored wardrobe and personal poise.”</blockquote>
-<div style={{fontFamily: "var(--serif)", fontSize: "18px"}}>Devraj Sengupta &amp; Maya Iyer</div>
-<div style={{fontSize: "12px", color: "var(--on-dark-muted)", marginTop: "6px"}}>Co-Founders &amp; Chief Creative Officers, MRIGA Mobility</div>
+<div style={{fontFamily: "var(--serif)", fontSize: "18px", display: "grid", gap: "4px"}}><span>Pankaj Jain</span><span>Ashish Jain</span><span>Jiten Jain</span></div>
+<div style={{fontSize: "12px", color: "var(--on-dark-muted)", marginTop: "6px"}}>Founders, MRIGA</div>
 </div>
 <div className="sig">
-<div className="sig-av">M</div>
+<div className="sig-av"><img src="/logo.png" alt="" /></div>
 <span className="tiny-k">Handcrafted Signature</span>
 <p>Every chassis is individually numbered, hand-calibrated, and lacquer-cured in Bengaluru before release.</p>
 <div className="sig-stats">

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const CITIES = ["Bengaluru", "Mumbai", "Delhi NCR", "Hyderabad", "Pune", "Jaipur"] as const;
+export const CITIES = ["Rohini, New Delhi", "Bengaluru", "Mumbai", "Delhi NCR", "Hyderabad", "Pune", "Jaipur"] as const;
 export const MODELS = ["RIVA", "MIRA", "VIRA"] as const;
 
 const controlChars = /[\u0000-\u001F\u007F]/;
