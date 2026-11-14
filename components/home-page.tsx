@@ -190,7 +190,7 @@ export function HomePage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
                     <span className="tag">Grand Tourer</span>
-                    <h3 className="mname">MRIGA RIVA</h3>
+                    <h3 className="mname">RIVA</h3>
                     <p className="mtag">Pure Grace in Motion</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -223,7 +223,7 @@ export function HomePage() {
                 <article className="card lift mini rv-s">
                   <div>
                     <span className="tag">Star Product</span>
-                    <h3 className="mname">MRIGA MIRA</h3>
+                    <h3 className="mname">MIRA</h3>
                     <p className="mtag">Smart Mobility. Sustainable Future.</p>
                     <p className="desc">60V 30Ah lithium-ion, 70–80 km on a charge, about 5 hours to charge. Lead-acid is 60 km. Pink, orange, and brown beige.</p>
                     <div className="pills" style={{ marginTop: 14 }}>
@@ -244,7 +244,7 @@ export function HomePage() {
                 <article className="card lift mini rv-s">
                   <div>
                     <span className="tag">Apex Corsa</span>
-                    <h3 className="mname">MRIGA VIRA</h3>
+                    <h3 className="mname">VIRA</h3>
                     <p className="mtag">Uncompromising Power</p>
                     <p className="desc">The dark monolith. Matte charcoal silhouette, aerodynamic strakes, forged lightweight alloy accents, and immediate full-torque launches.</p>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>

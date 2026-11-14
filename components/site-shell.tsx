@@ -118,13 +118,7 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
           </nav>
           <div className="nav-r">
             <a className="nav-phone" href="tel:+917303042004">+91 73030 42004</a>
-            <a href="/login" className="icon-btn login" aria-label={user ? `${user.name} lounge` : "Customer lounge sign in"}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21a8 8 0 0 1 16 0" />
-              </svg>
-            </a>
-            <a href="#book" className="btn btn-d btn-sm nav-cta">Book Test Ride</a>
+            <a href="/login" className="btn btn-d btn-sm">{user ? user.name : "Login"}</a>
             <button className="icon-btn burger" onClick={() => setMenuOpen((open) => !open)} aria-label="Open menu" aria-expanded={menuOpen}>
               {menuOpen ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -145,9 +139,8 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
             </a>
           ))}
           <a href="tel:+917303042004" onClick={() => setMenuOpen(false)}>+91 73030 42004</a>
-          <a href="/login" onClick={() => setMenuOpen(false)}>Customer Lounge</a>
+          <a href="/login" onClick={() => setMenuOpen(false)}>{user ? user.name : "Login"}</a>
           {user?.role === "ADMIN" ? <a href="/admin" onClick={() => setMenuOpen(false)}>Atelier Desk</a> : null}
-          <a href="#book" className="btn btn-p">Book Test Ride</a>
         </div>
       </header>
       {children}
