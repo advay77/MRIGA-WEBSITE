@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Local development uses SQLite so the site runs without an external account.
+// Production should use Neon Postgres: set provider to "postgresql",
+// point DATABASE_URL at the Neon connection string, then run `npx prisma db push`.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String?   @unique
+  phone        String?   @unique
+  name         String
+  passwordHash String
+  role         String    @default("MEMBER")
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model TestRide {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  city      String
+  model     String
+  date      String?
+  createdAt DateTime @default(now())
+}
+
+model DealerApplication {
+  id           String       @id @default(cuid())
+  reference    String       @unique
+  name         String
+  mobile       String
+  email        String
+  title        String
+  entity       String
+  constitution String
+  years        String
+  gst          String
+  city         String
+  area         String
+  frontage     String
+  brands       String
+  models       String
+  liquidity    String
+  timeline     String
+  createdAt    DateTime     @default(now())
+  files        DealerFile[]
+}
+
+model DealerFile {
+  id            String             @id @default(cuid())
+  applicationId String
+  application   DealerApplication  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  filename      String
+  mime          String
+  size          Int
+  bytes         Bytes
+}
+
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+}
