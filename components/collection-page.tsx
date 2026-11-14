@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
 
 const TABS = [
   { key: "all", label: "All Models" },
@@ -12,6 +13,8 @@ const TABS = [
 export function CollectionPage() {
   const [filter, setFilter] = useState("all");
   const [cmpOpen, setCmp] = useState(false);
+  const [miraColour, setMiraColour] = useState<MiraColourId>("pink");
+  const mira = MIRA_COLOURS.find((item) => item.id === miraColour) ?? MIRA_COLOURS[0];
   function visible(key: string) {
     return filter === "all" || filter === key;
   }
@@ -77,7 +80,7 @@ export function CollectionPage() {
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"></path></svg></span><div><h4>Silent Cadence Belt Drive</h4><p>Carbon-cord synchronous transmission producing zero mechanical whine.</p></div></div>
 </div>
 <div className="m-acts">
-<a href="#book" className="btn btn-p btn-sm">Explore RIVA</a>
+<a href="/riva" className="btn btn-p btn-sm">Explore RIVA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
 <a href="#book" className="btn btn-l btn-sm">Enquire</a>
 </div>
@@ -89,24 +92,13 @@ export function CollectionPage() {
 <article className="model flip">
 <div className="m-media">
 <div className="m-top"><span className="series">Star Product · MIRA</span><span className="idx">02</span></div>
-<div className="m-img" style={{background: "linear-gradient(180deg, var(--stone), var(--stone2))"}}>
-<svg viewBox="0 0 420 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style={{width: "100%", height: "100%", position: "absolute", inset: "0"}}>
-<rect x="0" y="0" width="420" height="230" fill="var(--stone)"></rect>
-<path d="M20 230 V70 A40 40 0 0 1 100 70 V230 Z M130 230 V70 A40 40 0 0 1 210 70 V230 Z M240 230 V70 A40 40 0 0 1 320 70 V230 Z M350 230 V70 A40 40 0 0 1 430 70 V230 Z" fill="var(--stone2)" opacity=".75"></path>
-<rect x="0" y="22" width="420" height="10" fill="var(--stone2)"></rect>
-<rect x="0" y="230" width="420" height="70" fill="#8d8478"></rect>
-<path d="M0 248 H420 M0 270 H420" stroke="#7a7266" strokeWidth="2"></path>
-<g transform="translate(90 120) scale(.6)">
-<g className="spin"><circle cx="96" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="96" cy="236" r="27" fill="#e9dccb"></circle><path d="M96 211v50M71 236h50" stroke="#a08a74" strokeWidth="3"></path></g>
-<g className="spin"><circle cx="318" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="318" cy="236" r="27" fill="#e9dccb"></circle><path d="M318 211v50M293 236h50" stroke="#a08a74" strokeWidth="3"></path></g>
-<path d="M50 206 C42 150 86 116 150 120 L208 126 C222 164 232 186 268 192 L282 198 C266 222 140 230 56 216 Z" fill="#F2E7D2"></path>
-<path d="M258 198 C254 148 270 96 288 66 L306 70 C296 110 290 160 306 206 Z" fill="#F2E7D2"></path>
-<path d="M268 214 C278 184 352 184 360 216 L346 216 C336 198 290 198 282 216 Z" fill="#F2A27A"></path>
-<path d="M92 118 C110 96 190 96 212 110 C212 126 100 130 92 118 Z" fill="#6B4A3A"></path>
-<path d="M292 68 L284 36M256 36 L318 32" stroke="#3a3330" strokeWidth="6" strokeLinecap="round"></path>
-<circle cx="304" cy="54" r="15" fill="#F2A27A"></circle>
-</g>
-</svg>
+<div className="m-img" style={{background: mira.wash}}>
+<img className="mira-shot" src={mira.shots[0]} alt={`MIRA in ${mira.name}`} />
+<div className="mira-switch">
+{MIRA_COLOURS.map((item) => (
+<button key={item.id} type="button" className={item.id === mira.id ? "on" : undefined} style={{background: item.swatch}} aria-label={item.name} onClick={() => setMiraColour(item.id)} />
+))}
+</div>
 </div>
 <div className="m-stats">
 <div><div className="cap">Lithium Range</div><div className="num">70–80<small>km</small></div></div>
@@ -125,7 +117,7 @@ export function CollectionPage() {
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><h4>Colours</h4><p>Pink, orange, and brown beige.</p></div></div>
 </div>
 <div className="m-acts">
-<a href="#book" className="btn btn-p btn-sm">Explore MIRA</a>
+<a href={`/mira?colour=${mira.id}`} className="btn btn-p btn-sm">MIRA specifications</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
 <a href="#book" className="btn btn-l btn-sm">Enquire</a>
 </div>
@@ -169,7 +161,7 @@ export function CollectionPage() {
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"></path></svg></span><div><h4>Active Thermal Liquid Loop</h4><p>Maintains peak continuous discharge even under demanding climates.</p></div></div>
 </div>
 <div className="m-acts">
-<a href="#book" className="btn btn-p btn-sm">Explore VIRA</a>
+<a href="/vira" className="btn btn-p btn-sm">Explore VIRA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
 <a href="#book" className="btn btn-l btn-sm">Enquire</a>
 </div>
@@ -269,7 +261,6 @@ export function CollectionPage() {
 <p className="desc">Join Bharat’s most exclusive electric mobility atelier network. Selected franchise partners receive full architect-designed showroom fit-outs, technician academies, and prioritized production allocations.</p>
 <div className="acts">
 <a href="/dealers" className="btn btn-d btn-sm">Become an Authorized Dealer</a>
-<a href="/dealers" className="tlink">Dealer Program Overview</a>
 </div>
 </div>
 <div className="card dk rv-s">

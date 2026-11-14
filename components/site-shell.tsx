@@ -9,16 +9,17 @@ type Model = "RIVA" | "MIRA" | "VIRA";
 
 const NAV = [
   { href: "/", label: "Home" },
-  { href: "/#mira", label: "MIRA" },
-  { href: "/collection", label: "Collection" },
-  { href: "/about", label: "Our Story" },
+  { href: "/about", label: "About Us" },
   { href: "/dealers", label: "Dealers" },
+  { href: "/collection", label: "Explore" },
+  { href: "/contact", label: "Contact" },
 ];
 
 function activeLabel(pathname: string) {
-  if (pathname.startsWith("/collection")) return "Collection";
-  if (pathname.startsWith("/about")) return "Our Story";
+  if (pathname.startsWith("/about")) return "About Us";
   if (pathname.startsWith("/dealers")) return "Dealers";
+  if (pathname.startsWith("/collection") || pathname.startsWith("/mira") || pathname.startsWith("/riva") || pathname.startsWith("/vira")) return "Explore";
+  if (pathname.startsWith("/contact")) return "Contact";
   if (pathname === "/") return "Home";
   return "";
 }
@@ -114,7 +115,6 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
                 {item.label}
               </a>
             ))}
-            <a href={INSTAGRAM} target="_blank" rel="noreferrer">Instagram</a>
           </nav>
           <div className="nav-r">
             <a className="nav-phone" href="tel:+917303042004">+91 73030 42004</a>
@@ -144,7 +144,6 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
               {item.label}
             </a>
           ))}
-          <a href={INSTAGRAM} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>Instagram</a>
           <a href="tel:+917303042004" onClick={() => setMenuOpen(false)}>+91 73030 42004</a>
           <a href="/login" onClick={() => setMenuOpen(false)}>Customer Lounge</a>
           {user?.role === "ADMIN" ? <a href="/admin" onClick={() => setMenuOpen(false)}>Atelier Desk</a> : null}
@@ -160,31 +159,25 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
               <p style={{ maxWidth: 340, lineHeight: 1.7, margin: "18px 0 0" }}>
                 MIRA by MRIGA. Smart mobility. Sustainable future. E-1/93, Sector-7, Rohini, New Delhi 110085, near M2K Rohini.
               </p>
-              <a href="tel:+917303042004" style={{ display: "inline-block", marginTop: 10, fontWeight: 700 }}>+91 73030 42004</a>
-              <a href={INSTAGRAM} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: 8, fontWeight: 700 }}>Instagram · @ridemriga</a>
-            </div>
-            <div>
-              <h5>MIRA</h5>
-              <ul>
-                <li><a href="/#mira">Pink · Orange · Brown Beige</a></li>
-                <li><a href="/#mira">Lithium ₹75,000 · 70–80 km · 3 yr</a></li>
-                <li><a href="/#mira">Lead-acid ₹62,000 · 60 km · 1 yr</a></li>
-                <li><a href="/collection">60V 30Ah · charge about 5 hr</a></li>
-              </ul>
-            </div>
-            <div>
-              <h5>Founders</h5>
-              <ul>
-                <li><a href="/about">Pankaj Jain</a></li>
-                <li><a href="/about">Ashish Jain</a></li>
-                <li><a href="/about">Jiten Jain</a></li>
-              </ul>
+              <div className="foot-reach">
+                <a href="tel:+917303042004">+91 73030 42004</a>
+                <a className="ig" href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="MRIGA on Instagram">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+              </div>
             </div>
             <div>
               <h5>Company</h5>
               <ul>
-                <li><a href="/about">Our Story</a></li>
-                <li><a href="/collection">Collection</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/mira">MIRA</a></li>
+                <li><a href="/riva">RIVA</a></li>
+                <li><a href="/vira">VIRA</a></li>
+                <li><a href="/contact">Contact</a></li>
                 <li><a href="/dealers">Become a Dealer</a></li>
                 <li><a href="#book">Book Test Ride</a></li>
               </ul>

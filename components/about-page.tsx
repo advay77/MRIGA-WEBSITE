@@ -1,49 +1,10 @@
-"use client";
-
-import { useState } from "react";
-
-const YEARS = [
-  {
-    "year": "2022",
-    "badge": "Genesis",
-    "title": "The Blank Parchment",
-    "text": "Founded by automotive sculptors and veteran aerospace electronics architects in Bengaluru. Early clay prototypes benchmarked against vintage European scooters.",
-    "foot": "Bengaluru Clay Studio",
-    "prog": "100%",
-    "more": "Twelve full-scale clay bucks were sculpted by hand before the first steel frame was welded. The RIVA silhouette was chosen from prototype number seven."
-  },
-  {
-    "year": "2023",
-    "badge": "Validation",
-    "title": "Ghats & Monsoon Trials",
-    "text": "250,000 cumulative kilometers across torrential Western Ghat gradients, coastal salt air in Goa, and summer tarmac in Delhi.",
-    "foot": "Western Ghats Testing Lab",
-    "prog": "100%",
-    "more": "Thermal safety sealing with proprietary phase-change immersion cooling was proven in 46°C Delhi heat and 300mm monsoon days."
-  },
-  {
-    "year": "2024",
-    "badge": "Homologation",
-    "title": "ARAI Sovereign Certification",
-    "text": "Achieved pinnacle ARAI safety clearance for AIS-156 Phase 2 battery fire containment.",
-    "foot": "Certified Homologation",
-    "prog": "100%",
-    "more": "The flagship Mriga Vayu S1 and Agni GT editions were unveiled to private connoisseur collector circles in Mumbai and Bengaluru."
-  },
-  {
-    "year": "2025",
-    "badge": "Present",
-    "title": "Expansion into 18 Metros",
-    "text": "Inauguration of MRIGA Sanctuary Studios across Mumbai, Delhi NCR, Bengaluru, Hyderabad, and Pune.",
-    "foot": "Active Nationwide Rollout",
-    "prog": "72%",
-    "more": "Bespoke white-glove doorstep delivery has begun for discerning early patrons, with 13 of 18 metropolitan hubs now open."
-  }
+const FOUNDERS = [
+  { name: "Pankaj Jain", label: "Founder" },
+  { name: "Ashish Jain", label: "Founder" },
+  { name: "Jiten Jain", label: "Founder" },
 ];
 
 export function AboutPage() {
-  const [year, setYear] = useState(3);
-  const sel = YEARS[year];
   return (
     <main className="page">
 
@@ -159,25 +120,18 @@ export function AboutPage() {
 
 <section className="sec">
 <div className="wrap">
-<div className="rv" style={{marginBottom: "44px"}}>
-<div className="kicker plain">Chronicle · Bengaluru Atelier</div>
-<h2 className="h2">The Atelier Journey</h2>
-<p className="sub" style={{fontSize: "14px"}}>From an artisan sketches studio in Indiranagar to sovereign delivery bays across India’s premier capitals. Tap a year to explore.</p>
+<div className="rv" style={{marginBottom: "28px"}}>
+<div className="kicker plain">The people behind MRIGA</div>
+<h2 className="h2">Founders</h2>
 </div>
-<div className="timeline">
-{YEARS.map((item, index) => (
-  <button key={item.year} type="button" className={year === index ? "card tl on rv-s" : "card tl rv-s"} onClick={() => setYear(index)} aria-pressed={year === index}>
-    <div className="tl-top"><span className="tl-year">{item.year}</span><span className="tl-badge">{item.badge}</span></div>
-    <h4>{item.title}</h4>
-    <p className="desc" style={{ fontSize: "13px", marginBottom: "22px" }}>{item.text}</p>
-    <div className="tl-prog"><i style={{ width: item.prog }} /></div>
-    <div className="tl-foot">{item.foot}</div>
-  </button>
+<div className="founder-row">
+{FOUNDERS.map((person) => (
+  <article key={person.name} className="founder-card">
+    <div className="founder-photo"><img src="/logo.png" alt="" /></div>
+    <span className="founder-label">{person.label}</span>
+    <h3>{person.name}</h3>
+  </article>
 ))}
-</div>
-<div className="tl-detail" aria-live="polite">
-<span className="tick" style={{width: "52px", height: "52px", flex: "none"}}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
-<div><div className="tiny-k">{sel.year} · {sel.badge}</div><p className="desc" style={{marginTop: "6px", color: "var(--text)"}}>{sel.more}</p></div>
 </div>
 </div>
 </section>
@@ -188,7 +142,6 @@ export function AboutPage() {
 <div style={{position: "relative"}}>
 <span className="eyebrow">Philosophy · Founders’ Desk</span>
 <blockquote>“We built MRIGA not to be another sterile gadget on wheels, but an extension of your tailored wardrobe and personal poise.”</blockquote>
-<div style={{fontFamily: "var(--serif)", fontSize: "18px", display: "grid", gap: "4px"}}><span>Pankaj Jain</span><span>Ashish Jain</span><span>Jiten Jain</span></div>
 <div style={{fontSize: "12px", color: "var(--on-dark-muted)", marginTop: "6px"}}>Founders, MRIGA</div>
 </div>
 <div className="sig">

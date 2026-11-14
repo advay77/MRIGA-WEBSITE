@@ -67,10 +67,6 @@ export function DealersPage() {
 <h1 className="h1"><span className="ln"><span>Build Your Business</span></span><span className="ln"><span><em>With MRIGA.</em></span></span></h1>
 <p className="lead fade-up d1">Partner with India’s foremost electric mobility atelier and bring haute electric commuting to your territory. Forged with sovereign agility, sculpted bespoke fairings, and unparalleled retail margins.</p>
 </div>
-<div className="d-top-btns fade-up d2">
-<a href="#apply" className="btn btn-p">Apply for Dealership <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></a>
-<a href="#apply" className="btn btn-g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6M9 14h6M9 17h4"></path></svg> Partnership Prospectus (PDF)</a>
-</div>
 </div>
 
 <div className="d-grid">

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
+import { useState } from "react";
+import { MIRA_COLOURS } from "@/lib/mira";
 
 const POSTS = [
   {
@@ -97,24 +97,6 @@ function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: 
 
 export function HomePage() {
   const [liked, setLiked] = useState<Record<number, boolean>>({});
-  const [colourId, setColourId] = useState<MiraColourId>("pink");
-  const [specOpen, setSpecOpen] = useState(false);
-  const colour = MIRA_COLOURS.find((item) => item.id === colourId) ?? MIRA_COLOURS[0];
-
-  useEffect(() => {
-    if (!specOpen) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSpecOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [specOpen]);
-
-  function openSpecs(id: MiraColourId) {
-    setColourId(id);
-    setSpecOpen(true);
-  }
-
 
   return (
       <main className="page">
@@ -232,7 +214,7 @@ export function HomePage() {
                   <span className="pill">Top Speed: <b>Tourer Stance</b></span>
                 </div>
                 <div className="card-foot">
-                  <a href="#book" className="btn btn-d btn-sm">Explore RIVA <Arrow size={14} /></a>
+                  <a href="/riva" className="btn btn-d btn-sm">Explore RIVA <Arrow size={14} /></a>
                   <span className="foot-note">Limited Debut Allocation</span>
                 </div>
               </article>
@@ -249,14 +231,14 @@ export function HomePage() {
                       <span className="pill">Lead-acid <b>₹62,000 · 1 yr</b></span>
                     </div>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#E7A0B8" }} /><i style={{ background: "#E36A2C" }} /><i style={{ background: "#C4A484" }} /></div>
-                    <button type="button" className="explore" onClick={() => openSpecs("pink")}>
+                    <a href="/mira" className="explore">
                       View specifications <Arrow size={14} />
-                    </button>
+                    </a>
                   </div>
-                  <button type="button" className="prod mira-prod" onClick={() => openSpecs("pink")} aria-label="Open MIRA specifications">
+                  <a href="/mira" className="prod mira-prod" aria-label="MIRA specifications">
                     <img src="/mira/pink.png" alt="MIRA in pink" />
                     <span className="ptag">Pink</span>
-                  </button>
+                  </a>
                 </article>
 
                 <article className="card lift mini rv-s">
@@ -266,7 +248,7 @@ export function HomePage() {
                     <p className="mtag">Uncompromising Power</p>
                     <p className="desc">The dark monolith. Matte charcoal silhouette, aerodynamic strakes, forged lightweight alloy accents, and immediate full-torque launches.</p>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>
-                    <a href="#book" className="explore">
+                    <a href="/vira" className="explore">
                       Explore VIRA <Arrow size={14} />
                     </a>
                   </div>
@@ -298,61 +280,22 @@ export function HomePage() {
               <div>
                 <div className="kicker">Star Product · Three Colours</div>
                 <h2 className="h2">MIRA, in the colour you ride.</h2>
-                <p className="sub">Pink, orange, and brown beige. Choose a finish and the specifications open with it.</p>
+                <p className="sub">Pink, orange, and brown beige. Open a colour to read the full specifications.</p>
               </div>
             </div>
             <div className="mira-row">
               {MIRA_COLOURS.map((item, index) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={item.id === colourId ? "mira-card on" : "mira-card"}
-                  style={{ background: item.wash, animationDelay: `${index * 0.12}s` }}
-                  onClick={() => openSpecs(item.id)}
-                >
-                  <img src={item.src} alt="" />
+                <a key={item.id} href={`/mira?colour=${item.id}`} className="mira-card" style={{ background: item.wash, animationDelay: `${index * 0.12}s` }}>
+                  <img src={item.shots[0]} alt="" />
                   <span className="mira-meta">
                     <i style={{ background: item.swatch }} />
                     {item.name}
                   </span>
-                </button>
+                </a>
               ))}
             </div>
           </div>
         </section>
-
-        {specOpen ? (
-          <div className="modal" onClick={() => setSpecOpen(false)}>
-            <div className="sheet mira-sheet" role="dialog" aria-modal="true" aria-label={`${colour.name} MIRA specifications`} onClick={(event) => event.stopPropagation()}>
-              <div className="mira-sheet-grid">
-                <div className="mira-sheet-photo" style={{ background: colour.wash }}>
-                  <img src={colour.src} alt={`MIRA in ${colour.name}`} />
-                </div>
-                <div>
-                  <span className="eyebrow"><span className="dot" />{colour.name}</span>
-                  <h3>MIRA specifications</h3>
-                  <p className="sub" style={{ fontSize: 14 }}>Smart mobility. Sustainable future. The range follows the battery.</p>
-                  <ul className="mira-specs">
-                    <li><b>Battery</b><span>60V 30Ah lithium-ion, or lead-acid</span></li>
-                    <li><b>Lithium</b><span>₹75,000 · 70–80 km · 3-year guarantee on the scooter, battery, motor, controller, and digital display</span></li>
-                    <li><b>Lead-acid</b><span>₹62,000 · 60 km · 1-year guarantee</span></li>
-                    <li><b>Charging</b><span>About 5 hours. Charger warranty is 1 year.</span></li>
-                    <li><b>Colour</b><span>{colour.name}. Also available in pink, orange, and brown beige.</span></li>
-                  </ul>
-                  <div className="mira-sheet-acts">
-                    {MIRA_COLOURS.map((item) => (
-                      <button key={item.id} type="button" className={item.id === colour.id ? "swatch-btn on" : "swatch-btn"} onClick={() => setColourId(item.id)} aria-label={item.name}>
-                        <i style={{ background: item.swatch }} />
-                        {item.name}
-                      </button>
-                    ))}
-                  </div>
-                  <a href="#book" className="btn btn-p" onClick={() => setSpecOpen(false)}>Book a test ride <Arrow size={14} /></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
 
         <section className="sec mani" id="manifesto">
           <div className="wrap mani-grid">
