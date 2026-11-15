@@ -3,7 +3,7 @@
 import { randomInt } from "crypto";
 import { prisma } from "@/lib/db";
 import { createSession, clearSession } from "@/lib/auth";
-import { DUMMY_PASSWORD_HASH, hashPassword, verifyPassword } from "@/lib/password";
+import { dummyPasswordHash, hashPassword, verifyPassword } from "@/lib/password";
 import { rateLimit, sameOrigin } from "@/lib/guards";
 import { accountSchema, dealerSchema, firstIssue, rideSchema, safeNext } from "@/lib/validators";
 
@@ -56,8 +56,8 @@ export async function reserveTestRide(form: FormData) {
         date: parsed.data.date || null,
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch {
+    console.error("test ride save failed");
     return { ok: false as const, error: UNAVAILABLE };
   }
   const first = parsed.data.name.split(/\s+/)[0];
@@ -135,8 +135,8 @@ export async function submitDealerApplication(form: FormData) {
       },
     });
     return { ok: true as const, who: parsed.data.name.split(/\s+/)[0] || "Partner", reference };
-  } catch (error) {
-    console.error(error);
+  } catch {
+    console.error("dealer application save failed");
     return { ok: false as const, error: UNAVAILABLE };
   }
 }
@@ -147,7 +147,9 @@ function identity(value: string) {
 }
 
 export async function signIn(form: FormData) {
-  const blocked = await guard("login", 8, 15 * 60 * 1000);
+  const desk = text(form, "desk");
+  const lane = desk === "admin" ? "login-admin" : desk === "retailer" ? "login-retailer" : "login";
+  const blocked = await guard(lane, desk === "admin" ? 5 : 8, 15 * 60 * 1000);
   if (blocked) return { ok: false as const, error: blocked };
   const parsed = accountSchema.safeParse({
     id: text(form, "id"),
@@ -163,19 +165,20 @@ export async function signIn(form: FormData) {
     const user = who.email
       ? await prisma.user.findUnique({ where: { email: who.email } })
       : await prisma.user.findUnique({ where: { phone: who.phone || "" } });
-    const valid = verifyPassword(parsed.data.pw, user?.passwordHash || DUMMY_PASSWORD_HASH);
-    if (!user || !valid) return { ok: false as const, error: "Those details do not match an account." };
+    const valid = await verifyPassword(parsed.data.pw, user?.passwordHash || (await dummyPasswordHash()));
+    const expected = desk === "admin" ? "ADMIN" : desk === "retailer" ? "RETAILER" : "MEMBER";
+    if (!user || !valid || user.role !== expected) return { ok: false as const, error: "Those details do not match an account." };
     await createSession(user.id, parsed.data.remember === "on" ? 30 : 1);
     const requested = safeNext(parsed.data.next);
-    const href = user.role === "ADMIN" ? (requested === "/" ? "/admin" : requested) : requested.startsWith("/admin") ? "/" : requested;
+    const href = expected === "ADMIN" ? "/admin" : expected === "RETAILER" ? (requested.startsWith("/admin") || requested === "/" ? "/retailer" : requested) : requested.startsWith("/admin") ? "/" : requested;
     return { ok: true as const, name: user.name, href };
-  } catch (error) {
-    console.error(error);
+  } catch {
+    console.error("sign-in failed");
     return { ok: false as const, error: UNAVAILABLE };
   }
 }
 
-export async function signUp(form: FormData) {
+async function createAccount(form: FormData, role: "MEMBER" | "RETAILER") {
   const blocked = await guard("signup", 5, HOUR);
   if (blocked) return { ok: false as const, error: blocked };
   const parsed = accountSchema.safeParse({
@@ -187,9 +190,13 @@ export async function signUp(form: FormData) {
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
   if (!parsed.data.name || parsed.data.name.trim().length < 2) return { ok: false as const, error: "Please enter your full name." };
-  if (parsed.data.terms !== "on") return { ok: false as const, error: "Please accept the Lounge terms to continue." };
+  if (parsed.data.terms !== "on") return { ok: false as const, error: "Please accept the terms to continue." };
   if (parsed.data.website) return { ok: false as const, error: "Unable to create this account." };
   const who = identity(parsed.data.id);
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  if (who.email && adminEmail && who.email === adminEmail) {
+    return { ok: false as const, error: "An account with that email or mobile already exists. Sign in instead." };
+  }
   try {
     const existing = who.email
       ? await prisma.user.findUnique({ where: { email: who.email } })
@@ -200,16 +207,24 @@ export async function signUp(form: FormData) {
         name: parsed.data.name.trim(),
         email: who.email,
         phone: who.phone,
-        passwordHash: hashPassword(parsed.data.pw),
-        role: "MEMBER",
+        passwordHash: await hashPassword(parsed.data.pw),
+        role,
       },
     });
     await createSession(user.id, 7);
-    return { ok: true as const, name: user.name, href: "/" };
-  } catch (error) {
-    console.error(error);
+    return { ok: true as const, name: user.name, href: role === "RETAILER" ? "/retailer" : "/" };
+  } catch {
+    console.error("sign-up failed");
     return { ok: false as const, error: UNAVAILABLE };
   }
+}
+
+export async function signUp(form: FormData) {
+  return createAccount(form, "MEMBER");
+}
+
+export async function signUpRetailer(form: FormData) {
+  return createAccount(form, "RETAILER");
 }
 
 export async function signOut() {

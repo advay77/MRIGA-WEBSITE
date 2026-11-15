@@ -2,21 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
-
-const MIRA_SPECS = [
-  { label: "Battery", value: "60V 30Ah lithium-ion, or lead-acid." },
-  { label: "Lithium-ion", value: "₹75,000. Up to 70–80 km on a single charge. 3-year guarantee on the scooter, including the battery, motor, controller, and digital display." },
-  { label: "Lead-acid", value: "₹62,000. 60 km on a single charge. 1-year guarantee." },
-  { label: "Charging", value: "About 5 hours. The charger warranty is 1 year." },
-  { label: "Colours", value: "Pink, orange, and brown beige." },
-  { label: "Promise", value: "MIRA by MRIGA. Smart mobility. Sustainable future." },
-];
+import { useSiteContent } from "@/components/site-content";
 
 export function ModelPage({ model, initialColour = "pink" }: { model: "mira" | "riva" | "vira"; initialColour?: string }) {
   const start = MIRA_COLOURS.some((item) => item.id === initialColour) ? (initialColour as MiraColourId) : "pink";
   const [colourId, setColourId] = useState<MiraColourId>(start);
   const [shot, setShot] = useState(0);
   const colour = MIRA_COLOURS.find((item) => item.id === colourId) ?? MIRA_COLOURS[0];
+  const content = useSiteContent();
+  const miraSpecs = [
+    { label: "Battery", value: "60V 30Ah lithium-ion, or lead-acid." },
+    { label: "Lithium-ion", value: `${content.lithiumPrice}. ${content.lithiumDetail}` },
+    { label: "Lead-acid", value: `${content.leadPrice}. ${content.leadDetail}` },
+    { label: "Charging", value: "About 5 hours. The charger warranty is 1 year." },
+    { label: "Colours", value: "Pink, orange, and brown beige." },
+    { label: "Promise", value: "MIRA by MRIGA. Smart mobility. Sustainable future." },
+  ];
   const name = model.toUpperCase();
   const frame = colour.shots[shot] ?? colour.shots[0];
 
@@ -81,7 +82,7 @@ export function ModelPage({ model, initialColour = "pink" }: { model: "mira" | "
             <h2 className="h2">{name} specifications</h2>
             {model === "mira" ? (
               <div className="spec-grid">
-                {MIRA_SPECS.map((item) => (
+                {miraSpecs.map((item) => (
                   <article key={item.label} className="spec-card">
                     <b>{item.label}</b>
                     <p>{item.value}</p>

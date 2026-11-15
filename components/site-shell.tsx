@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
-import { INSTAGRAM } from "@/lib/mira";
+import { useSiteContent } from "@/components/site-content";
 
 type Model = "RIVA" | "MIRA" | "VIRA";
 
@@ -27,13 +27,14 @@ function activeLabel(pathname: string) {
 function Logo() {
   return (
     <a href="/" className="logo" aria-label="MRIGA home">
-      <img src="/logo.png" alt="" className="logo-mark" />
+      <img src="/media/logo" alt="" className="logo-mark" />
       MRIGA
     </a>
   );
 }
 
 export function SiteShell({ children, user = null }: { children: React.ReactNode; user?: { name: string; role: string } | null }) {
+  const content = useSiteContent();
   const pathname = usePathname();
   const active = activeLabel(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -68,6 +69,49 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [book]);
+
+  useEffect(() => {
+    if (!pathname || pathname.startsWith("/admin") || pathname.startsWith("/api") || pathname.startsWith("/media")) return;
+    const path = pathname;
+    let sent = 0;
+    const started = performance.now();
+    const post = (kind: "view" | "time" | "click", target: string, seconds: number) => {
+      void fetch("/api/views", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ path: target, kind, seconds }),
+        keepalive: true,
+      });
+    };
+    post("view", path, 0);
+    const flush = () => {
+      const total = Math.round((performance.now() - started) / 1000);
+      const delta = total - sent;
+      if (delta < 1) return;
+      sent = total;
+      post("time", path, delta);
+    };
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") flush();
+    }, 15000);
+    const onClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest("a[href]");
+      if (!link) return;
+      const href = link.getAttribute("href") || "";
+      if (!href.startsWith("/") || href.startsWith("//") || href.startsWith("/admin")) return;
+      post("click", href.split("?")[0].split("#")[0] || "/", 0);
+    };
+    document.addEventListener("click", onClick);
+    window.addEventListener("pagehide", flush);
+    return () => {
+      flush();
+      window.clearInterval(timer);
+      document.removeEventListener("click", onClick);
+      window.removeEventListener("pagehide", flush);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -117,8 +161,8 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
             ))}
           </nav>
           <div className="nav-r">
-            <a className="nav-phone" href="tel:+917303042004">+91 73030 42004</a>
-            <a href="/login" className="btn btn-d btn-sm">{user ? user.name : "Login"}</a>
+            <a className="nav-phone" href="#book">Book a test ride</a>
+            <a href="/login" className="btn btn-d btn-sm">Login</a>
             <button className="icon-btn burger" onClick={() => setMenuOpen((open) => !open)} aria-label="Open menu" aria-expanded={menuOpen}>
               {menuOpen ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -138,9 +182,8 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
               {item.label}
             </a>
           ))}
-          <a href="tel:+917303042004" onClick={() => setMenuOpen(false)}>+91 73030 42004</a>
-          <a href="/login" onClick={() => setMenuOpen(false)}>{user ? user.name : "Login"}</a>
-          {user?.role === "ADMIN" ? <a href="/admin" onClick={() => setMenuOpen(false)}>Atelier Desk</a> : null}
+          <a href="#book" onClick={() => setMenuOpen(false)}>Book a test ride</a>
+          <a href="/login" onClick={() => setMenuOpen(false)}>Login</a>
         </div>
       </header>
       {children}
@@ -150,11 +193,11 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
             <div>
               <Logo />
               <p style={{ maxWidth: 340, lineHeight: 1.7, margin: "18px 0 0" }}>
-                MIRA by MRIGA. Smart mobility. Sustainable future. E-1/93, Sector-7, Rohini, New Delhi 110085, near M2K Rohini.
+                MIRA by MRIGA. Smart mobility. Sustainable future. {content.address}
               </p>
               <div className="foot-reach">
-                <a href="tel:+917303042004">+91 73030 42004</a>
-                <a className="ig" href={INSTAGRAM} target="_blank" rel="noreferrer" aria-label="MRIGA on Instagram">
+                <a href={`tel:${content.phoneHref}`}>{content.phone}</a>
+                <a className="ig" href={content.instagram} target="_blank" rel="noreferrer" aria-label="MRIGA on Instagram">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
                     <rect x="3" y="3" width="18" height="18" rx="5" />
                     <circle cx="12" cy="12" r="4" />
@@ -178,16 +221,13 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
             <div>
               <h5>Owners</h5>
               <ul>
-                <li><a href="/login">Customer Lounge</a></li>
-                <li><a href="/login?tab=up">Create Account</a></li>
-                <li><a href="/dealers">Partner Console</a></li>
-                {user?.role === "ADMIN" ? <li><a href="/admin">Atelier Desk</a></li> : null}
+                <li><a href="/login">Customer login</a></li>
+                <li><a href="/retailer">Retailer login</a></li>
               </ul>
             </div>
           </div>
           <div className="foot-bot">
-            <span>© 2026 MRIGA Mobility. All rights reserved.</span>
-            <span>Privacy · Terms · Cookies</span>
+            <span>© 2026 MRIGA. All rights reserved.</span>
           </div>
         </div>
       </footer>
@@ -209,9 +249,9 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
               <>
                 <div className="sheet-h">
                   <div>
-                    <span className="eyebrow"><span className="dot" />Priority Reservation</span>
-                    <h3>Book Your VIP Test Ride</h3>
-                    <p className="sub" style={{ fontSize: 14 }}>A curator brings the scooter to your door. No charge, no obligation.</p>
+                    <span className="eyebrow"><span className="dot" />Test ride</span>
+                    <h3>Book a test ride</h3>
+                    <p className="sub" style={{ fontSize: 14 }}>Tell us the model, city, and a day that suits you. We will call you back.</p>
                   </div>
                   <button className="icon-btn" onClick={() => setBook(false)} aria-label="Close">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>

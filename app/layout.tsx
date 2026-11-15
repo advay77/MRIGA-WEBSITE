@@ -20,7 +20,7 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "MRIGA — Home",
   description:
-    "Haute electric mobility, crafted in Bengaluru. Your city. Your rules. Your ride.",
+    "MIRA by MRIGA. Smart mobility. Sustainable future. Showroom in Rohini, New Delhi.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

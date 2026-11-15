@@ -1,6 +1,7 @@
 import { createSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { clearGoogleStateCookie, googleConfigured, googleRedirectUri, GOOGLE_STATE_COOKIE, readGoogleState } from "@/lib/google";
+import { rateLimit } from "@/lib/guards";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,7 @@ function fail(request: Request, code: string) {
 }
 
 export async function GET(request: Request) {
+  if (!(await rateLimit("google", 20, 60 * 60 * 1000))) return fail(request, "google");
   if (!googleConfigured()) return fail(request, "google_config");
   const url = new URL(request.url);
   const cookie = request.headers.get("cookie")?.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${GOOGLE_STATE_COOKIE}=`));
@@ -48,17 +50,31 @@ export async function GET(request: Request) {
   const existing = await prisma.user.findFirst({
     where: { OR: [{ googleId: profile.sub }, { email }] },
   });
-  const user = existing
-    ? await prisma.user.update({
-        where: { id: existing.id },
-        data: { googleId: existing.googleId || profile.sub, name: existing.name || name },
-      })
-    : await prisma.user.create({
-        data: { email, name, googleId: profile.sub, role: "MEMBER" },
-      });
-
-  await createSession(user.id, 7);
-  const destination = user.role === "ADMIN" && nextPath === "/" ? "/admin" : nextPath.startsWith("/admin") && user.role !== "ADMIN" ? "/" : nextPath;
+  if (existing?.role === "ADMIN") {
+    const response = Response.redirect(new URL("/admin/login", request.url), 303);
+    response.headers.append("Set-Cookie", clearGoogleStateCookie());
+    return response;
+  }
+  if (existing && (existing.googleId !== profile.sub) && (existing.passwordHash || existing.googleId)) {
+    return fail(request, "google_password");
+  }
+  let user = existing;
+  try {
+    user = existing
+      ? await prisma.user.update({
+          where: { id: existing.id },
+          data: { googleId: profile.sub, name: existing.name || name },
+        })
+      : await prisma.user.create({
+          data: { email, name, googleId: profile.sub, role: "MEMBER" },
+        });
+    await createSession(user.id, 7);
+  } catch {
+    return fail(request, "google");
+  }
+  const destination = user.role === "RETAILER"
+    ? (nextPath.startsWith("/admin") || nextPath === "/" ? "/retailer" : nextPath)
+    : nextPath.startsWith("/admin") ? "/" : nextPath;
   const response = Response.redirect(new URL(destination, request.url), 303);
   response.headers.append("Set-Cookie", clearGoogleStateCookie());
   return response;

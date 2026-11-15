@@ -2,12 +2,13 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { signIn, signOut, signUp } from "@/lib/actions";
+import { signIn, signOut, signUp, signUpRetailer } from "@/lib/actions";
 
 type LoungeUser = { name: string; role: string };
 
-export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: LoungeUser | null; nextPath: string; startTab: "in" | "up"; notice?: string }) {
+export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "user" }: { user: LoungeUser | null; nextPath: string; startTab: "in" | "up"; notice?: string; audience?: "user" | "retailer" }) {
   const router = useRouter();
+  const retailer = audience === "retailer";
   const [tab, setTab] = useState<"in" | "up">(startTab);
   const [otp, setOtp] = useState(false);
   const [show, setShow] = useState(false);
@@ -16,7 +17,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
   const [err, setErr] = useState("");
   const [info, setInfo] = useState(notice);
   const [welcome, setWelcome] = useState(user ? `Welcome, ${user.name.split(" ")[0]}` : "");
-  const [href, setHref] = useState(user?.role === "ADMIN" ? "/admin" : "/collection");
+  const [href, setHref] = useState(retailer ? "/retailer" : "/collection");
   const up = tab === "up";
 
   function reset(next: "in" | "up") {
@@ -33,7 +34,8 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
     setBusy(true);
     setErr("");
     setInfo("");
-    const result = up ? await signUp(data) : await signIn(data);
+    data.set("desk", retailer ? "retailer" : "member");
+    const result = up ? await (retailer ? signUpRetailer(data) : signUp(data)) : await signIn(data);
     setBusy(false);
     if (!result.ok) {
       setErr(result.error);
@@ -85,9 +87,9 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
                 </span>
               </div>
               <div style={{ height: 60 }} />
-              <div className="kicker">Private Members Lounge</div>
-              <h1>Your Sovereign Sanctuary.</h1>
-              <p>Enter the MRIGA Lounge — manage bespoke reservations, connected telemetry, real-time kinetic battery passport status, curated saddle selections, and private concierge appointments.</p>
+              <div className="kicker">{retailer ? "Retailer" : "User"}</div>
+              <h1>{retailer ? "Login as a retailer." : "Login as a user."}</h1>
+              <p>{retailer ? "This account is for showroom partners. It is separate from a user account." : "Book a test ride and come back to the same account."}</p>
               <div className="auth-feats">
                 <span className="dchip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></svg> Live Battery Passport</span>
                 <span className="dchip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg> Concierge Response &lt; 15 Mins</span>
@@ -109,7 +111,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
                   <h2 style={{ margin: 0 }}>{welcome}</h2>
                   <p className="sub" style={{ fontSize: 14 }}>Your telemetry, saddle preferences and scheduled atelier rides are now synchronised.</p>
                   <div className="cta-row" style={{ justifyContent: "center", marginTop: 10 }}>
-                    <a href={href} className="btn btn-p">{href === "/admin" ? "Open the Atelier Desk" : "Browse the Collection"}</a>
+                    <a href={href} className="btn btn-p">{retailer ? "Retailer home" : "Browse the Collection"}</a>
                     <button className="btn btn-g" onClick={leave}>Sign Out</button>
                   </div>
                 </div>
@@ -142,27 +144,28 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
                     <form className="form" onSubmit={submit} noValidate>
                       <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                       <input type="hidden" name="next" value={nextPath} />
+                      <input type="hidden" name="desk" value={retailer ? "retailer" : "member"} />
                       {up ? (
                         <div className="fld">
-                          <label htmlFor="lg-name">Full name</label>
+                          <label htmlFor={`${audience}-name`}>Full name</label>
                           <div className="inp">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></svg>
-                            <input id="lg-name" name="name" placeholder="Your full name" autoComplete="name" />
+                            <input id={`${audience}-name`} name="name" placeholder="Your full name" autoComplete="name" />
                           </div>
                         </div>
                       ) : null}
                       <div className="fld">
-                        <label htmlFor="lg-id">Mobile number or email</label>
+                        <label htmlFor={`${audience}-id`}>Mobile number or email</label>
                         <div className="inp">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
-                          <input id="lg-id" name="id" placeholder="name@atelier.com or +91 98765 43210" autoComplete="username" />
+                          <input id={`${audience}-id`} name="id" placeholder="name@atelier.com or +91 98765 43210" autoComplete="username" />
                         </div>
                       </div>
                       <div className="fld">
-                        <label htmlFor="lg-pw">Security passkey / password</label>
+                        <label htmlFor={`${audience}-pw`}>Security passkey / password</label>
                         <div className="inp">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5" /><path d="m11 12 9-9M17 6l3 3M14 9l2 2" /></svg>
-                          <input id="lg-pw" name="pw" type={show ? "text" : "password"} placeholder="Enter confidential passkey" autoComplete={up ? "new-password" : "current-password"} />
+                          <input id={`${audience}-pw`} name="pw" type={show ? "text" : "password"} placeholder="Enter confidential passkey" autoComplete={up ? "new-password" : "current-password"} />
                           <button type="button" className="eye" onClick={() => setShow((value) => !value)} aria-label={show ? "Hide passkey" : "Show passkey"}>
                             {show ? (
                               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A9.8 9.8 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 3.9M6.6 6.6C3.9 8.4 2 12 2 12s4 7 10 7c1.7 0 3.2-.5 4.5-1.2" /></svg>
@@ -186,13 +189,13 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
                       {err ? <p className="err" role="alert">{err}</p> : null}
                       <button type="submit" className="btn btn-d btn-block" disabled={busy} style={{ minHeight: 56, fontSize: 15 }}>
                         {busy ? <span className="spinner" /> : null}
-                        {busy ? "Verifying…" : up ? "Create My Account" : "Enter Customer Lounge"}
+                        {busy ? "Verifying…" : up ? "Create My Account" : retailer ? "Sign in" : "Enter Customer Lounge"}
                         <svg className="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                       </button>
                     </form>
                   )}
-                  <div className="or" style={{ marginTop: 24 }}>Or instant access with</div>
-                  <div className="alt">
+                  {retailer ? null : <div className="or" style={{ marginTop: 24 }}>Or instant access with</div>}
+                  {retailer ? null : <div className="alt">
                     <button className="btn btn-g" onClick={() => { setOtp(true); setErr(""); setInfo(""); }}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 10h.01M12 10h.01M16 10h.01" /></svg>
                       Login via SMS OTP
@@ -201,14 +204,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "" }: { user: Lo
                       <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4" /><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853" /><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1A10 10 0 0 0 2 12c0 1.6.4 3.1 1.1 4.6z" fill="#FBBC05" /><path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10c.8-2.4 3-4.1 5.6-4.1z" fill="#EA4335" /></svg>
                       Google
                     </a>
-                  </div>
-                  <a href="/dealers" className="partner">
-                    <span className="feat-ic" style={{ borderRadius: "50%" }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9M3 9v11h18V9M3 9h18M9 20v-6h6v6" /></svg>
-                    </span>
-                    <span><b>Dealer &amp; Franchise Partner?</b><span>Access the Institutional Partner Console</span></span>
-                    <svg className="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  </a>
+                  </div>}
                 </>
               )}
             </div>

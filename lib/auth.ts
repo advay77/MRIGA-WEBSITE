@@ -36,7 +36,7 @@ export async function getSession() {
 export async function createSession(userId: string, days: number) {
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-  await prisma.session.deleteMany({ where: { expiresAt: { lt: new Date() } } });
+  await prisma.session.deleteMany({ where: { userId, expiresAt: { lt: new Date() } } });
   await prisma.session.create({
     data: { tokenHash: tokenHash(token), userId, expiresAt },
   });
@@ -73,7 +73,7 @@ export async function ensureAdmin() {
     data: {
       email,
       name: "MRIGA Admin",
-      passwordHash: hashPassword(password),
+      passwordHash: await hashPassword(password),
       role: "ADMIN",
     },
   });

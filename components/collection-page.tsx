@@ -2,18 +2,19 @@
 
 import { useState } from "react";
 import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
+import { useSiteContent } from "@/components/site-content";
 
 const TABS = [
-  { key: "all", label: "All Models" },
-  { key: "riva", label: "Grand Tourer (RIVA)" },
-  { key: "mira", label: "Urban Purist (MIRA)" },
-  { key: "vira", label: "Apex Corsa (VIRA)" },
+  { key: "all", label: "All" },
+  { key: "riva", label: "RIVA" },
+  { key: "mira", label: "MIRA" },
+  { key: "vira", label: "VIRA" },
 ];
 
 export function CollectionPage() {
   const [filter, setFilter] = useState("all");
-  const [cmpOpen, setCmp] = useState(false);
   const [miraColour, setMiraColour] = useState<MiraColourId>("pink");
+  const content = useSiteContent();
   const mira = MIRA_COLOURS.find((item) => item.id === miraColour) ?? MIRA_COLOURS[0];
   function visible(key: string) {
     return filter === "all" || filter === key;
@@ -26,11 +27,11 @@ export function CollectionPage() {
 <div className="wrap">
 <div className="phead-grid">
 <div>
-<span className="eyebrow fade-up"><span className="dot"></span>Fleet Portfolio · Volume MMXXV</span>
-<h1 className="h1 mixed"><span className="ln"><span>The Haute Electric</span></span><span className="ln"><span>Collection</span></span></h1>
-<p className="ital fade-up d1">Three Personalities. One Electric Soul.</p>
+<span className="eyebrow fade-up"><span className="dot"></span>Explore</span>
+<h1 className="h1 mixed"><span className="ln"><span>RIVA, MIRA,</span></span><span className="ln"><span>and VIRA</span></span></h1>
+<p className="ital fade-up d1">MIRA is the model you can see now.</p>
 </div>
-<p className="lead fade-up d2" style={{fontSize: "15px"}}>Engineered through avant-garde Indian craftsmanship and unyielding electric architectures. A sartorial celebration of effortless motion, warm textures, and unapologetic poise.</p>
+<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA has prices, range, and colours. RIVA and VIRA stay here until their photographs and specifications are ready.</p>
 </div>
 <div className="filters fade-up d3">
 <div className="tabs" role="group" aria-label="Filter models">
@@ -38,7 +39,6 @@ export function CollectionPage() {
   <button key={tab.key} type="button" className={filter === tab.key ? "on" : undefined} aria-pressed={filter === tab.key} onClick={() => setFilter(tab.key)}>{tab.label}</button>
 ))}
 </div>
-<div className="cohort">Active cohort: <span>⚡ Gen 2 Architecture</span></div>
 </div>
 </div>
 </section>
@@ -48,7 +48,7 @@ export function CollectionPage() {
 {visible("riva") ? (<>
 <article className="model">
 <div className="m-media">
-<div className="m-top"><span className="series">Series I · Grand Tourer</span><span className="idx">01</span></div>
+<div className="m-top"><span className="series">RIVA</span><span className="idx">01</span></div>
 <div className="m-img">
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <g className="spin"><circle cx="96" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="96" cy="236" r="27" fill="#d8d2c6"></circle><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#8d867a" strokeWidth="3"></path></g>
@@ -64,21 +64,14 @@ export function CollectionPage() {
 </svg>
 </div>
 <div className="m-stats">
-<div><div className="cap">Range (IDC)</div><div className="num"><span className="count c185"></span><small>km</small></div></div>
-<div><div className="cap">Acceleration</div><div className="num">3.2<small>s</small></div></div>
-<div><div className="cap">Hypercharge</div><div className="num"><span className="count c45"></span><small>min</small></div></div>
+<div><div className="cap">Status</div><div className="num">Next</div></div>
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">The Sovereign Stance</div>
+<div className="kicker">Coming next</div>
 <h2>RIVA</h2>
-<p className="mtag">Pure Grace in Motion</p>
-<p className="desc" style={{marginTop: "18px"}}>Sculpted for interstate leisure and effortless urban transcendence. Features our hallmark Crema &amp; Cuoio handcrafted vegan saddle, classic round optical projector beam, and balanced low-center gravity cradle for unmatched calm at cruising speeds.</p>
-<div className="m-list">
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 14c3-1 6-1 8 1s5 2 8 1"></path><path d="M4 10c3-1 6-1 8 1s5 2 8 1"></path></svg></span><div><h4>Cuoio Vegan Saddlery</h4><p>Hand-stitched perimeter with micro-perforated lumbar ventilation.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2"></path></svg></span><div><h4>Optical Bi-Sphere Beam</h4><p>Signature round focal lens projecting 140m daylight-temperature illumination.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6"></path></svg></span><div><h4>Silent Cadence Belt Drive</h4><p>Carbon-cord synchronous transmission producing zero mechanical whine.</p></div></div>
-</div>
+<p className="mtag">Photographs and specifications are next.</p>
+<p className="desc" style={{marginTop: "18px"}}>RIVA does not have confirmed numbers yet, so this page does not list a range, speed, or price for it.</p>
 <div className="m-acts">
 <a href="/riva" className="btn btn-p btn-sm">Explore RIVA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
@@ -112,8 +105,8 @@ export function CollectionPage() {
 <p className="mtag">Smart Mobility. Sustainable Future.</p>
 <p className="desc" style={{marginTop: "18px"}}>MIRA by MRIGA is the first model we are building. Three colours: pink, orange, and brown beige. Range follows the battery you choose.</p>
 <div className="m-list">
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><div><h4>Lithium-ion · ₹75,000</h4><p>60V 30Ah battery. Up to 70–80 km on a single charge. About 5 hours to charge. 3-year guarantee on the scooter: battery, motor, controller, and digital display. Charger warranty is 1 year.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></span><div><h4>Lead-acid · ₹62,000</h4><p>Same MIRA, lead-acid battery. Range is 60 km on a single charge, with a 1-year guarantee.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><div><h4>Lithium-ion · {content.lithiumPrice}</h4><p>{content.lithiumDetail} About 5 hours to charge. Charger warranty is 1 year.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></span><div><h4>Lead-acid · {content.leadPrice}</h4><p>{content.leadDetail}</p></div></div>
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><h4>Colours</h4><p>Pink, orange, and brown beige.</p></div></div>
 </div>
 <div className="m-acts">
@@ -128,7 +121,7 @@ export function CollectionPage() {
 {visible("vira") ? (<>
 <article className="model dark">
 <div className="m-media">
-<div className="m-top"><span className="series">Series III · Apex Corsa</span><span className="idx">03</span></div>
+<div className="m-top"><span className="series">VIRA</span><span className="idx">03</span></div>
 <div className="m-img">
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <path className="beam" d="M318 58 L420 34 L420 86 Z" fill="#E0602A" opacity=".3"></path>
@@ -145,21 +138,14 @@ export function CollectionPage() {
 </svg>
 </div>
 <div className="m-stats">
-<div><div className="cap">Top Velocity</div><div className="num"><span className="count c125"></span><small>km/h</small></div></div>
-<div><div className="cap">0–60 km/h</div><div className="num">2.6<small>s</small></div></div>
-<div><div className="cap">Peak Torque</div><div className="num"><span className="count c86"></span><small>Nm</small></div></div>
+<div><div className="cap">Status</div><div className="num">Next</div></div>
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Raw Aerodynamic Force</div>
+<div className="kicker">Coming next</div>
 <h2>VIRA</h2>
-<p className="mtag">Uncompromising Power</p>
-<p className="desc" style={{marginTop: "18px"}}>The dark monolith. Chiseled for apex cornering with aerodynamic winglets, high-discharge cylindrical chemistry cells, and inverted dual-damper suspension borrowed directly from premier superbike engineering.</p>
-<div className="m-list">
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><div><h4>Overboost Corsa Mode</h4><p>Surges power from 9kW to 14kW peak for lightning overtake windows.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 12h13M3 7h9M3 17h6M17 8l4 4-4 4"></path></svg></span><div><h4>Aero-Strake Fairings</h4><p>Downforce induction channels engineered to anchor high-speed stability.</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"></path></svg></span><div><h4>Active Thermal Liquid Loop</h4><p>Maintains peak continuous discharge even under demanding climates.</p></div></div>
-</div>
+<p className="mtag">Photographs and specifications are next.</p>
+<p className="desc" style={{marginTop: "18px"}}>VIRA does not have confirmed numbers yet, so this page does not list a speed, torque, or price for it.</p>
 <div className="m-acts">
 <a href="/vira" className="btn btn-p btn-sm">Explore VIRA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
@@ -171,103 +157,17 @@ export function CollectionPage() {
 </div>
 
 
-<section style={{background: "var(--bg2)", padding: "80px 0"}}>
-<div className="wrap">
-<div className="card compare rv">
-<div className="compare-top">
-<div style={{maxWidth: "640px"}}>
-<span className="tag">⚡ Telemetry Matrix</span>
-<h2 className="h2">Can’t Decide Between Personalities?</h2>
-<p className="sub">Compare mechanical geometry, riding stances, luggage capacities, and bespoke battery architectures side by side with real-time range estimators.</p>
-</div>
-<div style={{textAlign: "right"}}>
-<button type="button" className="btn btn-d" onClick={() => setCmp((value) => !value)} aria-expanded={cmpOpen}>{cmpOpen ? "Hide Comparator" : "Launch Comparator"} <svg className="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
-<div className="foot-note" style={{marginTop: "10px"}}>3 Models · 18 Measurable Metrics</div>
-</div>
-</div>
-<div className="cmp-cards">
-<div className="cmp-card"><span className="foot-note">RIVA · Grand Tourer</span><h4>Up to 185 km Range</h4><p>Optimal for dual touring &amp; highway cruising</p></div>
-<div className="cmp-card"><span className="foot-note">MIRA · Star Product</span><h4>70–80 km Lithium · 60 km Lead-acid</h4><p>Pink, orange, and brown beige</p></div>
-<div className="cmp-card"><span className="foot-note">VIRA · Apex Corsa</span><h4>125 km/h Top Velocity</h4><p>Twin inverted forks &amp; launch control</p></div>
-</div>
-{cmpOpen ? (<>
-<div className="cmp-table">
-
-<div className="cmp-row">
-<b>Range</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>185 km</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "43%"}}></div></div><span>80 km</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "65%"}}></div></div><span>120 km</span></div>
-</div>
-</div>
-
-<div className="cmp-row">
-<b>Top Speed</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "68%"}}></div></div><span>85 km/h</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>125 km/h</span></div>
-</div>
-</div>
-
-<div className="cmp-row">
-<b>Weight</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "88%"}}></div></div><span>112 kg</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>128 kg</span></div>
-</div>
-</div>
-
-<div className="cmp-row">
-<b>Peak Torque</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "49%"}}></div></div><span>42 Nm</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "100%"}}></div></div><span>86 Nm</span></div>
-</div>
-</div>
-
-<div className="cmp-row">
-<b>Fast Charge 0–80%</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>45 min</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "100%"}}></div></div><span>5 hr</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "78%"}}></div></div><span>35 min</span></div>
-</div>
-</div>
-
-<div className="cmp-row">
-<b>Under-seat Storage</b>
-<div className="bars">
-<div className="bar-l"><span>RIVA</span><div className="track"><div className="fill" style={{width: "100%"}}></div></div><span>32 L</span></div>
-<div className="bar-l"><span>MIRA</span><div className="track"><div className="fill f2" style={{width: "8%"}}></div></div><span>—</span></div>
-<div className="bar-l"><span>VIRA</span><div className="track"><div className="fill f3" style={{width: "56%"}}></div></div><span>18 L</span></div>
-</div>
-</div>
-
-</div>
-</>) : null}
-</div>
-</div>
-</section>
-
 <div className="wrap" style={{paddingTop: "80px"}}>
 <div className="duo">
-<div className="card lt rv-s">
-<div className="kicker plain">Enterprise &amp; Retail Network</div>
-<h3>Looking to stock MRIGA in your territory?</h3>
-<p className="desc">Join Bharat’s most exclusive electric mobility atelier network. Selected franchise partners receive full architect-designed showroom fit-outs, technician academies, and prioritized production allocations.</p>
-<div className="acts">
-<a href="/dealers" className="btn btn-d btn-sm">Become an Authorized Dealer</a>
+<div className="card lt">
+<h3>Want to stock MRIGA?</h3>
+<p className="desc">Send a dealer application. Retailers also get a separate login.</p>
+<div className="acts"><a href="/dealers" className="btn btn-d btn-sm">Dealer application</a></div>
 </div>
-</div>
-<div className="card dk rv-s">
-<div className="kicker plain">Private Atelier Test Rides</div>
-<h3>Experience Haute Mobility in Person.</h3>
-<p className="desc">Schedule a 45-minute private sensory session with our mobility curators in Mumbai, Delhi, Bengaluru, or Jaipur.</p>
-<div className="acts"><a href="#book" className="btn btn-p btn-block">Reserve Your Session</a></div>
+<div className="card dk">
+<h3>See MIRA in Rohini.</h3>
+<p className="desc">Book a test ride, or open the showroom map on the contact page.</p>
+<div className="acts"><a href="#book" className="btn btn-p btn-sm">Book a test ride</a></div>
 </div>
 </div>
 </div>

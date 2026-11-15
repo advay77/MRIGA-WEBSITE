@@ -26,8 +26,8 @@ export const rideSchema = z.object({
 
 const constitutions = ["Private Limited", "LLP", "Partnership", "Proprietorship"] as const;
 const yearBands = ["0 – 3 Years", "3 – 7 Years", "7 – 15 Years", "15+ Years"] as const;
-const areas = ["1,200 – 2,500 sq ft (Boutique)", "2,500 – 4,000 sq ft (Flagship Atelier)", "4,000+ sq ft (Sanctuary)"] as const;
-const liquidity = ["₹75 L – ₹1.75 Cr (Boutique Tier)", "₹1.75 Cr – ₹2.50 Cr (Flagship Tier)", "₹2.50 Cr+ (Sanctuary Tier)"] as const;
+const areas = ["Under 1,200 sq ft", "1,200 - 2,500 sq ft", "2,500 sq ft or more"] as const;
+const liquidity = ["Under ₹25 lakh", "₹25 lakh – ₹75 lakh", "Above ₹75 lakh"] as const;
 const timelines = ["Under 45 Days", "45 – 60 Days", "60 – 90 Days"] as const;
 
 export const dealerSchema = z.object({

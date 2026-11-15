@@ -1,58 +1,7 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useSiteContent } from "@/components/site-content";
 import { MIRA_COLOURS } from "@/lib/mira";
-
-const POSTS = [
-  {
-    loc: "#MRIGAOutdoors · Hyderabad",
-    quote: "“I stopped rushing through the city. Riding Riva made me fall in love with the streets again.”",
-    name: "Ananya S.",
-    role: "Architect & Riva Owner",
-    body: "#EFE6CF",
-    seat: "#A8642F",
-    sunX: 300,
-    sky1: "#F6C99A",
-    sky2: "#FBEBD8",
-    sun: "#F07A43",
-    b1: "#E2B98C",
-    b2: "#D7A877",
-    b3: "#C9935F",
-    ground: "#B98A62",
-  },
-  {
-    loc: "#WildAndFree · South Mumbai",
-    quote: "“The instant torque is playful, but what turns heads is the sheer design poise. Nothing else looks like this.”",
-    name: "Karan V.",
-    role: "Creative Director & Mira Rider",
-    body: "#F2A27A",
-    seat: "#6B4A3A",
-    sunX: 90,
-    sky1: "#F6C99A",
-    sky2: "#FBEBD8",
-    sun: "#F07A43",
-    b1: "#E2B98C",
-    b2: "#D7A877",
-    b3: "#C9935F",
-    ground: "#B98A62",
-  },
-  {
-    loc: "#ElectricElegance · Jaipur",
-    quote: "“Pure tranquility. No vibration, no petrol smell, just clean, sculptural movement through dawn.”",
-    name: "Rohini M.",
-    role: "Textile Designer",
-    body: "#F5EFE2",
-    seat: "#8a5a32",
-    sunX: 210,
-    sky1: "#F6C99A",
-    sky2: "#FBEBD8",
-    sun: "#F07A43",
-    b1: "#E2B98C",
-    b2: "#D7A877",
-    b3: "#C9935F",
-    ground: "#B98A62",
-  },
-];
 
 function Arrow({ size = 16 }: { size?: number }) {
   return (
@@ -96,7 +45,7 @@ function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: 
 }
 
 export function HomePage() {
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const content = useSiteContent();
 
   return (
       <main className="page">
@@ -129,6 +78,12 @@ export function HomePage() {
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z" /><path d="M2 21c0-3 1.9-5.4 5-6" /></svg>
                   </span>
                   <span><b>Pure Expression</b>0g Emissions · Silent Cadence</span>
+                </div>
+                <div className="chip">
+                  <span className="chip-ic">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l2.2 6.4H21l-5.2 3.8 2 6.3L12 16.2 6.2 19.5l2-6.3L3 9.4h6.8z" /></svg>
+                  </span>
+                  <span><b>Sartorial Craft</b>Bespoke Tan Saddle · Monocoque</span>
                 </div>
                 <div className="chip">
                   <span className="chip-ic">
@@ -173,9 +128,9 @@ export function HomePage() {
           <div className="wrap">
             <div className="sec-head rv">
               <div>
-                <div className="kicker">The Haute Collection</div>
-                <h2 className="h2">Three Personalities. <em>One Electric Soul.</em></h2>
-                <p className="sub">Architected for varied pulses of modern urban expression. Hand-sculpted fairings, authentic vegan saddlework, and responsive instantaneous torque.</p>
+                <div className="kicker">The scooters</div>
+                <h2 className="h2">RIVA, MIRA, and VIRA.</h2>
+                <p className="sub">MIRA is ready to see. RIVA and VIRA stay on the site until their photographs and specifications arrive.</p>
               </div>
               <a href="/collection" className="tlink">Compare All Models <Arrow size={14} /></a>
             </div>
@@ -183,9 +138,9 @@ export function HomePage() {
               <article className="card lift big rv-s">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
-                    <span className="tag">Grand Tourer</span>
+                    <span className="tag">Coming next</span>
                     <h3 className="mname">RIVA</h3>
-                    <p className="mtag">Pure Grace in Motion</p>
+                    <p className="mtag">Photographs and specifications are next.</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div className="foot-note" style={{ marginBottom: 8 }}>Aesthetic</div>
@@ -201,15 +156,9 @@ export function HomePage() {
                   </svg>
                   <span className="ptag">Featured Spec: Crema & Cuoio</span>
                 </div>
-                <p className="desc">Sculpted for refined inter-city promenades. Generous plush dual saddle, soft-glow circular signature optic, and ultra-smooth cruise dynamics.</p>
-                <div className="pills">
-                  <span className="pill">Range: <b>ARAI Verified</b></span>
-                  <span className="pill">Hypercharge: <b>Fast-Hub Ready</b></span>
-                  <span className="pill">Top Speed: <b>Tourer Stance</b></span>
-                </div>
+                <p className="desc">RIVA will get its own photographs and specification sheet. Nothing is published here until those details are confirmed.</p>
                 <div className="card-foot">
                   <a href="/riva" className="btn btn-d btn-sm">Explore RIVA <Arrow size={14} /></a>
-                  <span className="foot-note">Limited Debut Allocation</span>
                 </div>
               </article>
 
@@ -221,8 +170,8 @@ export function HomePage() {
                     <p className="mtag">Smart Mobility. Sustainable Future.</p>
                     <p className="desc">60V 30Ah lithium-ion, 70–80 km on a charge, about 5 hours to charge. Lead-acid is 60 km. Pink, orange, and brown beige.</p>
                     <div className="pills" style={{ marginTop: 14 }}>
-                      <span className="pill">Lithium <b>₹75,000 · 3 yr</b></span>
-                      <span className="pill">Lead-acid <b>₹62,000 · 1 yr</b></span>
+                      <span className="pill">Lithium <b>{content.lithiumPrice} · 3 yr</b></span>
+                      <span className="pill">Lead-acid <b>{content.leadPrice} Â· 1 yr</b></span>
                     </div>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#E7A0B8" }} /><i style={{ background: "#E36A2C" }} /><i style={{ background: "#C4A484" }} /></div>
                     <a href="/mira" className="explore">
@@ -237,10 +186,10 @@ export function HomePage() {
 
                 <article className="card lift mini rv-s">
                   <div>
-                    <span className="tag">Apex Corsa</span>
+                    <span className="tag">Coming next</span>
                     <h3 className="mname">VIRA</h3>
-                    <p className="mtag">Uncompromising Power</p>
-                    <p className="desc">The dark monolith. Matte charcoal silhouette, aerodynamic strakes, forged lightweight alloy accents, and immediate full-torque launches.</p>
+                    <p className="mtag">Photographs and specifications are next.</p>
+                    <p className="desc">VIRA will get its own page details when the photographs and numbers are ready.</p>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>
                     <a href="/vira" className="explore">
                       Explore VIRA <Arrow size={14} />
@@ -291,191 +240,14 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="sec mani" id="manifesto">
-          <div className="wrap mani-grid">
-            <div className="rv">
-              <div className="kicker">Haute Mobility Manifesto</div>
-              <p className="quote">“More than a ride. It’s an intimate expression of how we live, feel, and flow.”</p>
-              <p className="sub">Most electric vehicles are conceived inside sterile tech labs. MRIGA was conceived beneath the historic palatial colonnades of Indian architecture and the breathless tempo of our contemporary metropolitan centers.</p>
-              <div className="feats">
-                <div className="feat">
-                  <span className="feat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3-3 3h-2a2 2 0 0 0-1 3.7c.6.5.4 1.6-.4 2-1 .2-2.3.3-3.6.3z" /><circle cx="7.5" cy="10.5" r="1" /><circle cx="12" cy="7" r="1" /><circle cx="16.5" cy="10.5" r="1" /></svg></span>
-                  <div><h4>Sculpted for the Streets</h4><p>Smooth, organic curves that deflect city clutter with effortless grace.</p></div>
-                </div>
-                <div className="feat">
-                  <span className="feat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4zM22 9l-6 6M16 9l6 6" /></svg></span>
-                  <div><h4>Silent Kinetic Luxury</h4><p>Engineered acoustic balance allowing you to glide in quiet mindfulness.</p></div>
-                </div>
-                <div className="feat">
-                  <span className="feat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2" /><path d="M12 7v6l-4 8M12 13l4 8M6 11h12" /></svg></span>
-                  <div><h4>Crafted Ergonomics</h4><p>Saddle geometry tailored for upright posture and untroubled daily journeys.</p></div>
-                </div>
-              </div>
-            </div>
-            <div className="collage rv-s">
-              <div className="tile t1" aria-hidden="true">
-                <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
-                  <path d="M0 260 C60 200 240 200 300 250 L300 400 L0 400 Z" fill="#A8642F" />
-                  <path d="M0 270 C70 222 230 222 300 262" stroke="#c8864c" strokeWidth="3" fill="none" strokeDasharray="6 8" />
-                  <path d="M30 300 C90 270 210 270 270 300" stroke="#8a4f22" strokeWidth="2" fill="none" strokeDasharray="5 7" />
-                  <ellipse cx="150" cy="150" rx="70" ry="70" fill="var(--surface)" opacity=".6" />
-                  <text x="150" y="156" textAnchor="middle" fontFamily="Georgia, serif" fontStyle="italic" fontSize="20" fill="#7a5a3a">Mriga</text>
-                </svg>
-              </div>
-              <div className="tile t2">
-                <div className="big-n"><span className="count c18" /></div>
-                <h4>Metropolitan Hubs</h4>
-                <p>Bespoke delivery and white-glove atelier experience across India.</p>
-              </div>
-              <div className="tile t3" aria-hidden="true">
-                <svg viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
-                  <path d="M20 400 V160 A60 60 0 0 1 140 160 V400 Z" fill="var(--stone)" opacity=".8" />
-                  <path d="M160 400 V120 A70 70 0 0 1 300 120 V400 Z" fill="var(--stone)" opacity=".6" />
-                  <path d="M40 400 V170 A40 40 0 0 1 120 170 V400" stroke="var(--ink)" strokeOpacity=".18" strokeWidth="2" fill="none" />
-                  <g transform="translate(40 250) scale(.55)">
-                    <circle cx="96" cy="236" r="40" fill="#1d1a1a" />
-                    <circle cx="318" cy="236" r="40" fill="#1d1a1a" />
-                    <path d="M50 206 C42 150 86 116 150 120 L208 126 C222 164 232 186 268 192 L282 198 C266 222 140 230 56 216 Z" fill="#EFE6CF" />
-                    <path d="M258 198 C254 148 270 96 288 66 L306 70 C296 110 290 160 306 206 Z" fill="#EFE6CF" />
-                    <path d="M92 118 C110 96 190 96 212 110 C212 126 100 130 92 118 Z" fill="#A8642F" />
-                  </g>
-                </svg>
-              </div>
-              <div className="tile t4">
-                <span className="tiny-k">Acoustic Purity</span>
-                <p className="q">“The silence is not an absence. It is an elevated presence.”</p>
-                <small>MRIGA Sound Labs · Bengaluru</small>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="sec" id="why">
-          <div className="wrap">
-            <div className="rv" style={{ textAlign: "center", marginBottom: 56 }}>
-              <div className="kicker center">Engineering Philosophy</div>
-              <h2 className="h2">Why Electric, Why MRIGA?</h2>
-              <p className="sub" style={{ margin: "0 auto" }}>Built around the rhythms of Indian urban life — engineered to liberate you from gas stations, sterile plastics, and noisy commutes.</p>
-            </div>
-            <div className="why">
-              <article className="wcard rv-s">
-                <div className="wic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="7" width="16" height="10" rx="2" /><path d="M22 11v2M10 9l-2 3h4l-2 3" /></svg></div>
-                <div className="wnum">01 · Convenience</div>
-                <h3>Everyday Range & Plug Anywhere</h3>
-                <p>Convenient home wall plug support and high-speed urban hub compatibility. Wake up everyday with a full reservoir of silent potential.</p>
-                <span className="wtag">Smart Battery Guard™</span>
-              </article>
-              <article className="wcard rv-s">
-                <div className="wic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" /></svg></div>
-                <div className="wnum">02 · Detail</div>
-                <h3>Haute Automotive Detailing</h3>
-                <p>Hand-stitched vegan saddle leather, dual-coat automotive pearlescent lacquer, and custom brushed metal hardware designed to age with dignity.</p>
-                <span className="wtag">Bespoke Saddlework</span>
-              </article>
-              <article className="wcard rv-s">
-                <div className="wic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M2 9a14 14 0 0 1 20 0" /><circle cx="12" cy="19.5" r="1" /></svg></div>
-                <div className="wnum">03 · OS Intelligence</div>
-                <h3>Connected MRIGA Companion</h3>
-                <p>Real-time geofencing, digital proximity key, remote temperature pre-conditioning, and seamless over-the-air ride profile refinements.</p>
-                <span className="wtag">MRIGA Connect App</span>
-              </article>
-              <article className="wcard rv-s">
-                <div className="wic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z" /><path d="M2 21c0-3 1.9-5.4 5-6" /></svg></div>
-                <div className="wnum">04 · Heritage</div>
-                <h3>Zero Emission Wild Spirit</h3>
-                <p>Proudly conceived and engineered in India. Sustainable materials coupled with circular lifecycle recycling protocols for battery packs.</p>
-                <span className="wtag">Circular Lifecycle</span>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className="sec" style={{ paddingTop: 0 }}>
-          <div className="wrap">
-            <div className="sec-head rv">
-              <div>
-                <div className="kicker">Community & Culture</div>
-                <h2 className="h2">The World Looks Different On a MRIGA</h2>
-                <p className="sub">Moments shared by owners, riders, and tastemakers transforming their daily journey into personal cinema.</p>
-              </div>
-              <a href="#top" className="tlink">
-                Follow @mrigamobility
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-              </a>
-            </div>
-            <div className="comm">
-              {POSTS.map((post, index) => (
-                <article className="card lift rv-s" key={post.name}>
-                  <div className="scene" aria-hidden="true">
-                    <svg viewBox="0 0 400 330" preserveAspectRatio="xMidYMid slice">
-                      <defs>
-                        <linearGradient id={`sky${index}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0" stopColor={post.sky1} />
-                          <stop offset="1" stopColor={post.sky2} />
-                        </linearGradient>
-                      </defs>
-                      <rect width="400" height="330" fill={`url(#sky${index})`} />
-                      <circle cx={post.sunX} cy="90" r="46" fill={post.sun} opacity=".8" />
-                      <path d="M0 330 V150 h40 v-30 h30 v30 h40 V110 A40 40 0 0 1 190 110 V330 Z" fill={post.b1} />
-                      <path d="M200 330 V170 A50 50 0 0 1 300 170 V130 h40 v-20 h20 v20 h40 V330 Z" fill={post.b2} />
-                      <path d="M120 330 V200 A30 30 0 0 1 180 200 V330 Z" fill={post.b3} />
-                      <rect y="292" width="400" height="38" fill={post.ground} />
-                      <g transform="translate(110 200) scale(.46)">
-                        <circle cx="96" cy="236" r="40" fill="#1d1a1a" />
-                        <circle cx="318" cy="236" r="40" fill="#1d1a1a" />
-                        <path d="M50 206 C42 150 86 116 150 120 L208 126 C222 164 232 186 268 192 L282 198 C266 222 140 230 56 216 Z" fill={post.body} />
-                        <path d="M258 198 C254 148 270 96 288 66 L306 70 C296 110 290 160 306 206 Z" fill={post.body} />
-                        <path d="M92 118 C110 96 190 96 212 110 C212 126 100 130 92 118 Z" fill={post.seat} />
-                        <path d="M292 68 L284 36M256 36 L318 32" stroke="#3a3330" strokeWidth="6" strokeLinecap="round" />
-                      </g>
-                    </svg>
-                    <span className="loc">{post.loc}</span>
-                  </div>
-                  <div className="cbody">
-                    <p className="cq-t">{post.quote}</p>
-                    <div className="cfoot">
-                      <span className="who"><b>{post.name}</b> · {post.role}</span>
-                      <button
-                        className={liked[index] ? "heart liked" : "heart"}
-                        onClick={() => setLiked((current) => ({ ...current, [index]: !current[index] }))}
-                        aria-label="Like this story"
-                        aria-pressed={liked[index] ? true : false}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="cta" id="book">
           <div className="wrap cta-in rv">
-            <span className="eyebrow"><span className="dot" />Priority Reservation Gateway</span>
-            <h2 className="up">Ready to Ride Different?</h2>
-            <p>Your next favourite ride is waiting. Schedule an exclusive doorstep test ride or visit a flagship MRIGA Experience Atelier in your city.</p>
+            <span className="eyebrow"><span className="dot" />Rohini showroom</span>
+            <h2 className="up">Book a test ride.</h2>
+            <p>{content.address} Call {content.phone}.</p>
             <div className="cta-row">
-              <a href="#book" className="btn btn-p">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="6" cy="17" r="3" /><circle cx="18" cy="17" r="3" /><path d="M6 17h6l3-7h3M9 7h3" />
-                </svg>
-                Book Your VIP Test Ride
-              </a>
-              <a href="#manifesto" className="btn btn-o">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" />
-                </svg>
-                Locate Nearest Atelier
-              </a>
-            </div>
-            <div className="assure">
-              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg> Doorstep Delivery Available</span>
-              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg> Complimentary Concierge Briefing</span>
-              <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg> Flexible Ownership Plans</span>
+              <a href="#book" className="btn btn-p">Book a test ride</a>
+              <a href="/contact" className="btn btn-o">Showroom location</a>
             </div>
           </div>
         </section>

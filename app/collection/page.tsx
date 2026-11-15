@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SiteFrame } from "@/components/site-frame";
 import { CollectionPage } from "@/components/collection-page";
 
-export const metadata: Metadata = { title: "MRIGA — The Haute Electric Collection" };
+export const metadata: Metadata = { title: "MRIGA — Explore" };
 
 export default function Page() {
   return (

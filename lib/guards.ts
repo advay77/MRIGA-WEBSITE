@@ -23,18 +23,25 @@ export async function sameOrigin() {
 }
 
 export async function rateLimit(action: string, limit: number, windowMs: number) {
-  const key = `${await clientIp()}:${action}`;
+  const key = `${await clientIp()}:${action}`.slice(0, 120);
   const now = new Date();
-  const row = await prisma.rateLimit.findUnique({ where: { key } });
-  if (!row || row.resetAt < now) {
-    await prisma.rateLimit.upsert({
-      where: { key },
-      create: { key, count: 1, resetAt: new Date(now.getTime() + windowMs) },
-      update: { count: 1, resetAt: new Date(now.getTime() + windowMs) },
-    });
-    return true;
+  if (Math.random() < 0.02) {
+    prisma.rateLimit.deleteMany({ where: { resetAt: { lt: now } } }).catch(() => undefined);
   }
-  if (row.count >= limit) return false;
-  await prisma.rateLimit.update({ where: { key }, data: { count: { increment: 1 } } });
-  return true;
+  return prisma.$transaction(async (tx) => {
+    const row = await tx.rateLimit.findUnique({ where: { key } });
+    if (!row || row.resetAt < now) {
+      await tx.rateLimit.upsert({
+        where: { key },
+        create: { key, count: 1, resetAt: new Date(now.getTime() + windowMs) },
+        update: { count: 1, resetAt: new Date(now.getTime() + windowMs) },
+      });
+      return true;
+    }
+    const updated = await tx.rateLimit.updateMany({
+      where: { key, count: { lt: limit } },
+      data: { count: { increment: 1 } },
+    });
+    return updated.count === 1;
+  });
 }

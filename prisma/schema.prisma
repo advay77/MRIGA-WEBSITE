@@ -20,6 +20,9 @@ model User {
   role         String    @default("MEMBER")
   createdAt    DateTime  @default(now())
   sessions     Session[]
+  views        PageView[]
+
+  @@index([role])
 }
 
 model Session {
@@ -31,6 +34,8 @@ model Session {
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([expiresAt])
+  @@index([createdAt])
 }
 
 model TestRide {
@@ -79,4 +84,35 @@ model RateLimit {
   key     String   @id
   count   Int
   resetAt DateTime
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  kind      String   @default("view")
+  seconds   Int      @default(0)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@index([userId])
+  @@index([kind, createdAt])
+  @@index([kind, path])
+  @@index([userId, kind])
+}
+
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model MediaAsset {
+  slot      String   @id
+  filename  String
+  mime      String
+  bytes     Bytes
+  updatedAt DateTime @updatedAt
 }
