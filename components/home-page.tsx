@@ -132,12 +132,6 @@ export function HomePage() {
                 </div>
                 <div className="chip">
                   <span className="chip-ic">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 15.6 7 18.2l1-5.5-4-3.9 5.5-.8z" /></svg>
-                  </span>
-                  <span><b>Sartorial Craft</b>Bespoke Tan Saddle · Monocoque</span>
-                </div>
-                <div className="chip">
-                  <span className="chip-ic">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
                   </span>
                   <span><b>Deliveries Opening</b>Across 18 Metropolitan Centers</span>

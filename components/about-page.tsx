@@ -1,7 +1,7 @@
 const FOUNDERS = [
-  { name: "Pankaj Jain", label: "Founder" },
-  { name: "Ashish Jain", label: "Founder" },
-  { name: "Jiten Jain", label: "Founder" },
+  { name: "Pankaj Jain", label: "Founder", photo: "/founders/pankaj.jpg" },
+  { name: "Ashish Jain", label: "Founder", photo: "/logo.png" },
+  { name: "Jiten Jain", label: "Founder", photo: "/logo.png" },
 ];
 
 export function AboutPage() {
@@ -127,7 +127,7 @@ export function AboutPage() {
 <div className="founder-row">
 {FOUNDERS.map((person) => (
   <article key={person.name} className="founder-card">
-    <div className="founder-photo"><img src="/logo.png" alt="" /></div>
+    <div className={person.photo.endsWith(".jpg") ? "founder-photo portrait" : "founder-photo"}><img src={person.photo} alt={person.name} /></div>
     <span className="founder-label">{person.label}</span>
     <h3>{person.name}</h3>
   </article>

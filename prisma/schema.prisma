@@ -15,7 +15,8 @@ model User {
   email        String?   @unique
   phone        String?   @unique
   name         String
-  passwordHash String
+  passwordHash String?
+  googleId     String?   @unique
   role         String    @default("MEMBER")
   createdAt    DateTime  @default(now())
   sessions     Session[]
