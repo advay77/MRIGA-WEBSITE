@@ -1,9 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
+import { Turnstile } from "@/components/turnstile";
+import { WhatsAppButton, WhatsAppIcon } from "@/components/whatsapp-button";
+import { whatsappLink } from "@/lib/whatsapp";
 
 type Model = "RIVA" | "MIRA" | "VIRA";
 
@@ -26,14 +30,14 @@ function activeLabel(pathname: string) {
 
 function Logo() {
   return (
-    <a href="/" className="logo" aria-label="MRIGA home">
+    <Link href="/" className="logo" aria-label="MRIGA home">
       <img src="/media/logo" alt="" className="logo-mark" />
       MRIGA
-    </a>
+    </Link>
   );
 }
 
-export function SiteShell({ children, user = null }: { children: React.ReactNode; user?: { name: string; role: string } | null }) {
+export function SiteShell({ children }: { children: React.ReactNode }) {
   const content = useSiteContent();
   const pathname = usePathname();
   const active = activeLabel(pathname);
@@ -44,6 +48,9 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
+  const [rideChat, setRideChat] = useState("");
+  const floatChat = whatsappLink(content.whatsapp, "Hi MRIGA, I'd like to know more about your scooters.");
+  const [check, setCheck] = useState(0);
 
   const openBook = useCallback((next?: Model) => {
     if (next) setModel(next);
@@ -83,7 +90,16 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
         keepalive: true,
       });
     };
-    post("view", path, 0);
+    // One view per page per browser tab session, so refreshes do not inflate the admin counts.
+    let seen = false;
+    try {
+      const key = `mriga-view:${path}`;
+      seen = sessionStorage.getItem(key) === "1";
+      sessionStorage.setItem(key, "1");
+    } catch {
+      // Storage blocked (private mode): count the view.
+    }
+    if (!seen) post("view", path, 0);
     const flush = () => {
       const total = Math.round((performance.now() - started) / 1000);
       const delta = total - sent;
@@ -129,7 +145,9 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
   }, [openBook]);
 
   useEffect(() => {
-    if (window.location.hash === "#book") openBook();
+    if (window.location.hash !== "#book") return;
+    const timer = window.setTimeout(() => openBook(), 0);
+    return () => window.clearTimeout(timer);
   }, [openBook]);
 
   async function submitRide(event: FormEvent<HTMLFormElement>) {
@@ -140,10 +158,13 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
     setErr("");
     const result = await reserveTestRide(data);
     setBusy(false);
+    setCheck((value) => value + 1);
     if (!result.ok) {
       setErr(result.error);
       return;
     }
+    const date = String(data.get("date") || "");
+    setRideChat(`Hi MRIGA, I just booked a ${model} test ride. Name: ${String(data.get("name") || "")}. City: ${String(data.get("city") || "")}.${date ? ` Preferred date: ${date}.` : ""}`);
     setDone(true);
     setMsg(result.message);
   }
@@ -155,14 +176,14 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
           <Logo />
           <nav className="links" aria-label="Primary">
             {NAV.map((item) => (
-              <a key={item.label} href={item.href} className={item.label === active ? "on" : undefined} onClick={() => setMenuOpen(false)}>
+              <Link key={item.label} href={item.href} className={item.label === active ? "on" : undefined} onClick={() => setMenuOpen(false)}>
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="nav-r">
             <a className="nav-phone" href="#book">Book a test ride</a>
-            <a href="/login" className="btn btn-d btn-sm">Login</a>
+            <Link href="/login" className="btn btn-d btn-sm">Login</Link>
             <button className="icon-btn burger" onClick={() => setMenuOpen((open) => !open)} aria-label="Open menu" aria-expanded={menuOpen}>
               {menuOpen ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -178,12 +199,12 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
         </div>
         <div className={menuOpen ? "drawer open" : "drawer"}>
           {NAV.map((item) => (
-            <a key={item.label} href={item.href} className={item.label === active ? "on" : undefined} onClick={() => setMenuOpen(false)}>
+            <Link key={item.label} href={item.href} className={item.label === active ? "on" : undefined} onClick={() => setMenuOpen(false)}>
               {item.label}
-            </a>
+            </Link>
           ))}
           <a href="#book" onClick={() => setMenuOpen(false)}>Book a test ride</a>
-          <a href="/login" onClick={() => setMenuOpen(false)}>Login</a>
+          <Link href="/login" onClick={() => setMenuOpen(false)}>Login</Link>
         </div>
       </header>
       {children}
@@ -209,20 +230,20 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
             <div>
               <h5>Company</h5>
               <ul>
-                <li><a href="/about">About Us</a></li>
-                <li><a href="/mira">MIRA</a></li>
-                <li><a href="/riva">RIVA</a></li>
-                <li><a href="/vira">VIRA</a></li>
-                <li><a href="/contact">Contact</a></li>
-                <li><a href="/dealers">Become a Dealer</a></li>
+                <li><Link href="/about">About Us</Link></li>
+                <li><Link href="/mira">MIRA</Link></li>
+                <li><Link href="/riva">RIVA</Link></li>
+                <li><Link href="/vira">VIRA</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+                <li><Link href="/dealers">Become a Dealer</Link></li>
                 <li><a href="#book">Book Test Ride</a></li>
               </ul>
             </div>
             <div>
               <h5>Owners</h5>
               <ul>
-                <li><a href="/login">Customer login</a></li>
-                <li><a href="/retailer">Retailer login</a></li>
+                <li><Link href="/login">Customer login</Link></li>
+                <li><Link href="/retailer">Retailer login</Link></li>
               </ul>
             </div>
           </div>
@@ -231,6 +252,12 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
           </div>
         </div>
       </footer>
+      {floatChat && !book ? (
+        <a className="wa-float" href={floatChat} target="_blank" rel="noopener" aria-label="Chat with MRIGA on WhatsApp">
+          <WhatsAppIcon size={28} />
+          <span>Chat with us</span>
+        </a>
+      ) : null}
       {book ? (
         <div className="modal" onClick={() => setBook(false)}>
           <div className="sheet" role="dialog" aria-modal="true" aria-label="Book a test ride" onClick={(event) => event.stopPropagation()}>
@@ -243,7 +270,10 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
                 </div>
                 <h3>Ride Reserved</h3>
                 <p className="sub" style={{ fontSize: 14 }}>{msg}</p>
-                <button className="btn btn-d" onClick={() => setBook(false)}>Done</button>
+                <div className="cta-row" style={{ justifyContent: "center" }}>
+                  <WhatsAppButton message={rideChat}>Continue on WhatsApp</WhatsAppButton>
+                  <button className="btn btn-d" onClick={() => setBook(false)}>Done</button>
+                </div>
               </div>
             ) : (
               <>
@@ -295,6 +325,7 @@ export function SiteShell({ children, user = null }: { children: React.ReactNode
                       <input id="bk-date" name="date" type="date" className="plain-in" />
                     </div>
                   </div>
+                  <Turnstile key={check} action="test_ride" />
                   {err ? <p className="err" role="alert">{err}</p> : null}
                   <button type="submit" className="btn btn-p btn-block" disabled={busy}>
                     {busy ? <span className="spinner" /> : null}

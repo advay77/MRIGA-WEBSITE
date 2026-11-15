@@ -1,4 +1,3 @@
-export const INSTAGRAM = "https://www.instagram.com/ridemriga/";
 
 export const MIRA_COLOURS = [
   { id: "pink", name: "Pink", swatch: "#E7A0B8", wash: "#F8E8EF", shots: ["/media/mira-pink", "/media/mira-pink-2", "/media/mira-pink-3"] },

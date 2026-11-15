@@ -5,9 +5,22 @@ export const MODELS = ["RIVA", "MIRA", "VIRA"] as const;
 
 const controlChars = /[\u0000-\u001F\u007F]/;
 
+// One canonical form per number, so "+91 98765 43210", "09876543210" and "9876543210" match.
+export function normalizePhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 12 && digits.startsWith("91")) return digits.slice(2);
+  if (digits.length === 11 && digits.startsWith("0")) return digits.slice(1);
+  return digits;
+}
+
+const phoneField = (message: string) =>
+  z.string().trim().max(24).transform(normalizePhone).refine((value) => value.length >= 10 && value.length <= 15, message);
+const plainText = (min: number, max: number, message: string) =>
+  z.string().trim().min(min, message).max(max).refine((value) => !controlChars.test(value), message);
+
 export const rideSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name.").max(80).refine((value) => !controlChars.test(value), "Please enter your name."),
-  phone: z.string().trim().transform((value) => value.replace(/\D/g, "")).refine((value) => value.length >= 10 && value.length <= 15, "Please enter a valid 10-digit mobile number."),
+  name: plainText(2, 80, "Please enter your name."),
+  phone: phoneField("Please enter a valid 10-digit mobile number."),
   city: z.enum(CITIES),
   model: z.enum(MODELS),
   date: z.string().trim().max(10).refine((value) => {
@@ -24,32 +37,12 @@ export const rideSchema = z.object({
   website: z.string().max(200).optional().or(z.literal("")),
 });
 
-const constitutions = ["Private Limited", "LLP", "Partnership", "Proprietorship"] as const;
-const yearBands = ["0 – 3 Years", "3 – 7 Years", "7 – 15 Years", "15+ Years"] as const;
-const areas = ["Under 1,200 sq ft", "1,200 - 2,500 sq ft", "2,500 sq ft or more"] as const;
-const liquidity = ["Under ₹25 lakh", "₹25 lakh – ₹75 lakh", "Above ₹75 lakh"] as const;
-const timelines = ["Under 45 Days", "45 – 60 Days", "60 – 90 Days"] as const;
-
+// Dealer enquiry: just enough for the team to call back.
 export const dealerSchema = z.object({
-  name: z.string().trim().min(2, "Please enter the signatory name.").max(80).refine((value) => !controlChars.test(value), "Please enter the signatory name."),
-  mobile: z.string().trim().transform((value) => value.replace(/\D/g, "")).refine((value) => value.length >= 10 && value.length <= 15, "Please enter a valid mobile number."),
-  email: z.string().trim().email("Enter a valid business email.").max(120).transform((value) => value.toLowerCase()),
-  title: z.string().trim().min(2, "Enter the official title.").max(80),
-  entity: z.string().trim().min(2, "Enter the registered entity name.").max(120),
-  constitution: z.enum(constitutions),
-  years: z.enum(yearBands),
-  gst: z.string().trim().toUpperCase().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/, "Enter a valid 15-character GSTIN."),
-  city: z.string().trim().min(2, "Enter the target city.").max(120),
-  area: z.enum(areas),
-  frontage: z.enum(["yes", "pending"]),
-  brands: z.string().trim().max(160).optional().or(z.literal("")),
-  models: z.string().refine((value) => {
-    const keys = value.split(",").filter(Boolean);
-    return keys.length > 0 && keys.every((key) => key === "mira" || key === "riva" || key === "vira");
-  }, "Please select at least one model for your showroom."),
-  liquidity: z.enum(liquidity),
-  timeline: z.enum(timelines),
-  certify: z.string().refine((value) => value === "on", "Please certify that you are an authorized signatory."),
+  name: plainText(2, 80, "Please enter your name."),
+  phone: phoneField("Please enter a valid 10-digit mobile number."),
+  location: plainText(2, 120, "Please enter your city or area."),
+  model: z.enum(MODELS, { errorMap: () => ({ message: "Please choose a model." }) }),
   website: z.string().max(200).optional().or(z.literal("")),
 });
 
@@ -59,18 +52,29 @@ export const passwordSchema = z
   .max(128, "That passkey is too long.")
   .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), "Your passkey must be at least 10 characters and include a letter and a number.");
 
-export const accountSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your full name.").max(80).optional().or(z.literal("")),
-  id: z.string().trim().max(120).refine((value) => {
-    if (value.includes("@")) return z.string().email().safeParse(value).success;
-    const digits = value.replace(/\D/g, "");
-    return digits.length >= 10 && digits.length <= 15;
-  }, "Enter a valid email or 10-digit mobile number."),
+const accountId = z.string().trim().max(120).refine((value) => {
+  if (value.includes("@")) return z.string().email().safeParse(value).success;
+  const digits = normalizePhone(value);
+  return digits.length >= 10 && digits.length <= 15;
+}, "Enter a valid email or 10-digit mobile number.");
+const optional = (max: number) => z.string().max(max).optional().or(z.literal(""));
+
+export const signUpSchema = z.object({
+  name: plainText(2, 80, "Please enter your full name."),
+  id: accountId,
   pw: passwordSchema,
-  terms: z.string().optional().or(z.literal("")),
-  remember: z.string().optional().or(z.literal("")),
-  website: z.string().max(200).optional().or(z.literal("")),
-  next: z.string().max(200).optional().or(z.literal("")),
+  terms: z.literal("on", { errorMap: () => ({ message: "Please accept the terms to continue." }) }),
+  website: optional(200),
+});
+
+// Sign-in checks shape only. Strength rules belong to sign-up, so an older or
+// admin-set password is never locked out by a later policy change.
+export const signInSchema = z.object({
+  id: accountId,
+  pw: z.string().min(1).max(128),
+  remember: optional(10),
+  website: optional(200),
+  next: optional(200),
 });
 
 export function safeNext(value: string | null | undefined) {

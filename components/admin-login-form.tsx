@@ -3,11 +3,13 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/actions";
+import { Turnstile } from "@/components/turnstile";
 
 export function AdminLoginForm() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [check, setCheck] = useState(0);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,6 +19,7 @@ export function AdminLoginForm() {
     setBusy(true);
     setErr("");
     const result = await signIn(data);
+    setCheck((value) => value + 1);
     setBusy(false);
     if (!result.ok) {
       setErr(result.error);
@@ -37,6 +40,7 @@ export function AdminLoginForm() {
         <label htmlFor="admin-pw">Password</label>
         <input id="admin-pw" name="pw" type="password" className="plain-in" autoComplete="current-password" required />
       </div>
+      <Turnstile key={check} action="admin_login" />
       {err ? <p className="err" role="alert">{err}</p> : null}
       <button className="btn btn-d btn-block" type="submit" disabled={busy}>{busy ? "Checking…" : "Sign in"}</button>
     </form>

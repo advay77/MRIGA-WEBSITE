@@ -2,27 +2,52 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Local development uses SQLite so the site runs without an external account.
-// Production should use Neon Postgres: set provider to "postgresql",
-// point DATABASE_URL at the Neon connection string, then run `npx prisma db push`.
+// Supabase Postgres.
+// DATABASE_URL: transaction pooler (port 6543, ?pgbouncer=true) — used by the app at runtime.
+// DIRECT_URL:   session pooler (port 5432) — used only by `prisma migrate`.
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String?   @unique
-  phone        String?   @unique
+  id           String              @id @default(cuid())
+  email        String?             @unique
+  phone        String?             @unique
   name         String
   passwordHash String?
-  googleId     String?   @unique
-  role         String    @default("MEMBER")
-  createdAt    DateTime  @default(now())
+  googleId     String?             @unique
+  role         String              @default("MEMBER")
+  createdAt    DateTime            @default(now())
+  lastLoginAt  DateTime?
   sessions     Session[]
   views        PageView[]
+  logins       LoginEvent[]
+  rides        TestRide[]
+  applications DealerApplication[]
 
-  @@index([role])
+  @@index([role, createdAt])
+}
+
+// Permanent sign-in history. Sessions are deleted on sign-out; this is not.
+// method: "password" | "google" | "signup". success=false rows are failed attempts.
+model LoginEvent {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  role       String
+  method     String
+  success    Boolean
+  identifier String
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([role, createdAt])
+  @@index([userId, createdAt])
+  @@index([success, createdAt])
 }
 
 model Session {
@@ -39,51 +64,51 @@ model Session {
 }
 
 model TestRide {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   phone     String
   city      String
   model     String
   date      String?
-  createdAt DateTime @default(now())
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime  @default(now())
+  // Desk follow-up. status: NEW | CONTACTED | COMPLETED | CANCELLED (lib/leads.ts).
+  status    String    @default("NEW")
+  adminNote String?
+  statusAt  DateTime?
+
+  @@index([createdAt])
+  @@index([userId])
+  @@index([status, createdAt])
 }
 
 model DealerApplication {
-  id           String       @id @default(cuid())
-  reference    String       @unique
-  name         String
-  mobile       String
-  email        String
-  title        String
-  entity       String
-  constitution String
-  years        String
-  gst          String
-  city         String
-  area         String
-  frontage     String
-  brands       String
-  models       String
-  liquidity    String
-  timeline     String
-  createdAt    DateTime     @default(now())
-  files        DealerFile[]
-}
+  id        String    @id @default(cuid())
+  reference String    @unique
+  name      String
+  phone     String
+  location  String
+  model     String
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime  @default(now())
+  // Desk follow-up. status: NEW | CONTACTED | APPROVED | REJECTED (lib/leads.ts).
+  status    String    @default("NEW")
+  adminNote String?
+  statusAt  DateTime?
 
-model DealerFile {
-  id            String             @id @default(cuid())
-  applicationId String
-  application   DealerApplication  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  filename      String
-  mime          String
-  size          Int
-  bytes         Bytes
+  @@index([createdAt])
+  @@index([userId])
+  @@index([status, createdAt])
 }
 
 model RateLimit {
   key     String   @id
   count   Int
   resetAt DateTime
+
+  @@index([resetAt])
 }
 
 model PageView {

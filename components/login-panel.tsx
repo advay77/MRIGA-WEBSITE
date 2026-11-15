@@ -3,10 +3,12 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, signUp, signUpRetailer } from "@/lib/actions";
+import { Turnstile } from "@/components/turnstile";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 type LoungeUser = { name: string; role: string };
 
-export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "user" }: { user: LoungeUser | null; nextPath: string; startTab: "in" | "up"; notice?: string; audience?: "user" | "retailer" }) {
+export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "user", google = false }: { user: LoungeUser | null; nextPath: string; startTab: "in" | "up"; notice?: string; audience?: "user" | "retailer"; google?: boolean }) {
   const router = useRouter();
   const retailer = audience === "retailer";
   const [tab, setTab] = useState<"in" | "up">(startTab);
@@ -16,6 +18,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
   const [done, setDone] = useState(Boolean(user));
   const [err, setErr] = useState("");
   const [info, setInfo] = useState(notice);
+  const [check, setCheck] = useState(0);
   const [welcome, setWelcome] = useState(user ? `Welcome, ${user.name.split(" ")[0]}` : "");
   const [href, setHref] = useState(retailer ? "/retailer" : "/collection");
   const up = tab === "up";
@@ -36,6 +39,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
     setInfo("");
     data.set("desk", retailer ? "retailer" : "member");
     const result = up ? await (retailer ? signUpRetailer(data) : signUp(data)) : await signIn(data);
+    setCheck((value) => value + 1);
     setBusy(false);
     if (!result.ok) {
       setErr(result.error);
@@ -112,6 +116,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                   <p className="sub" style={{ fontSize: 14 }}>Your telemetry, saddle preferences and scheduled atelier rides are now synchronised.</p>
                   <div className="cta-row" style={{ justifyContent: "center", marginTop: 10 }}>
                     <a href={href} className="btn btn-p">{retailer ? "Retailer home" : "Browse the Collection"}</a>
+                    <WhatsAppButton message={`Hi MRIGA, this is ${welcome.replace("Welcome, ", "")}. ${retailer ? "I just signed in to my retailer account." : "I just signed in and have a question."}`}>Chat on WhatsApp</WhatsAppButton>
                     <button className="btn btn-g" onClick={leave}>Sign Out</button>
                   </div>
                 </div>
@@ -186,6 +191,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                         </div>
                       )}
                       {info ? <p className="desc" style={{ color: "var(--accent-text)", fontWeight: 600 }} role="status">{info}</p> : null}
+                      <Turnstile key={check} action={up ? "signup" : "login"} />
                       {err ? <p className="err" role="alert">{err}</p> : null}
                       <button type="submit" className="btn btn-d btn-block" disabled={busy} style={{ minHeight: 56, fontSize: 15 }}>
                         {busy ? <span className="spinner" /> : null}
@@ -200,10 +206,10 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 10h.01M12 10h.01M16 10h.01" /></svg>
                       Login via SMS OTP
                     </button>
-                    <a className="btn btn-g" href={`/api/auth/google?next=${encodeURIComponent(nextPath)}`}>
+                    {google ? <a className="btn btn-g" href={`/api/auth/google?next=${encodeURIComponent(nextPath)}`}>
                       <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4" /><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853" /><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1A10 10 0 0 0 2 12c0 1.6.4 3.1 1.1 4.6z" fill="#FBBC05" /><path d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10c.8-2.4 3-4.1 5.6-4.1z" fill="#EA4335" /></svg>
                       Google
-                    </a>
+                    </a> : null}
                   </div>}
                 </>
               )}

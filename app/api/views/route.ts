@@ -51,6 +51,7 @@ export async function POST(request: Request) {
   if (session?.user.role === "ADMIN") return new Response(null, { status: 204 });
   const tracked = session && (session.user.role === "MEMBER" || session.user.role === "RETAILER") ? session.user.id : null;
   if ((kind === "time" || kind === "click") && !tracked) return new Response(null, { status: 204 });
-  await prisma.pageView.create({ data: { path, kind, seconds, userId: tracked } });
+  // Analytics must never break a page: drop the row if the database is unavailable.
+  await prisma.pageView.create({ data: { path, kind, seconds, userId: tracked } }).catch(() => undefined);
   return new Response(null, { status: 204 });
 }
