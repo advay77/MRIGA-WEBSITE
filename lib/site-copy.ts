@@ -7,9 +7,9 @@ export const CONTENT_FIELDS = [
   { key: "heroLead", label: "Home introduction", fallback: "MIRA by MRIGA. Smart mobility. Sustainable future. See it in pink, orange, and brown beige at the Rohini showroom." },
   { key: "aboutLead", label: "About introduction", fallback: "MRIGA is an electric-scooter company from Rohini, New Delhi. MIRA is the first model." },
   { key: "lithiumPrice", label: "MIRA lithium price", fallback: "₹75,000" },
-  { key: "lithiumDetail", label: "MIRA lithium detail", fallback: "Up to 70–80 km on a single charge. 3-year guarantee on the scooter, including the battery, motor, controller, and digital display." },
+  { key: "lithiumDetail", label: "MIRA lithium detail", fallback: "Up to 85 km on a single charge with the LiFePO4 battery. 3-year warranty on the motor, controller, battery and charger." },
   { key: "leadPrice", label: "MIRA lead-acid price", fallback: "₹62,000" },
-  { key: "leadDetail", label: "MIRA lead-acid detail", fallback: "60 km on a single charge. 1-year guarantee." },
+  { key: "leadDetail", label: "MIRA lead-acid detail", fallback: "65–70 km on a single charge with the SLA battery. 1-year warranty on the motor, controller, battery and charger." },
   { key: "founder1", label: "Founder 1", fallback: "Pankaj Jain" },
   { key: "founder2", label: "Founder 2", fallback: "Ashish Jain" },
   { key: "founder3", label: "Founder 3", fallback: "Jiten Jain" },
@@ -40,11 +40,14 @@ export const MEDIA_SLOTS = [
   { id: "mira-orange", label: "Orange", group: "mira", fallback: "mira/orange.png" },
   { id: "mira-beige", label: "Brown beige · 1", group: "mira", fallback: "mira/beige.png" },
   { id: "mira-beige-2", label: "Brown beige · 2", group: "mira", fallback: "mira/beige-2.png" },
+  { id: "riva", label: "RIVA", group: "models", fallback: "logo.png" },
+  { id: "vira", label: "VIRA", group: "models", fallback: "logo.png" },
 ] as const;
 
 export const PHOTO_GROUPS = [
   { id: "brand", title: "Brand", note: "The mark in the navigation and footer." },
   { id: "founders", title: "Founders", note: "Portraits on the About page. A missing photo shows the logo until you upload one." },
+  { id: "models", title: "RIVA and VIRA", note: "Main photo for each model. It shows on its page and on the cover of its PDF catalogue." },
   { id: "mira", title: "MIRA colours", note: "Pink, orange, and brown beige. These are the shots on Home, Explore, and the MIRA page." },
 ] as const;
 

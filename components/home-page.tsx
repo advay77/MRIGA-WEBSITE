@@ -117,7 +117,7 @@ export function HomePage() {
             <div className="mq">
               {[0, 1].map((copy) => (
                 <span key={copy}>
-                  MIRA by MRIGA <i /> Star Product <i /> Pink · Orange · Brown Beige <i /> 70–80 km Lithium <i /> Rohini, New Delhi <i />
+                  MIRA by MRIGA <i /> Star Product <i /> Pink · Orange · Brown Beige <i /> Up to 85 km <i /> Rohini, New Delhi <i />
                 </span>
               ))}
             </div>
@@ -138,9 +138,9 @@ export function HomePage() {
               <article className="card lift big rv-s">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
-                    <span className="tag">Coming next</span>
+                    <span className="tag">Coming soon</span>
                     <h3 className="mname">RIVA</h3>
-                    <p className="mtag">Photographs and specifications are next.</p>
+                    <p className="mtag">Specifications out · photographs soon</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div className="foot-note" style={{ marginBottom: 8 }}>Aesthetic</div>
@@ -156,7 +156,7 @@ export function HomePage() {
                   </svg>
                   <span className="ptag">Featured Spec: Crema & Cuoio</span>
                 </div>
-                <p className="desc">RIVA will get its own photographs and specification sheet. Nothing is published here until those details are confirmed.</p>
+                <p className="desc">RIVA adds a full mobile app, keyless smart-card entry, Find My Scooter and reverse mode. Specifications are out; photographs are coming soon.</p>
                 <div className="card-foot">
                   <a href="/riva" className="btn btn-d btn-sm">Explore RIVA <Arrow size={14} /></a>
                 </div>
@@ -168,7 +168,7 @@ export function HomePage() {
                     <span className="tag">Star Product</span>
                     <h3 className="mname">MIRA</h3>
                     <p className="mtag">Smart Mobility. Sustainable Future.</p>
-                    <p className="desc">60V 30Ah lithium-ion, 70–80 km on a charge, about 5 hours to charge. Lead-acid is 60 km. Pink, orange, and brown beige.</p>
+                    <p className="desc">60V 30Ah battery: up to 85 km with LiFePO4, 65–70 km with SLA. 250W BLDC motor, disc brakes with CBS, cruise control. Pink, orange, and brown beige.</p>
                     <div className="pills" style={{ marginTop: 14 }}>
                       <span className="pill">Lithium <b>{content.lithiumPrice} · 3 yr</b></span>
                       <span className="pill">Lead-acid <b>{content.leadPrice} Â· 1 yr</b></span>
@@ -186,9 +186,9 @@ export function HomePage() {
 
                 <article className="card lift mini rv-s">
                   <div>
-                    <span className="tag">Coming next</span>
+                    <span className="tag">Coming soon</span>
                     <h3 className="mname">VIRA</h3>
-                    <p className="mtag">Photographs and specifications are next.</p>
+                    <p className="mtag">Specifications out · photographs soon</p>
                     <p className="desc">VIRA will get its own page details when the photographs and numbers are ready.</p>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>
                     <a href="/vira" className="explore">

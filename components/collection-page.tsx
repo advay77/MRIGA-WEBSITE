@@ -68,9 +68,9 @@ export function CollectionPage() {
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Coming next</div>
+<div className="kicker">Coming soon</div>
 <h2>RIVA</h2>
-<p className="mtag">Photographs and specifications are next.</p>
+<p className="mtag">Specifications out · photographs soon</p>
 <p className="desc" style={{marginTop: "18px"}}>RIVA does not have confirmed numbers yet, so this page does not list a range, speed, or price for it.</p>
 <div className="m-acts">
 <a href="/riva" className="btn btn-p btn-sm">Explore RIVA</a>
@@ -94,7 +94,7 @@ export function CollectionPage() {
 </div>
 </div>
 <div className="m-stats">
-<div><div className="cap">Lithium Range</div><div className="num">70–80<small>km</small></div></div>
+<div><div className="cap">Range, LiFePO4</div><div className="num">85<small>km</small></div></div>
 <div><div className="cap">Lead-acid Range</div><div className="num">60<small>km</small></div></div>
 <div><div className="cap">Charge Time</div><div className="num">5<small>hr</small></div></div>
 </div>
@@ -142,9 +142,9 @@ export function CollectionPage() {
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Coming next</div>
+<div className="kicker">Coming soon</div>
 <h2>VIRA</h2>
-<p className="mtag">Photographs and specifications are next.</p>
+<p className="mtag">Specifications out · photographs soon</p>
 <p className="desc" style={{marginTop: "18px"}}>VIRA does not have confirmed numbers yet, so this page does not list a speed, torque, or price for it.</p>
 <div className="m-acts">
 <a href="/vira" className="btn btn-p btn-sm">Explore VIRA</a>

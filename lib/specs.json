@@ -1,0 +1,142 @@
+{
+  "warranty": "Motor, controller, battery and charger",
+  "appFeatures": [
+    { "title": "Power on / off", "text": "Switch the scooter on or off from your phone." },
+    { "title": "Arm / disarm", "text": "Lock and unlock security from the app." },
+    { "title": "Proximity unlock", "text": "Walk up with your phone and the scooter unlocks. No key needed." },
+    { "title": "Open seat from app", "text": "Unlock the seat with a tap." },
+    { "title": "Find my scooter", "text": "Make it sound so you can spot it in a crowded parking lot." },
+    { "title": "NFC key management", "text": "Add or remove NFC keys and smart cards." },
+    { "title": "Startup password", "text": "A PIN before the scooter will start." },
+    { "title": "Live battery voltage", "text": "See the real battery voltage in the app, e.g. 66.0V." },
+    { "title": "Music via Bluetooth", "text": "Pair your phone with the instrument cluster for music." },
+    { "title": "Handlebar music controls", "text": "Previous, next, volume and play/pause from the handlebar buttons." },
+    { "title": "Incoming call alert", "text": "The last 4 digits of the caller show on the dashboard." },
+    { "title": "Dashboard customisation", "text": "Choose what the meter shows, such as trip or battery voltage." },
+    { "title": "Function buttons", "text": "Set single-click, double-click and long-press actions." },
+    { "title": "Lighting settings", "text": "Adjust the scooter's lighting from the app." },
+    { "title": "Sound effects", "text": "Pick the sounds the scooter makes." }
+  ],
+  "models": {
+    "mira": {
+      "name": "MIRA",
+      "status": "Star product",
+      "tagline": "Smart mobility. Sustainable future.",
+      "summary": "Our star scooter, on sale now at the Rohini showroom in pink, orange and brown beige.",
+      "app": false,
+      "highlights": [
+        { "value": "85", "unit": "km", "label": "Range, LiFePO4" },
+        { "value": "25", "unit": "km/h", "label": "Top speed" },
+        { "value": "250", "unit": "W", "label": "BLDC hub motor" },
+        { "value": "CBS", "unit": "", "label": "Front & rear disc" }
+      ],
+      "groups": [
+        { "title": "Performance", "rows": [
+          ["Motor", "BLDC hub motor, 250W"],
+          ["Top speed", "25 km/h"],
+          ["Range", "65–70 km (SLA) or up to 85 km (LiFePO4)"]
+        ] },
+        { "title": "Battery & charging", "rows": [
+          ["Battery", "60V 30Ah, SLA or LiFePO4"],
+          ["Battery app", "Real-time charging and battery health on your phone"],
+          ["Charger", "69.3V, 3A to 10A options"]
+        ] },
+        { "title": "Ride & safety", "rows": [
+          ["Brakes", "Front & rear disc with CBS (Combined Braking System), plus TCS anti-skid"],
+          ["Tyres", "Front 12\" tubeless, rear 10\" tubeless"],
+          ["Lighting", "Full LED"],
+          ["Security", "Central locking with anti-theft alarm"]
+        ] },
+        { "title": "Rider convenience", "rows": [
+          ["Cruise control", "Yes"],
+          ["Parking mode", "Yes"],
+          ["Mobile charging port", "Yes"]
+        ] }
+      ]
+    },
+    "riva": {
+      "name": "RIVA",
+      "status": "Coming soon",
+      "tagline": "Connected, keyless, app-first.",
+      "summary": "Everything in MIRA's frame, plus a full mobile app, keyless smart-card entry and Find My Scooter.",
+      "app": true,
+      "highlights": [
+        { "value": "85", "unit": "km", "label": "Range, LiFePO4" },
+        { "value": "25", "unit": "km/h", "label": "Top speed" },
+        { "value": "15", "unit": "", "label": "App features" },
+        { "value": "Keyless", "unit": "", "label": "Smart-card entry" }
+      ],
+      "groups": [
+        { "title": "Performance", "rows": [
+          ["Motor", "BLDC hub motor, 250W"],
+          ["Top speed", "25 km/h"],
+          ["Range", "65–70 km (SLA) or up to 85 km (LiFePO4)"]
+        ] },
+        { "title": "Battery & charging", "rows": [
+          ["Battery", "60V 30Ah, SLA or LiFePO4"],
+          ["Battery app", "Real-time charging and battery health on your phone"],
+          ["Charger", "69.3V, 3A to 10A options"]
+        ] },
+        { "title": "Ride & safety", "rows": [
+          ["Brakes", "Front & rear disc with CBS (Combined Braking System), plus TCS anti-skid"],
+          ["Tyres", "Front 12\" tubeless, rear 10\" tubeless"],
+          ["Lighting", "Full LED"],
+          ["Security", "Central locking with anti-theft alarm, Find My Scooter, incoming call alert (last 4 digits)"]
+        ] },
+        { "title": "Connectivity & control", "rows": [
+          ["Mobile app", "Full app integration"],
+          ["Bluetooth", "Yes"],
+          ["Entry", "Keyless and smart-card entry"],
+          ["Side stand alert", "Yes"]
+        ] },
+        { "title": "Rider convenience", "rows": [
+          ["Reverse mode", "Yes"],
+          ["Parking mode", "Yes"],
+          ["Mobile charging port", "Yes"]
+        ] }
+      ]
+    },
+    "vira": {
+      "name": "VIRA",
+      "status": "Coming soon",
+      "tagline": "Smart security, made for the city.",
+      "summary": "A connected scooter with keyless entry, a full mobile app, Find My Scooter and reverse mode.",
+      "app": true,
+      "highlights": [
+        { "value": "85", "unit": "km", "label": "Range, LiFePO4" },
+        { "value": "25", "unit": "km/h", "label": "Top speed" },
+        { "value": "15", "unit": "", "label": "App features" },
+        { "value": "Keyless", "unit": "", "label": "Smart-card entry" }
+      ],
+      "groups": [
+        { "title": "Performance", "rows": [
+          ["Motor", "BLDC hub motor, 250W"],
+          ["Top speed", "25 km/h"],
+          ["Range", "65–70 km (SLA) or up to 85 km (LiFePO4)"]
+        ] },
+        { "title": "Battery & charging", "rows": [
+          ["Battery", "60V 30Ah, SLA or LiFePO4"],
+          ["Battery app", "Real-time charging and battery health on your phone"],
+          ["Charger", "69.3V, 3A to 10A options"]
+        ] },
+        { "title": "Ride & safety", "rows": [
+          ["Brakes", "Front & rear disc with CBS (Combined Braking System), plus TCS anti-skid"],
+          ["Tyres", "Front 12\" tubeless, rear 10\" tubeless"],
+          ["Lighting", "Full LED"],
+          ["Security", "Central locking with anti-theft alarm, Find My Scooter, incoming call alert (last 4 digits)"]
+        ] },
+        { "title": "Connectivity & control", "rows": [
+          ["Mobile app", "Full app integration"],
+          ["Bluetooth", "Yes"],
+          ["Entry", "Keyless and smart-card entry"],
+          ["Side stand alert", "Yes"]
+        ] },
+        { "title": "Rider convenience", "rows": [
+          ["Reverse mode", "Yes"],
+          ["Parking mode", "Yes"],
+          ["Mobile charging port", "Yes"]
+        ] }
+      ]
+    }
+  }
+}

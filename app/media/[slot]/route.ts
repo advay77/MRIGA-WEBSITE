@@ -2,6 +2,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/db";
 import { mediaSlot } from "@/lib/site-copy";
+import { sniff } from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export async function GET(request: Request, context: { params: Promise<{ slot: s
   }
   try {
     const file = await readFile(path.join(process.cwd(), "public", slot.fallback));
-    return new Response(file, { headers: { ...base, "Content-Type": mimeFor(slot.fallback) } });
+    return new Response(file, { headers: { ...base, "Content-Type": sniff(new Uint8Array(file)) ?? mimeFor(slot.fallback) } });
   } catch {
     return new Response("Not found", { status: 404 });
   }

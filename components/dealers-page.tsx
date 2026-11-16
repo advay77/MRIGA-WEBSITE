@@ -10,8 +10,8 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 
 const MODELS = [
   { key: "MIRA", sub: "Available now" },
-  { key: "RIVA", sub: "Coming next" },
-  { key: "VIRA", sub: "Coming next" },
+  { key: "RIVA", sub: "Coming soon" },
+  { key: "VIRA", sub: "Coming soon" },
 ] as const;
 
 type ModelKey = (typeof MODELS)[number]["key"];
