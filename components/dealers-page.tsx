@@ -50,12 +50,12 @@ export function DealersPage() {
 
   return (
     <main className="page">
-      <section className="phead">
+      <section className="phead center">
         <div className="wrap">
           <span className="eyebrow"><span className="dot" />Dealers</span>
           <h1 className="h1 mixed">Sell MRIGA.</h1>
           <p className="lead">Want to stock MRIGA scooters in your showroom? Leave four details and our team will call you. The Rohini showroom is {content.address}</p>
-          <Link href="/login" className="btn btn-g">Retailer login</Link>
+          <div className="cta-row"><Link href="/login" className="btn btn-g">Retailer login</Link></div>
         </div>
       </section>
       <section className="sec" id="apply">

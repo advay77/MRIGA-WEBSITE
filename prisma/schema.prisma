@@ -12,20 +12,24 @@ datasource db {
 }
 
 model User {
-  id           String              @id @default(cuid())
-  email        String?             @unique
-  phone        String?             @unique
-  name         String
-  passwordHash String?
-  googleId     String?             @unique
-  role         String              @default("MEMBER")
-  createdAt    DateTime            @default(now())
-  lastLoginAt  DateTime?
-  sessions     Session[]
-  views        PageView[]
-  logins       LoginEvent[]
-  rides        TestRide[]
-  applications DealerApplication[]
+  id             String              @id @default(cuid())
+  email          String?             @unique
+  phone          String?             @unique
+  name           String
+  passwordHash   String?
+  googleId       String?             @unique
+  role           String              @default("MEMBER")
+  createdAt      DateTime            @default(now())
+  lastLoginAt    DateTime?
+  // Optional profile details the customer can edit on /account.
+  city           String?
+  preferredModel String?
+  updatesOptIn   Boolean             @default(false)
+  sessions       Session[]
+  views          PageView[]
+  logins         LoginEvent[]
+  rides          TestRide[]
+  applications   DealerApplication[]
 
   @@index([role, createdAt])
 }

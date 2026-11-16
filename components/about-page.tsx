@@ -28,9 +28,9 @@ export async function AboutPage() {
       </section>
       <section className="cta light">
         <div className="wrap cta-in">
-          <span className="eyebrow">Rohini showroom</span>
-          <h2>Come and see the scooter.</h2>
-          <p>{content.phone}</p>
+          <span className="eyebrow">Rohini showroom · open now</span>
+          <h2>Feel the ride before you decide.</h2>
+          <p>Book a free test ride at our Rohini showroom, or call us on <a href={`tel:${content.phoneHref}`}>{content.phone}</a>.</p>
           <div className="cta-row">
             <a href="#book" className="btn btn-p">Book a test ride</a>
             <a href="/contact" className="btn btn-g">Contact</a>

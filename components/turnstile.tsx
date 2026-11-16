@@ -46,8 +46,8 @@ export async function waitForTurnstile(form: HTMLFormElement, timeoutMs = 8_000)
 
 export const TURNSTILE_WAIT_MESSAGE = "The security check is still running. Please wait a moment and press the button again.";
 
-// Renders Cloudflare's "verify you are human" check inside a form. Most visitors never see it
-// ("interaction-only"); the token lands in a hidden "cf-turnstile-response" field the server checks.
+// Renders Cloudflare's "verify you are human" check inside a form, always visible. The token
+// lands in a hidden "cf-turnstile-response" field the server checks.
 // Tokens are single-use: give this component a new `key` after each submit to get a fresh one.
 // Cloudflare error codes worth explaining: https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/
 function explain(code: string) {
@@ -79,10 +79,12 @@ export function Turnstile({ action }: { action: string }) {
         widget = window.turnstile.render(box.current, {
           sitekey: SITE_KEY,
           action,
-          appearance: "interaction-only",
+          // Always visible: the "Verifying… Success!" box reassures people the form is protected.
+          appearance: "always",
+          size: "flexible",
           theme: "light",
           "response-field-name": "cf-turnstile-response",
-          // "interaction-only" hides the widget, so surface failures as text instead of failing silently.
+          // Also surface failures as text, so nobody is left with a silent, stuck form.
           "error-callback": (code: string | number) => {
             setFailure(`Security check failed (${code}). ${explain(String(code))}`);
             return true;

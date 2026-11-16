@@ -234,8 +234,27 @@ export function HomePage() {
                     <i style={{ background: item.swatch }} />
                     {item.name}
                   </span>
+                  <span className="mira-price">From {content.leadPrice}</span>
+                  <span className="mira-view">View {item.name} →</span>
                 </a>
               ))}
+            </div>
+            <ul className="mira-glance">
+              {[
+                ["85 km", "Range, LiFePO4"],
+                ["25 km/h", "Top speed"],
+                ["250W", "BLDC hub motor"],
+                ["CBS", "Front & rear disc"],
+                ["Cruise", "control"],
+                ["Warranty", "Motor, battery, charger"],
+              ].map(([value, label], index) => (
+                <li key={label} style={{ animationDelay: `${index * 0.08}s` }}><b>{value}</b><span>{label}</span></li>
+              ))}
+            </ul>
+            <div className="cta-row mira-actions">
+              <a href="#book" className="btn btn-p">Book a MIRA test ride</a>
+              <a href="/catalogue/mira" className="btn btn-d" download="MRIGA-MIRA-catalogue.pdf">Download MIRA catalogue</a>
+              <a href="/collection" className="btn btn-g">Compare models</a>
             </div>
           </div>
         </section>

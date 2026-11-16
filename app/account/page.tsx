@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountWhatsApp } from "@/components/account-whatsapp";
-import { NameForm, PasswordForm, SignOutButton } from "@/components/account-forms";
+import { PasswordForm, ProfileForm, SignOutButton } from "@/components/account-forms";
 import { SiteFrame } from "@/components/site-frame";
 import { deviceLabel } from "@/lib/audit";
 import { getSession } from "@/lib/auth";
@@ -43,7 +43,7 @@ export default async function Page() {
   const [user, rides, enquiries, logins] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { name: true, email: true, phone: true, role: true, createdAt: true, lastLoginAt: true, passwordHash: true, googleId: true },
+      select: { name: true, email: true, phone: true, role: true, createdAt: true, lastLoginAt: true, passwordHash: true, googleId: true, city: true, preferredModel: true, updatesOptIn: true },
     }),
     prisma.testRide.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 20, select: { id: true, model: true, city: true, date: true, status: true, createdAt: true } }),
     prisma.dealerApplication.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 20, select: { id: true, reference: true, model: true, location: true, status: true, createdAt: true } }),
@@ -77,6 +77,8 @@ export default async function Page() {
               <dl className="acct-dl">
                 <dt>Email</dt><dd>{user.email || "—"}</dd>
                 <dt>Mobile</dt><dd>{user.phone || "—"}</dd>
+                <dt>City</dt><dd>{user.city || "—"}</dd>
+                <dt>Likes</dt><dd>{user.preferredModel || "Not decided"}</dd>
                 <dt>Sign-in</dt><dd>{user.passwordHash ? "Password" : ""}{user.passwordHash && user.googleId ? " and " : ""}{user.googleId ? "Google" : ""}</dd>
                 <dt>Last sign-in</dt><dd>{user.lastLoginAt ? when(user.lastLoginAt) : "—"}</dd>
               </dl>
@@ -144,9 +146,9 @@ export default async function Page() {
               </article>
             ) : null}
 
-            <article className="card acct-card">
-              <div className="acct-card-h"><h2>Profile</h2></div>
-              <NameForm name={user.name} />
+            <article className="card acct-card acct-wide">
+              <div className="acct-card-h"><h2>Edit profile</h2></div>
+              <ProfileForm profile={{ name: user.name, email: user.email, phone: user.phone, city: user.city, preferredModel: user.preferredModel, updatesOptIn: user.updatesOptIn, hasPassword: Boolean(user.passwordHash) }} />
             </article>
 
             {user.passwordHash ? (

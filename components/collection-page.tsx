@@ -29,9 +29,9 @@ export function CollectionPage() {
 <div>
 <span className="eyebrow fade-up"><span className="dot"></span>Explore</span>
 <h1 className="h1 mixed"><span className="ln"><span>RIVA, MIRA,</span></span><span className="ln"><span>and VIRA</span></span></h1>
-<p className="ital fade-up d1">MIRA is the model you can see now.</p>
+<p className="ital fade-up d1">MIRA is on sale now.</p>
 </div>
-<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA has prices, range, and colours. RIVA and VIRA stay here until their photographs and specifications are ready.</p>
+<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA is our star scooter, on sale in three colours. RIVA and VIRA add a full mobile app and keyless entry: their specifications are out and photographs are coming soon.</p>
 </div>
 <div className="filters fade-up d3">
 <div className="tabs" role="group" aria-label="Filter models">

@@ -27,6 +27,8 @@ export async function saveSiteContent(form: FormData) {
     if (field.key === "phoneHref") value = value.replace(/[^\d+]/g, "").slice(0, 16);
     if (field.key === "whatsapp") value = whatsappDigits(value).slice(0, 15);
     if (field.key === "instagram" && value && !/^https:\/\/(www\.)?instagram\.com\//.test(value)) value = field.fallback;
+    // A malformed address would produce a broken mailto: link on Contact; drop it instead.
+    if (field.key === "email" && value && !/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value)) value = "";
     return [{ key: field.key, value: value || field.fallback }];
   });
   if (rows.length > 0) {

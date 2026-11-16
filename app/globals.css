@@ -213,14 +213,8 @@ button.explore{background:none;border:0;padding:0;cursor:pointer;font:inherit}
 .model-links a{display:grid;gap:4px;padding:18px 20px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font-family:var(--serif);font-size:22px;color:var(--ink)}
 .model-links a span{font-family:var(--font-sans),sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .model-links a.on{border-color:var(--accent)}
-.contact-map-row{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.75fr);gap:22px;align-items:stretch;margin-top:32px}
-.contact-map-row .map-frame{margin-top:0;height:100%;min-height:380px}
 .contact-card{display:grid;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px}
-.contact-card b{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text)}
-.contact-card p{margin:8px 0 0;line-height:1.6}
-.ig-line{display:inline-flex;align-items:center;gap:10px;margin-top:8px;font-weight:700}
 .contact-card .ig,.foot-reach .ig{width:42px;height:42px;border-radius:50%;display:inline-grid;place-items:center}
-.contact-card .ig{border:1px solid var(--line);color:var(--ink);gap:0}
 .foot-reach{display:flex;align-items:center;gap:12px;margin-top:14px}
 .foot-reach a:not(.ig){color:var(--on-dark);font-weight:700;font-size:16px}
 .foot-reach .ig{border:1px solid rgba(255,255,255,.28);color:var(--on-dark)}
@@ -646,7 +640,7 @@ select.plain-in{background-image:linear-gradient(45deg,transparent 50%,var(--mut
   .model,.model.flip{grid-template-columns:minmax(0,1fr)}
   .model.flip .m-media{order:0}
   .stage-h{width:min(100%,280px);max-height:520px;justify-self:center}
-  .mira-row,.mira-sheet-grid,.spec-grid,.model-links,.contact-grid,.contact-map-row,.founder-row,.stat-grid{grid-template-columns:minmax(0,1fr)}
+  .mira-row,.mira-sheet-grid,.spec-grid,.model-links,.contact-grid,.founder-row,.stat-grid{grid-template-columns:minmax(0,1fr)}
   .model-stage{min-height:360px}
   .comm{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .foot-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -727,7 +721,7 @@ textarea.plain-in{min-height:88px;resize:vertical}
 @media (max-width:640px){.wa-float{right:14px;bottom:14px;padding:14px}.wa-float span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
 /* Cloudflare Turnstile: takes no space unless Cloudflare needs the visitor to click */
 .ts-box:empty{display:none}
-.ts-box{display:flex;justify-content:center;min-height:0}
+.ts-box{display:flex;justify-content:center;width:100%;min-height:65px}
 /* Dealer enquiry */
 .dealer-card{max-width:560px;margin:0 auto}
 .dealer-form{display:grid;gap:18px}
@@ -825,3 +819,55 @@ a.ulink{display:inline-flex;align-items:center;gap:6px}
 .star-link span{color:var(--accent-text);font-weight:700}
 @media (max-width:640px){.spec-group dl div{grid-template-columns:1fr;gap:2px}.model-soon{min-height:300px}.soon-ring{width:240px;height:240px}}
 @media (prefers-reduced-motion:reduce){[data-reveal]{opacity:1;transform:none;transition:none}.model-title,.star-badge::after,.star-stage::before,.model-photo,.soon-ring{animation:none}}
+/* Centered page heads: always for .phead.center; on tablets and phones for every page head,
+   section head and call-to-action band, so headings and their text line up in the middle. */
+.phead.center .wrap{text-align:center}
+.phead.center .lead{margin-left:auto;margin-right:auto}
+.phead.center .cta-row,.phead.center .cat-actions{justify-content:center}
+@media (max-width:860px){
+  .phead .wrap,.sec-head,.sec-head>div,.cta-in,.model-head .wrap{text-align:center}
+  .phead .lead,.sec-head .sub,.lead{margin-left:auto;margin-right:auto}
+  .phead .cta-row,.cta-in .cta-row,.cat-actions,.sec-head{justify-content:center}
+  .phead-grid{text-align:center}
+  .kicker{justify-content:center}
+}
+/* Contact: map left, details right; stacked on phones */
+.contact-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:stretch}
+.contact-grid .map-frame{margin-top:0;min-height:420px}
+.contact-grid .contact-card{display:grid;gap:4px;align-content:start;padding:26px;border-radius:28px;background:var(--surface);border:1px solid var(--line)}
+.contact-item{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--line)}
+.contact-item:last-child{border-bottom:0}
+.contact-item b{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-text)}
+.contact-item p{margin:4px 0 0;color:var(--ink);line-height:1.5}
+.contact-item a{color:var(--ink);text-decoration:none;font-weight:600}
+.contact-item a:hover{color:var(--accent-text)}
+.contact-ic{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--chip);color:var(--accent-text)}
+.contact-ic.ig-ic{background:linear-gradient(135deg,#f9ce34,#ee2a7b 55%,#6228d7);color:#fff}
+@media (max-width:860px){.contact-grid{grid-template-columns:1fr}.contact-grid .map-frame{min-height:300px}.contact-item{text-align:left}}
+/* MIRA colours: price, hover call-to-action, at-a-glance strip */
+.mira-card{position:relative;overflow:hidden}
+.mira-card img{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.mira-card:hover img{transform:scale(1.06)}
+.mira-price{position:absolute;top:22px;left:22px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);font-size:12px;font-weight:700;color:var(--ink)}
+.mira-view{display:inline-flex;margin-top:6px;font-size:14px;font-weight:600;color:var(--accent-text);opacity:0;transform:translateX(-8px);transition:opacity .3s,transform .3s}
+.mira-card:hover .mira-view,.mira-card:focus-visible .mira-view{opacity:1;transform:none}
+.mira-glance{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.mira-glance li{padding:16px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);text-align:center;animation:glance-in .7s cubic-bezier(.2,.8,.2,1) both}
+.mira-glance b{display:block;font-family:var(--serif);font-size:22px;color:var(--ink)}
+.mira-glance span{display:block;margin-top:4px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+@keyframes glance-in{from{opacity:0;transform:translateY(14px)}}
+.mira-actions{justify-content:center;margin-top:24px}
+@media (max-width:860px){.mira-glance{grid-template-columns:repeat(3,minmax(0,1fr))}.mira-view{opacity:1;transform:none}}
+@media (max-width:480px){.mira-glance{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){.mira-glance li{animation:none}.mira-card img{transition:none}}
+.acct-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+.acct-check{grid-column:1 / -1;font-size:14px}
+.acct-confirm{max-width:420px;padding:14px;border-radius:14px;background:#fff8ec;border:1px solid #f2dcb4}
+@media (max-width:640px){.acct-fields{grid-template-columns:1fr}}
+/* Phones and tablets: model cards and page sections center their headings and text too. */
+@media (max-width:860px){
+  .m-body,.coll .card,.models .card,.model-card,.spec-block,.app-sec .wrap>.kicker,.app-sec .wrap>.h2,.app-sec .wrap>.lead,.spec-sec .wrap>.kicker,.spec-sec .wrap>.h2,.dealer-form>div:first-of-type,.acct-card-h,.phead+.sec .kicker{text-align:center}
+  .m-body .kicker,.spec-block .kicker,.app-sec .kicker,.spec-sec .kicker{justify-content:center}
+  .acct-card-h{justify-content:center}
+  .hl-grid{text-align:left}
+}

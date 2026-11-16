@@ -2,6 +2,7 @@ export const CONTENT_FIELDS = [
   { key: "phone", label: "Phone", fallback: "+91 73030 42004" },
   { key: "phoneHref", label: "Phone link (digits)", fallback: "+917303042004" },
   { key: "whatsapp", label: "WhatsApp number", fallback: "917303042004" },
+  { key: "email", label: "Contact email", fallback: "" },
   { key: "address", label: "Showroom address", fallback: "E-1/93, Sector-7, Rohini, New Delhi 110085, near M2K Rohini." },
   { key: "instagram", label: "Instagram URL", fallback: "https://www.instagram.com/ridemriga/" },
   { key: "heroLead", label: "Home introduction", fallback: "MIRA by MRIGA. Smart mobility. Sustainable future. See it in pink, orange, and brown beige at the Rohini showroom." },
@@ -23,7 +24,7 @@ export function contentDefaults(): SiteContent {
 }
 
 export const CONTENT_GROUPS = [
-  { id: "showroom", title: "Showroom", note: "Phone, WhatsApp, address, and Instagram. These appear in the footer, on Contact, and on the WhatsApp buttons.", keys: ["phone", "phoneHref", "whatsapp", "address", "instagram"] },
+  { id: "showroom", title: "Showroom", note: "Phone, WhatsApp, address, and Instagram. These appear in the footer, on Contact, and on the WhatsApp buttons.", keys: ["phone", "phoneHref", "whatsapp", "email", "address", "instagram"] },
   { id: "pages", title: "Home and About", note: "The introduction on the home page and the About page.", keys: ["heroLead", "aboutLead"] },
   { id: "mira", title: "MIRA", note: "Prices and warranty lines on the home page, Explore, and the MIRA page.", keys: ["lithiumPrice", "lithiumDetail", "leadPrice", "leadDetail"] },
   { id: "founders", title: "Founder names", note: "Names on About and Contact. Photos are changed in the Photos section.", keys: ["founder1", "founder2", "founder3"] },
