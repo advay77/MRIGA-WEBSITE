@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/actions";
 import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
@@ -38,7 +39,7 @@ export function AdminLoginForm() {
 
   return (
     <form className="form" onSubmit={submit} noValidate>
-      <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+      <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
       <div className="fld">
         <label htmlFor="admin-id">Email</label>
         <input id="admin-id" name="id" className="plain-in" autoComplete="username" required />

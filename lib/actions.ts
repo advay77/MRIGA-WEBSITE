@@ -8,6 +8,7 @@ import { createSession, clearSession, getSession } from "@/lib/auth";
 import { dummyPasswordHash, hashPassword, verifyPassword } from "@/lib/password";
 import { clearLimit, clientIp, hit, rateLimit, sameOrigin } from "@/lib/guards";
 import { TURNSTILE_FIELD, verifyTurnstile } from "@/lib/turnstile";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { dealerSchema, firstIssue, normalizePhone, rideSchema, safeNext, signInSchema, signUpSchema } from "@/lib/validators";
 
 const MINUTE = 60 * 1000;
@@ -23,6 +24,14 @@ const ROLE_FOR: Record<Desk, "ADMIN" | "RETAILER" | "MEMBER"> = { admin: "ADMIN"
 function text(form: FormData, key: string) {
   const value = form.get(key);
   return typeof value === "string" ? value : "";
+}
+
+// True when the hidden honeypot field came back filled, i.e. most likely a bot. Logged (never the
+// value) so a false positive from some new autofill behaviour shows up in the server logs.
+function trapped(value: string | undefined, form: string) {
+  if (!value) return false;
+  console.warn(`honeypot filled on ${form} form; submission refused`);
+  return true;
 }
 
 function deskOf(value: string): Desk {
@@ -62,10 +71,10 @@ export async function reserveTestRide(form: FormData) {
     city: text(form, "city"),
     model: text(form, "model"),
     date: text(form, "date"),
-    website: text(form, "website"),
+    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (parsed.data.website) return { ok: false as const, error: "Unable to submit this form." };
+  if (trapped(parsed.data.website, "test ride")) return { ok: false as const, error: "Unable to submit this form." };
   try {
     await prisma.testRide.create({
       data: {
@@ -97,10 +106,10 @@ export async function submitDealerApplication(form: FormData) {
     phone: text(form, "phone"),
     location: text(form, "location"),
     model: text(form, "model"),
-    website: text(form, "website"),
+    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (parsed.data.website) return { ok: false as const, error: "Unable to submit this form." };
+  if (trapped(parsed.data.website, "dealer enquiry")) return { ok: false as const, error: "Unable to submit this form." };
   const { name, phone, location, model } = parsed.data;
   const userId = await signedInCustomer();
   try {
@@ -128,10 +137,10 @@ export async function signIn(form: FormData) {
     id: text(form, "id"),
     pw: text(form, "pw"),
     remember: text(form, "remember"),
-    website: text(form, "website"),
+    website: text(form, HONEYPOT_FIELD),
     next: text(form, "next"),
   });
-  if (!parsed.success || parsed.data.website) return { ok: false as const, error: NO_MATCH };
+  if (!parsed.success || trapped(parsed.data.website, "sign-in")) return { ok: false as const, error: NO_MATCH };
   const who = identity(parsed.data.id);
   // Per-account lock as well as per-IP, so a botnet cannot spread guesses across addresses.
   const accountKey = `acct:${desk}:${who.email || who.phone}`;
@@ -175,10 +184,10 @@ async function createAccount(form: FormData, role: "MEMBER" | "RETAILER") {
     id: text(form, "id"),
     pw: text(form, "pw"),
     terms: text(form, "terms"),
-    website: text(form, "website"),
+    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (parsed.data.website) return { ok: false as const, error: "Unable to create this account." };
+  if (trapped(parsed.data.website, "sign-up")) return { ok: false as const, error: "Unable to create this account." };
   const who = identity(parsed.data.id);
   const exists = { ok: false as const, error: "An account with that email or mobile already exists. Sign in instead." };
   const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, signUp, signUpRetailer } from "@/lib/actions";
@@ -145,7 +146,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                     <p className="sub">{subtitle}</p>
                   </div>
                   <form className="form" onSubmit={submit} noValidate>
-                    <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                    <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                     <input type="hidden" name="next" value={nextPath} />
                     <input type="hidden" name="desk" value={retailer ? "retailer" : "member"} />
                     {up ? (

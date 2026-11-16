@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
@@ -298,7 +299,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   </button>
                 </div>
                 <form className="form" onSubmit={submitRide} noValidate>
-                  <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                  <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                   <div className="fld">
                     <span className="lbl">Choose your model</span>
                     <div className="mpicks">

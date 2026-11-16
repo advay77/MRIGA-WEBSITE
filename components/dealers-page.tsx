@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useState, type FormEvent } from "react";
 import { submitDealerApplication } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
@@ -77,7 +78,7 @@ export function DealersPage() {
                   <h2 className="h2" style={{ margin: "0 0 6px" }}>Become a dealer</h2>
                   <p className="sub" style={{ margin: 0 }}>Takes under a minute. No documents needed now.</p>
                 </div>
-                <input className="hp" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                 <div className="fld">
                   <label className="lbl" htmlFor="d-name">Your name</label>
                   <input id="d-name" name="name" className="plain-in" required autoComplete="name" placeholder="Full name" maxLength={80} />
