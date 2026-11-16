@@ -42,6 +42,7 @@ const PATH_LABELS: Record<string, string> = {
   "/vira": "VIRA",
   "/login": "Customer login",
   "/retailer": "Retailer login",
+  "/account": "My account",
 };
 
 const LONG_FIELDS = new Set(["address", "heroLead", "aboutLead", "lithiumDetail", "leadDetail"]);

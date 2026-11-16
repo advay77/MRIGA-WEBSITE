@@ -89,7 +89,7 @@ export function HomePage() {
                   <span className="chip-ic">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
                   </span>
-                  <span><b>Deliveries Opening</b>Across 18 Metropolitan Centers</span>
+                  <span><b>Showroom open</b>Rohini, New Delhi</span>
                 </div>
               </div>
             </div>

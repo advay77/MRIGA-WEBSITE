@@ -75,7 +75,7 @@ export async function GET(request: Request) {
     await createSession(user.id, 7);
     await recordLogin({ userId: user.id, role: user.role, method: existing ? "google" : "signup", success: true, identifier: email });
     const next = saved.next.startsWith("/admin") ? "/" : saved.next;
-    return go(request, user.role === "RETAILER" && next === "/" ? "/retailer" : next);
+    return go(request, user.role === "RETAILER" && next === "/" ? "/account" : next);
   } catch {
     console.error("google sign-in failed");
     return fail(request, "google");

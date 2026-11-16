@@ -32,7 +32,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ n
       <LoginPanel
         audience="retailer"
         user={role === "RETAILER" ? { name: session!.user.name, role } : null}
-        nextPath="/retailer"
+        nextPath="/account"
         startTab="in"
         google={false}
       />

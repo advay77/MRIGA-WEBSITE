@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
 import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
+import { AccountChip, useMe } from "@/components/account-chip";
 import { WhatsAppButton, WhatsAppIcon } from "@/components/whatsapp-button";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -43,7 +44,9 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const active = activeLabel(pathname);
   const [menuOpen, setMenuOpen] = useState(false);
   const [book, setBook] = useState(false);
-  const [model, setModel] = useState<Model>("RIVA");
+  // MIRA is the model on sale today; RIVA and VIRA are listed as coming next.
+  const [model, setModel] = useState<Model>("MIRA");
+  const me = useMe();
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
@@ -190,7 +193,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="nav-r">
             <a className="nav-phone" href="#book">Book a test ride</a>
-            <Link href="/login" className="btn btn-d btn-sm">Login</Link>
+            <AccountChip />
             <button className="icon-btn burger" onClick={() => setMenuOpen((open) => !open)} aria-label="Open menu" aria-expanded={menuOpen}>
               {menuOpen ? (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -211,7 +214,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
             </Link>
           ))}
           <a href="#book" onClick={() => setMenuOpen(false)}>Book a test ride</a>
-          <Link href="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+          <AccountChip variant="link" onNavigate={() => setMenuOpen(false)} />
         </div>
       </header>
       {children}
@@ -250,7 +253,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <h5>Owners</h5>
               <ul>
                 <li><Link href="/login">Customer login</Link></li>
-                <li><Link href="/retailer">Retailer login</Link></li>
+                <li><Link href="/login">Retailer login</Link></li>
               </ul>
             </div>
           </div>
@@ -308,11 +311,11 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   </div>
                   <div className="fld">
                     <label htmlFor="bk-name">Full name</label>
-                    <input id="bk-name" name="name" className="plain-in" placeholder="Your name" autoComplete="name" />
+                    <input id="bk-name" name="name" className="plain-in" placeholder="Your name" autoComplete="name" defaultValue={me?.name ?? ""} />
                   </div>
                   <div className="fld">
                     <label htmlFor="bk-phone">Mobile number</label>
-                    <input id="bk-phone" name="phone" className="plain-in" placeholder="+91 98765 43210" inputMode="tel" autoComplete="tel" />
+                    <input id="bk-phone" name="phone" className="plain-in" placeholder="+91 98765 43210" inputMode="tel" autoComplete="tel" defaultValue={me?.phone ?? ""} />
                   </div>
                   <div className="fgrid">
                     <div className="fld">

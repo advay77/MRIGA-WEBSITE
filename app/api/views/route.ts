@@ -4,7 +4,7 @@ import { rateLimit, sameOrigin } from "@/lib/guards";
 
 export const dynamic = "force-dynamic";
 
-const PUBLIC_PATHS = new Set(["/", "/about", "/dealers", "/collection", "/contact", "/mira", "/riva", "/vira", "/login", "/retailer"]);
+const PUBLIC_PATHS = new Set(["/", "/about", "/dealers", "/collection", "/contact", "/mira", "/riva", "/vira", "/login", "/retailer", "/account"]);
 
 async function readBody(request: Request) {
   const reader = request.body?.getReader();

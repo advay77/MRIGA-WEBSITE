@@ -158,8 +158,8 @@ export async function signIn(form: FormData) {
     const href = expected === "ADMIN"
       ? "/admin"
       : requested.startsWith("/admin")
-        ? (expected === "RETAILER" ? "/retailer" : "/")
-        : expected === "RETAILER" && requested === "/" ? "/retailer" : requested;
+        ? (expected === "RETAILER" ? "/account" : "/")
+        : expected === "RETAILER" && requested === "/" ? "/account" : requested;
     return { ok: true as const, name: user.name, href };
   } catch {
     console.error("sign-in failed");
@@ -196,7 +196,7 @@ async function createAccount(form: FormData, role: "MEMBER" | "RETAILER") {
     });
     await createSession(user.id, 7);
     await recordLogin({ userId: user.id, role, method: "signup", success: true, identifier: who.email || who.phone || "" });
-    return { ok: true as const, name: user.name, href: role === "RETAILER" ? "/retailer" : "/" };
+    return { ok: true as const, name: user.name, href: role === "RETAILER" ? "/account" : "/" };
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") return exists;
     console.error("sign-up failed");
