@@ -21,13 +21,23 @@ export async function verifyTurnstile(token: string, ip: string) {
     }
     return true;
   }
-  if (!token || token.length > 2048) return false;
+  if (!token || token.length > 2048) {
+    console.error(`turnstile rejected: ${token ? "token too long" : "no token in the form"}`);
+    return false;
+  }
   const body = new URLSearchParams({ secret: process.env.TURNSTILE_SECRET_KEY || "", response: token });
   if (ip && ip !== "local") body.set("remoteip", ip);
   try {
     const response = await fetch(VERIFY_URL, { method: "POST", body, signal: AbortSignal.timeout(8_000) });
-    if (!response.ok) return false;
-    const result = (await response.json()) as { success?: boolean };
+    if (!response.ok) {
+      console.error(`turnstile rejected: siteverify HTTP ${response.status}`);
+      return false;
+    }
+    const result = (await response.json()) as { success?: boolean; "error-codes"?: string[]; hostname?: string };
+    if (result.success !== true) {
+      // Codes only (e.g. timeout-or-duplicate, invalid-input-secret); never the token or secret.
+      console.error(`turnstile rejected: ${(result["error-codes"] || []).join(", ") || "no reason given"} (host ${result.hostname || "?"})`);
+    }
     return result.success === true;
   } catch {
     // Cloudflare unreachable: refuse rather than let unverified traffic through.

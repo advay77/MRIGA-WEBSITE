@@ -31,6 +31,21 @@ function loadTurnstile() {
   return loader;
 }
 
+// Waits until the form's Turnstile widget has produced a token, so a fast click never sends an
+// empty one. Resolves true at once when Turnstile is off. Read the form's data AFTER this resolves.
+export async function waitForTurnstile(form: HTMLFormElement, timeoutMs = 8_000) {
+  if (!SITE_KEY) return true;
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    const field = form.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]');
+    if (field?.value) return true;
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  }
+  return false;
+}
+
+export const TURNSTILE_WAIT_MESSAGE = "The security check is still running. Please wait a moment and press the button again.";
+
 // Renders Cloudflare's "verify you are human" check inside a form. Most visitors never see it
 // ("interaction-only"); the token lands in a hidden "cf-turnstile-response" field the server checks.
 // Tokens are single-use: give this component a new `key` after each submit to get a fresh one.

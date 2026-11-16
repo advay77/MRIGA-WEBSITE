@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, signUp, signUpRetailer } from "@/lib/actions";
-import { Turnstile } from "@/components/turnstile";
+import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 type LoungeUser = { name: string; role: string };
@@ -33,7 +33,14 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    setBusy(true);
+    if (!(await waitForTurnstile(form))) {
+      setBusy(false);
+      setErr(TURNSTILE_WAIT_MESSAGE);
+      return;
+    }
+    const data = new FormData(form);
     setBusy(true);
     setErr("");
     setInfo("");

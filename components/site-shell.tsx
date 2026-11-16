@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
-import { Turnstile } from "@/components/turnstile";
+import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
 import { WhatsAppButton, WhatsAppIcon } from "@/components/whatsapp-button";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -152,7 +152,14 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   async function submitRide(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    setBusy(true);
+    if (!(await waitForTurnstile(form))) {
+      setBusy(false);
+      setErr(TURNSTILE_WAIT_MESSAGE);
+      return;
+    }
+    const data = new FormData(form);
     data.set("model", model);
     setBusy(true);
     setErr("");

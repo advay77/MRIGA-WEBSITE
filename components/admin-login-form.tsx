@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/actions";
-import { Turnstile } from "@/components/turnstile";
+import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -13,7 +13,14 @@ export function AdminLoginForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    setBusy(true);
+    if (!(await waitForTurnstile(form))) {
+      setBusy(false);
+      setErr(TURNSTILE_WAIT_MESSAGE);
+      return;
+    }
+    const data = new FormData(form);
     data.set("desk", "admin");
     data.set("next", "/admin");
     setBusy(true);

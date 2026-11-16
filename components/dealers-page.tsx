@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { submitDealerApplication } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
-import { Turnstile } from "@/components/turnstile";
+import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 const MODELS = [
@@ -26,7 +26,14 @@ export function DealersPage() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    setBusy(true);
+    if (!(await waitForTurnstile(form))) {
+      setBusy(false);
+      setErr(TURNSTILE_WAIT_MESSAGE);
+      return;
+    }
+    const data = new FormData(form);
     data.set("model", model);
     setBusy(true);
     setErr("");
