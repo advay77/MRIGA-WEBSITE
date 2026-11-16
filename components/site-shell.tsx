@@ -1,12 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
-import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { reserveTestRide } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
-import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
+import { SEND_FAILED, sendWithTurnstile, Turnstile } from "@/components/turnstile";
 import { AccountChip, useMe } from "@/components/account-chip";
 import { WhatsAppButton, WhatsAppIcon } from "@/components/whatsapp-button";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -158,20 +157,12 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     event.preventDefault();
     const form = event.currentTarget;
     setBusy(true);
-    if (!(await waitForTurnstile(form))) {
-      setBusy(false);
-      setErr(TURNSTILE_WAIT_MESSAGE);
-      return;
-    }
-    const data = new FormData(form);
-    data.set("model", model);
-    setBusy(true);
     setErr("");
-    const result = await reserveTestRide(data);
+    const data = new FormData(form);
+    const result = await sendWithTurnstile(form, (fields) => fields.set("model", model), reserveTestRide, () => setCheck((value) => value + 1));
     setBusy(false);
-    setCheck((value) => value + 1);
-    if (!result.ok) {
-      setErr(result.error);
+    if (!result?.ok) {
+      setErr(result?.error || SEND_FAILED);
       return;
     }
     const date = String(data.get("date") || "");
@@ -299,7 +290,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
                   </button>
                 </div>
                 <form className="form" onSubmit={submitRide} noValidate>
-                  <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                   <div className="fld">
                     <span className="lbl">Choose your model</span>
                     <div className="mpicks">

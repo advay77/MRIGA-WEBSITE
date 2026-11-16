@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { signIn, signOut, signUp, signUpRetailer } from "@/lib/actions";
 import { announceAuthChange } from "@/components/account-chip";
 import { useSiteContent } from "@/components/site-content";
-import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
+import { SEND_FAILED, sendWithTurnstile, Turnstile } from "@/components/turnstile";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 type LoungeUser = { name: string; role: string };
@@ -46,18 +45,11 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
     setBusy(true);
     setErr("");
     setInfo("");
-    if (!(await waitForTurnstile(form))) {
-      setBusy(false);
-      setErr(TURNSTILE_WAIT_MESSAGE);
-      return;
-    }
-    const data = new FormData(form);
-    data.set("desk", retailer ? "retailer" : "member");
-    const result = up ? await (retailer ? signUpRetailer(data) : signUp(data)) : await signIn(data);
-    setCheck((value) => value + 1);
+    const send = up ? (retailer ? signUpRetailer : signUp) : signIn;
+    const result = await sendWithTurnstile(form, (data) => data.set("desk", retailer ? "retailer" : "member"), send, () => setCheck((value) => value + 1));
     setBusy(false);
-    if (!result.ok) {
-      setErr(result.error);
+    if (!result?.ok) {
+      setErr(result?.error || SEND_FAILED);
       return;
     }
     setFirstName(result.name.split(" ")[0]);
@@ -146,7 +138,6 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                     <p className="sub">{subtitle}</p>
                   </div>
                   <form className="form" onSubmit={submit} noValidate>
-                    <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                     <input type="hidden" name="next" value={nextPath} />
                     <input type="hidden" name="desk" value={retailer ? "retailer" : "member"} />
                     {up ? (

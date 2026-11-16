@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useState, type FormEvent } from "react";
 import { submitDealerApplication } from "@/lib/actions";
 import { useSiteContent } from "@/components/site-content";
-import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
+import { SEND_FAILED, sendWithTurnstile, Turnstile } from "@/components/turnstile";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 const MODELS = [
@@ -29,23 +28,15 @@ export function DealersPage() {
     event.preventDefault();
     const form = event.currentTarget;
     setBusy(true);
-    if (!(await waitForTurnstile(form))) {
-      setBusy(false);
-      setErr(TURNSTILE_WAIT_MESSAGE);
-      return;
-    }
-    const data = new FormData(form);
-    data.set("model", model);
-    setBusy(true);
     setErr("");
-    const result = await submitDealerApplication(data);
+    const values = new FormData(form);
+    const result = await sendWithTurnstile(form, (data) => data.set("model", model), submitDealerApplication, () => setCheck((value) => value + 1));
     setBusy(false);
-    setCheck((value) => value + 1);
-    if (!result.ok) {
-      setErr(result.error);
+    if (!result?.ok) {
+      setErr(result?.error || SEND_FAILED);
       return;
     }
-    setSent({ who: result.who, reference: result.reference, model, name: String(data.get("name") || ""), location: String(data.get("location") || "") });
+    setSent({ who: result.who, reference: result.reference, model, name: String(values.get("name") || ""), location: String(values.get("location") || "") });
   }
 
   return (
@@ -78,7 +69,6 @@ export function DealersPage() {
                   <h2 className="h2" style={{ margin: "0 0 6px" }}>Become a dealer</h2>
                   <p className="sub" style={{ margin: 0 }}>Takes under a minute. No documents needed now.</p>
                 </div>
-                <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
                 <div className="fld">
                   <label className="lbl" htmlFor="d-name">Your name</label>
                   <input id="d-name" name="name" className="plain-in" required autoComplete="name" placeholder="Full name" maxLength={80} />

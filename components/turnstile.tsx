@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 type TurnstileApi = {
   render: (element: HTMLElement, options: Record<string, unknown>) => string;
@@ -31,83 +31,97 @@ function loadTurnstile() {
   return loader;
 }
 
-// Waits until the form's Turnstile widget has produced a token, so a fast click never sends an
-// empty one. Resolves true at once when Turnstile is off. Read the form's data AFTER this resolves.
-export async function waitForTurnstile(form: HTMLFormElement, timeoutMs = 8_000) {
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function tokenOf(form: HTMLFormElement) {
+  return form.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]')?.value || "";
+}
+
+// Waits until the form's Turnstile widget has a token (other than `used`, which the server has
+// already spent). Resolves at once when Turnstile is off.
+async function waitForToken(form: HTMLFormElement, timeoutMs: number, used = "") {
   if (!SITE_KEY) return true;
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
-    const field = form.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]');
-    if (field?.value) return true;
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    const token = tokenOf(form);
+    if (token && token !== used) return true;
+    await sleep(200);
   }
   return false;
 }
 
-export const TURNSTILE_WAIT_MESSAGE = "The security check is still running. Please wait a moment and press the button again.";
+// The only error a visitor ever sees from the bot check, and only after a silent retry failed.
+export const SEND_FAILED = "Couldn't send. Please check your internet connection and try again.";
 
-// Renders Cloudflare's "verify you are human" check inside a form, always visible. The token
-// lands in a hidden "cf-turnstile-response" field the server checks.
-// Tokens are single-use: give this component a new `key` after each submit to get a fresh one.
-// Cloudflare error codes worth explaining: https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/
-function explain(code: string) {
-  if (code.startsWith("1102")) return "This site's address is not on the Turnstile widget's hostname list in Cloudflare.";
-  if (code.startsWith("110")) return "The Turnstile site key is not valid.";
-  if (code.startsWith("300") || code.startsWith("600")) return "Cloudflare could not confirm this browser. Refresh the page and try again.";
-  return "Cloudflare's check could not load. Refresh the page and try again.";
+// Sends a form protected by Turnstile without ever bothering the visitor: waits for the token,
+// and if the server rejects it (expired, network blip) gets a fresh one and tries once more.
+// `refresh` must remount the <Turnstile> (bump its key). Returns null when nothing worked.
+export async function sendWithTurnstile<T extends { ok: boolean; retry?: boolean }>(
+  form: HTMLFormElement,
+  prepare: (data: FormData) => void,
+  send: (data: FormData) => Promise<T>,
+  refresh: () => void,
+): Promise<T | null> {
+  let used = "";
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    if (!(await waitForToken(form, 20_000, used))) {
+      refresh();
+      if (!(await waitForToken(form, 15_000, used))) return null;
+    }
+    used = tokenOf(form);
+    const data = new FormData(form);
+    prepare(data);
+    let result: T;
+    try {
+      result = await send(data);
+    } catch {
+      refresh();
+      if (attempt === 0) continue;
+      return null;
+    }
+    refresh();
+    if (!result.ok && result.retry && attempt === 0) continue;
+    return result;
+  }
+  return null;
 }
 
+// Renders Cloudflare's "verify you are human" check inside a form, always visible. The token
+// lands in a hidden "cf-turnstile-response" field the server checks. Tokens are single-use:
+// sendWithTurnstile remounts this (new `key`) after each submit to get a fresh one.
+// Failures are only logged; Cloudflare retries on its own and sendWithTurnstile handles the rest,
+// so visitors never see technical security messages.
 export function Turnstile({ action }: { action: string }) {
   const box = useRef<HTMLDivElement>(null);
-  const [failure, setFailure] = useState("");
 
   useEffect(() => {
     if (!SITE_KEY) return;
     let widget: string | undefined;
     let cancelled = false;
-    let solved = false;
-    // Some failures (e.g. 110200, hostname not allowed) never reach error-callback in
-    // "interaction-only" mode, so the widget just stalls. Say so after a fair wait.
-    const watchdog = window.setTimeout(() => {
-      if (!solved && !cancelled) {
-        setFailure(`The security check has not finished. Refresh the page and try again. ${location.hostname === "localhost" ? "On localhost, use Cloudflare's test keys or add localhost to the widget's hostnames." : ""}`.trim());
-      }
-    }, 15_000);
     loadTurnstile()
       .then(() => {
         if (cancelled || !box.current || !window.turnstile) return;
         widget = window.turnstile.render(box.current, {
           sitekey: SITE_KEY,
           action,
-          // Always visible: the "Verifying… Success!" box reassures people the form is protected.
           appearance: "always",
           size: "flexible",
           theme: "light",
+          retry: "auto",
+          "refresh-expired": "auto",
           "response-field-name": "cf-turnstile-response",
-          // Also surface failures as text, so nobody is left with a silent, stuck form.
           "error-callback": (code: string | number) => {
-            setFailure(`Security check failed (${code}). ${explain(String(code))}`);
-            return true;
-          },
-          callback: () => {
-            solved = true;
-            setFailure("");
+            console.warn(`turnstile error ${code}`);
           },
         });
       })
-      .catch(() => setFailure("Cloudflare's security check could not load. Check your connection and refresh the page."));
+      .catch(() => console.warn("turnstile script failed to load"));
     return () => {
       cancelled = true;
-      window.clearTimeout(watchdog);
       if (widget && window.turnstile) window.turnstile.remove(widget);
     };
   }, [action]);
 
   if (!SITE_KEY) return null;
-  return (
-    <>
-      <div ref={box} className="ts-box" />
-      {failure ? <p className="err" role="alert">{failure}</p> : null}
-    </>
-  );
+  return <div ref={box} className="ts-box" />;
 }

@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/actions";
-import { Turnstile, TURNSTILE_WAIT_MESSAGE, waitForTurnstile } from "@/components/turnstile";
+import { SEND_FAILED, sendWithTurnstile, Turnstile } from "@/components/turnstile";
 
 export function AdminLoginForm() {
   const router = useRouter();
@@ -16,21 +15,14 @@ export function AdminLoginForm() {
     event.preventDefault();
     const form = event.currentTarget;
     setBusy(true);
-    if (!(await waitForTurnstile(form))) {
-      setBusy(false);
-      setErr(TURNSTILE_WAIT_MESSAGE);
-      return;
-    }
-    const data = new FormData(form);
-    data.set("desk", "admin");
-    data.set("next", "/admin");
-    setBusy(true);
     setErr("");
-    const result = await signIn(data);
-    setCheck((value) => value + 1);
+    const result = await sendWithTurnstile(form, (data) => {
+      data.set("desk", "admin");
+      data.set("next", "/admin");
+    }, signIn, () => setCheck((value) => value + 1));
     setBusy(false);
-    if (!result.ok) {
-      setErr(result.error);
+    if (!result?.ok) {
+      setErr(result?.error || SEND_FAILED);
       return;
     }
     router.push(result.href);
@@ -39,7 +31,6 @@ export function AdminLoginForm() {
 
   return (
     <form className="form" onSubmit={submit} noValidate>
-      <input className="hp" name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" defaultValue="" />
       <div className="fld">
         <label htmlFor="admin-id">Email</label>
         <input id="admin-id" name="id" className="plain-in" autoComplete="username" required />

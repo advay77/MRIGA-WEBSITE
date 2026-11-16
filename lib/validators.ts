@@ -34,7 +34,6 @@ export const rideSchema = z.object({
     const max = today.getTime() + 366 * 24 * 60 * 60 * 1000;
     return parsed.getTime() >= min && parsed.getTime() <= max;
   }, "Choose a date within the next year."),
-  website: z.string().max(200).optional().or(z.literal("")),
 });
 
 // Dealer enquiry: just enough for the team to call back.
@@ -43,7 +42,6 @@ export const dealerSchema = z.object({
   phone: phoneField("Please enter a valid 10-digit mobile number."),
   location: plainText(2, 120, "Please enter your city or area."),
   model: z.enum(MODELS, { errorMap: () => ({ message: "Please choose a model." }) }),
-  website: z.string().max(200).optional().or(z.literal("")),
 });
 
 export const passwordSchema = z
@@ -64,7 +62,6 @@ export const signUpSchema = z.object({
   id: accountId,
   pw: passwordSchema,
   terms: z.literal("on", { errorMap: () => ({ message: "Please accept the terms to continue." }) }),
-  website: optional(200),
 });
 
 // Sign-in checks shape only. Strength rules belong to sign-up, so an older or
@@ -73,7 +70,6 @@ export const signInSchema = z.object({
   id: accountId,
   pw: z.string().min(1).max(128),
   remember: optional(10),
-  website: optional(200),
   next: optional(200),
 });
 

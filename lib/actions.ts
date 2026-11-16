@@ -8,7 +8,6 @@ import { createSession, clearSession, getSession } from "@/lib/auth";
 import { dummyPasswordHash, hashPassword, verifyPassword } from "@/lib/password";
 import { clearLimit, clientIp, hit, rateLimit, sameOrigin } from "@/lib/guards";
 import { TURNSTILE_FIELD, verifyTurnstile } from "@/lib/turnstile";
-import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { dealerSchema, firstIssue, normalizePhone, rideSchema, safeNext, signInSchema, signUpSchema } from "@/lib/validators";
 
 const MINUTE = 60 * 1000;
@@ -16,7 +15,8 @@ const HOUR = 60 * MINUTE;
 const UNAVAILABLE = "The atelier desk is briefly unavailable. Please try again.";
 const NO_MATCH = "Those details do not match an account.";
 const TOO_MANY = "Too many attempts. Please wait a few minutes.";
-const NOT_HUMAN = "The security check did not complete. Please wait a moment and try again.";
+// Shown only if the silent retry in the browser also fails (see sendWithTurnstile).
+const NOT_HUMAN = "Couldn't send. Please check your internet connection and try again.";
 
 type Desk = "admin" | "retailer" | "member";
 const ROLE_FOR: Record<Desk, "ADMIN" | "RETAILER" | "MEMBER"> = { admin: "ADMIN", retailer: "RETAILER", member: "MEMBER" };
@@ -26,14 +26,6 @@ function text(form: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
-// True when the hidden honeypot field came back filled, i.e. most likely a bot. Logged (never the
-// value) so a false positive from some new autofill behaviour shows up in the server logs.
-function trapped(value: string | undefined, form: string) {
-  if (!value) return false;
-  console.warn(`honeypot filled on ${form} form; submission refused`);
-  return true;
-}
-
 function deskOf(value: string): Desk {
   return value === "admin" || value === "retailer" ? value : "member";
 }
@@ -41,7 +33,7 @@ function deskOf(value: string): Desk {
 // Every public form and login: same-origin check, then the rate limit (cheap, local), then
 // Cloudflare Turnstile (a network call), so floods are stopped before they reach Cloudflare.
 async function guard(form: FormData, action: string, limit: number, windowMs: number) {
-  if (!(await sameOrigin())) return "Invalid request.";
+  if (!(await sameOrigin())) return NOT_HUMAN;
   try {
     if (!(await rateLimit(action, limit, windowMs))) return TOO_MANY;
   } catch {
@@ -64,17 +56,15 @@ function findByIdentity(who: ReturnType<typeof identity>) {
 
 export async function reserveTestRide(form: FormData) {
   const blocked = await guard(form, "ride", 5, HOUR);
-  if (blocked) return { ok: false as const, error: blocked };
+  if (blocked) return { ok: false as const, error: blocked, retry: blocked === NOT_HUMAN };
   const parsed = rideSchema.safeParse({
     name: text(form, "name"),
     phone: text(form, "phone"),
     city: text(form, "city"),
     model: text(form, "model"),
     date: text(form, "date"),
-    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (trapped(parsed.data.website, "test ride")) return { ok: false as const, error: "Unable to submit this form." };
   try {
     await prisma.testRide.create({
       data: {
@@ -100,16 +90,14 @@ export async function reserveTestRide(form: FormData) {
 
 export async function submitDealerApplication(form: FormData) {
   const blocked = await guard(form, "dealer", 3, HOUR);
-  if (blocked) return { ok: false as const, error: blocked };
+  if (blocked) return { ok: false as const, error: blocked, retry: blocked === NOT_HUMAN };
   const parsed = dealerSchema.safeParse({
     name: text(form, "name"),
     phone: text(form, "phone"),
     location: text(form, "location"),
     model: text(form, "model"),
-    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (trapped(parsed.data.website, "dealer enquiry")) return { ok: false as const, error: "Unable to submit this form." };
   const { name, phone, location, model } = parsed.data;
   const userId = await signedInCustomer();
   try {
@@ -132,15 +120,14 @@ export async function submitDealerApplication(form: FormData) {
 export async function signIn(form: FormData) {
   const desk = deskOf(text(form, "desk"));
   const blocked = await guard(form, `login-${desk}`, desk === "admin" ? 5 : 10, 15 * MINUTE);
-  if (blocked) return { ok: false as const, error: blocked };
+  if (blocked) return { ok: false as const, error: blocked, retry: blocked === NOT_HUMAN };
   const parsed = signInSchema.safeParse({
     id: text(form, "id"),
     pw: text(form, "pw"),
     remember: text(form, "remember"),
-    website: text(form, HONEYPOT_FIELD),
     next: text(form, "next"),
   });
-  if (!parsed.success || trapped(parsed.data.website, "sign-in")) return { ok: false as const, error: NO_MATCH };
+  if (!parsed.success) return { ok: false as const, error: NO_MATCH };
   const who = identity(parsed.data.id);
   // Per-account lock as well as per-IP, so a botnet cannot spread guesses across addresses.
   const accountKey = `acct:${desk}:${who.email || who.phone}`;
@@ -178,16 +165,14 @@ export async function signIn(form: FormData) {
 
 async function createAccount(form: FormData, role: "MEMBER" | "RETAILER") {
   const blocked = await guard(form, "signup", 5, HOUR);
-  if (blocked) return { ok: false as const, error: blocked };
+  if (blocked) return { ok: false as const, error: blocked, retry: blocked === NOT_HUMAN };
   const parsed = signUpSchema.safeParse({
     name: text(form, "name"),
     id: text(form, "id"),
     pw: text(form, "pw"),
     terms: text(form, "terms"),
-    website: text(form, HONEYPOT_FIELD),
   });
   if (!parsed.success) return { ok: false as const, error: firstIssue(parsed.error) };
-  if (trapped(parsed.data.website, "sign-up")) return { ok: false as const, error: "Unable to create this account." };
   const who = identity(parsed.data.id);
   const exists = { ok: false as const, error: "An account with that email or mobile already exists. Sign in instead." };
   const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
