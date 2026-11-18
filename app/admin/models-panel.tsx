@@ -68,8 +68,10 @@ export async function ModelsPanel({ query }: { query: Query }) {
         <h2>Photos</h2>
         <p>
           {id === "mira"
-            ? "Pink, orange and brown beige shots on Home, Explore and the MIRA page. Removing an upload brings back the built-in photo."
-            : `Photo 1 is the cover on Home, Explore and the PDF catalogue. The ${spec.name} page shows every uploaded photo as a sliding gallery. Empty slots stay hidden on the site.`}
+            ? "Pink, orange, brown beige, silver, grey and cream. Each colour keeps its own shots. Removing an upload brings back the built-in photo."
+            : id === "vira"
+              ? "Light blue, white, grey and black. The black colour includes the photographs of the three scooters together. Removing an upload brings back the built-in photo."
+              : "Grey, silver, light blue and cream. Grey is the cover on Home, Explore and the PDF catalogue. The RIVA page also has an All view of every shot. Removing an upload brings back the built-in photo."}
         </p>
         <div className="photo-grid">
           {modelSlots(id).map((slot) => {

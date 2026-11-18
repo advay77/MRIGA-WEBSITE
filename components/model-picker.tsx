@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useModels, useSiteContent } from "@/components/site-content";
 import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
+import { RIVA_COLOURS, type RivaColourId } from "@/lib/riva";
+import { VIRA_COLOURS, type ViraColourId } from "@/lib/vira";
 import type { ModelId, ModelSpec } from "@/lib/specs";
 
 const ORDER: ModelId[] = ["riva", "mira", "vira"];
@@ -42,10 +44,15 @@ export function ModelPicker() {
   const content = useSiteContent();
   const [active, setActive] = useState<ModelId>("mira");
   const [colourId, setColourId] = useState<MiraColourId>("pink");
+  const [rivaId, setRivaId] = useState<RivaColourId>("grey");
+  const [viraId, setViraId] = useState<ViraColourId>("blue");
   const spec = specs[active];
   const star = active === "mira";
   const colour = MIRA_COLOURS.find((item) => item.id === colourId) ?? MIRA_COLOURS[0];
-  const photo = star ? colour.shots[0] : photos[active][0] ? `/media/${photos[active][0]}` : null;
+  const riva = RIVA_COLOURS.find((item) => item.id === rivaId) ?? RIVA_COLOURS[0];
+  const vira = VIRA_COLOURS.find((item) => item.id === viraId) ?? VIRA_COLOURS[0];
+  const shown = active === "mira" ? colour : active === "riva" ? riva : active === "vira" ? vira : null;
+  const photo = shown ? shown.shots[0] : photos[active][0] ? `/media/${photos[active][0]}` : null;
   const price = (id: ModelId) => (id === "mira" ? `From ${content.leadPrice}` : "Announced at launch");
 
   return (
@@ -78,18 +85,36 @@ export function ModelPicker() {
         </div>
 
         <div className="pk-panel" id="pk-panel" role="tabpanel" aria-labelledby={`pk-tab-${active}`} key={active}>
-          <div className={photo ? "pk-stage" : "pk-stage pk-empty"} style={star ? { background: colour.wash } : undefined}>
-            {photo ? <img key={photo} src={photo} alt={star ? `MIRA in ${colour.name}` : spec.name} /> : (
+          <div className={photo ? "pk-stage" : "pk-stage pk-empty"} style={shown ? { background: shown.wash } : undefined}>
+            {photo ? <img key={photo} src={photo} alt={shown ? `${spec.name} in ${shown.name}` : spec.name} /> : (
               <div className="pk-soon">
                 <span className="pk-ring" aria-hidden="true" />
                 <b>{spec.name}</b>
                 <span>Photographs coming soon</span>
               </div>
             )}
-            {star ? (
+            {active === "mira" ? (
               <div className="pk-colours" role="group" aria-label="MIRA colour">
                 {MIRA_COLOURS.map((item) => (
                   <button key={item.id} type="button" className={item.id === colour.id ? "on" : undefined} onClick={() => setColourId(item.id)} aria-pressed={item.id === colour.id}>
+                    <i style={{ background: item.swatch }} />{item.name}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {active === "riva" ? (
+              <div className="pk-colours" role="group" aria-label="RIVA colour">
+                {RIVA_COLOURS.map((item) => (
+                  <button key={item.id} type="button" className={item.id === riva.id ? "on" : undefined} onClick={() => setRivaId(item.id)} aria-pressed={item.id === riva.id}>
+                    <i style={{ background: item.swatch }} />{item.name}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {active === "vira" ? (
+              <div className="pk-colours" role="group" aria-label="VIRA colour">
+                {VIRA_COLOURS.map((item) => (
+                  <button key={item.id} type="button" className={item.id === vira.id ? "on" : undefined} onClick={() => setViraId(item.id)} aria-pressed={item.id === vira.id}>
                     <i style={{ background: item.swatch }} />{item.name}
                   </button>
                 ))}

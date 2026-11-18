@@ -5,28 +5,35 @@ import { useEffect, useState } from "react";
 import { CatalogueActions } from "@/components/catalogue-actions";
 import { Reveal } from "@/components/reveal";
 import { useModels, useSiteContent } from "@/components/site-content";
-import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
+import { MIRA_COLOURS, MIRA_COLOUR_LINE } from "@/lib/mira";
 import { APP_FEATURES, WARRANTY, type ModelId } from "@/lib/specs";
+import { RIVA_ALL, RIVA_COLOURS } from "@/lib/riva";
+import { VIRA_COLOURS } from "@/lib/vira";
 
-export function ModelPage({ model, initialColour = "pink" }: { model: ModelId; initialColour?: string }) {
+const PALETTES = { mira: MIRA_COLOURS, riva: RIVA_COLOURS, vira: VIRA_COLOURS } as const;
+
+export function ModelPage({ model, initialColour = "" }: { model: ModelId; initialColour?: string }) {
   const { specs, photos } = useModels();
   const spec = specs[model];
   const star = model === "mira";
+  const palette = model === "mira" || model === "riva" || model === "vira" ? PALETTES[model] : null;
+  const views = palette ? (model === "riva" ? [...palette, RIVA_ALL] : palette) : null;
   const content = useSiteContent();
-  const gallery = star ? [] : photos[model].map((slot) => `/media/${slot}`);
+  const gallery = palette ? [] : photos[model].map((slot) => `/media/${slot}`);
   const [pic, setPic] = useState(0);
   const current = gallery[pic] ?? gallery[0];
-  const start = MIRA_COLOURS.some((item) => item.id === initialColour) ? (initialColour as MiraColourId) : "pink";
-  const [colourId, setColourId] = useState<MiraColourId>(start);
+  const fallbackColour = views?.[0].id ?? "";
+  const start = views?.some((item) => item.id === initialColour) ? initialColour : fallbackColour;
+  const [colourId, setColourId] = useState(start);
   const [shot, setShot] = useState(0);
-  const colour = MIRA_COLOURS.find((item) => item.id === colourId) ?? MIRA_COLOURS[0];
-  const frame = colour.shots[shot] ?? colour.shots[0];
+  const colour = views?.find((item) => item.id === colourId) ?? views?.[0];
+  const frame = colour ? (colour.shots[shot] ?? colour.shots[0]) : "";
 
   useEffect(() => {
-    if (!star || colour.shots.length < 2) return;
+    if (!colour || colour.shots.length < 2) return;
     const timer = window.setInterval(() => setShot((current) => (current + 1) % colour.shots.length), 3200);
     return () => window.clearInterval(timer);
-  }, [colour, star]);
+  }, [colour]);
 
   useEffect(() => {
     if (gallery.length < 2) return;
@@ -35,7 +42,7 @@ export function ModelPage({ model, initialColour = "pink" }: { model: ModelId; i
   }, [gallery.length]);
 
   const groups = star
-    ? [...spec.groups, { title: "Price", rows: [["LiFePO4 (lithium)", `${content.lithiumPrice} · ${content.lithiumDetail}`], ["SLA (lead-acid)", `${content.leadPrice} · ${content.leadDetail}`], ["Colours", "Pink, orange and brown beige"]] as [string, string][] }]
+    ? [...spec.groups, { title: "Price", rows: [["LiFePO4 (lithium)", `${content.lithiumPrice} · ${content.lithiumDetail}`], ["SLA (lead-acid)", `${content.leadPrice} · ${content.leadDetail}`], ["Colours", MIRA_COLOUR_LINE[0].toUpperCase() + MIRA_COLOUR_LINE.slice(1)]] as [string, string][] }]
     : spec.groups;
 
   return (
@@ -52,17 +59,17 @@ export function ModelPage({ model, initialColour = "pink" }: { model: ModelId; i
 
       <section className="sec" style={{ paddingTop: 0 }}>
         <div className="wrap model-layout">
-          {star ? (
-            <div className="model-stage star-stage" style={{ background: colour.wash }} data-reveal>
+          {views && colour ? (
+            <div className={star ? "model-stage star-stage" : "model-stage gallery-stage"} style={{ background: colour.wash }} data-reveal data-colours={spec.name}>
               <div className="model-colours">
-                {MIRA_COLOURS.map((item) => (
+                {views.map((item) => (
                   <button key={item.id} type="button" className={item.id === colour.id ? "swatch-btn on" : "swatch-btn"} onClick={() => { setColourId(item.id); setShot(0); }}>
                     <i style={{ background: item.swatch }} />
                     {item.name}
                   </button>
                 ))}
               </div>
-              <img key={frame} className="model-photo" src={frame} alt={`MIRA in ${colour.name}`} />
+              <img key={frame} className="model-photo" src={frame} alt={colour.id === "all" ? spec.name : `${spec.name} in ${colour.name}`} />
               <div className="shot-row">
                 {colour.shots.map((src, index) => (
                   <button key={src} type="button" className={index === shot ? "on" : undefined} onClick={() => setShot(index)} aria-label={`${colour.name} photo ${index + 1}`}>

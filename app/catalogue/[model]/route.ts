@@ -4,6 +4,7 @@ import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFImage, type PDFP
 import { getSiteContent } from "@/lib/content";
 import { prisma } from "@/lib/db";
 import { mediaSlot } from "@/lib/site-copy";
+import { MIRA_COLOUR_LINE } from "@/lib/mira";
 import { getModels } from "@/lib/models";
 import { APP_FEATURES, isModelId, WARRANTY, type ModelId } from "@/lib/specs";
 import { sniff } from "@/lib/uploads";
@@ -167,7 +168,7 @@ export async function GET(request: Request, context: { params: Promise<{ model: 
   y -= 28;
   const groups = [...spec.groups];
   if (id === "mira") {
-    groups.push({ title: "Price", rows: [["LiFePO4 (lithium)", `${content.lithiumPrice}. ${content.lithiumDetail}`], ["SLA (lead-acid)", `${content.leadPrice}. ${content.leadDetail}`], ["Colours", "Pink, orange and brown beige"]] });
+    groups.push({ title: "Price", rows: [["LiFePO4 (lithium)", `${content.lithiumPrice}. ${content.lithiumDetail}`], ["SLA (lead-acid)", `${content.leadPrice}. ${content.leadDetail}`], ["Colours", MIRA_COLOUR_LINE[0].toUpperCase() + MIRA_COLOUR_LINE.slice(1)]] });
   }
   groups.push({ title: "Warranty", rows: [["Covers", WARRANTY]] });
   const labelWidth = 150;

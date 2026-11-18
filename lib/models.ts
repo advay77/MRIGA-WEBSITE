@@ -2,6 +2,9 @@ import { unstable_cache } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { SITE_CONTENT_TAG } from "@/lib/content";
+import { MIRA_COLOUR_LINE } from "@/lib/mira";
+import { RIVA_COLOUR_LINE } from "@/lib/riva";
+import { VIRA_COLOUR_LINE } from "@/lib/vira";
 import { MEDIA_SLOTS } from "@/lib/site-copy";
 import { MODEL_IDS, SPECS, type ModelId, type ModelSpec } from "@/lib/specs";
 
@@ -58,4 +61,4 @@ async function readModels(): Promise<ModelsData> {
 }
 
 // Same tag as the site text: every admin save (text or photo) refreshes the public pages at once.
-export const getModels = unstable_cache(readModels, ["site-models"], { tags: [SITE_CONTENT_TAG], revalidate: 300 });
+export const getModels = unstable_cache(readModels, ["site-models", MIRA_COLOUR_LINE, RIVA_COLOUR_LINE, VIRA_COLOUR_LINE], { tags: [SITE_CONTENT_TAG], revalidate: 300 });

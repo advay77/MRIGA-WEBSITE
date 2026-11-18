@@ -2,6 +2,9 @@
 
 import { useModels, useSiteContent } from "@/components/site-content";
 import { ModelPicker } from "@/components/model-picker";
+import { MIRA_COLOURS, MIRA_COLOUR_LINE } from "@/lib/mira";
+import { RIVA_COLOURS } from "@/lib/riva";
+import { VIRA_COLOURS } from "@/lib/vira";
 
 function Arrow({ size = 16 }: { size?: number }) {
   return (
@@ -147,7 +150,7 @@ export function HomePage() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div className="foot-note" style={{ marginBottom: 8 }}>Aesthetic</div>
-                    <div className="swatches"><i style={{ background: "#EFE6CF" }} /><i style={{ background: "#A8642F" }} /><i style={{ background: "#4A0E1F" }} /></div>
+                    <div className="swatches">{RIVA_COLOURS.map((item) => <i key={item.id} style={{ background: item.swatch }} />)}</div>
                   </div>
                 </div>
                 <div className={rivaCover ? "prod has-photo" : "prod"}>
@@ -158,7 +161,7 @@ export function HomePage() {
                     <circle cx="304" cy="54" r="15" fill="#EFE6CF" />
                     <circle cx="306" cy="54" r="9" fill="#fff8e6" stroke="#b9ad92" strokeWidth="2" />
                   </svg>
-                  <span className="ptag">Featured Spec: Crema & Cuoio</span>
+                  <span className="ptag">Grey</span>
                 </div>
                 <p className="desc">{specs.riva.summary}</p>
                 <div className="card-foot">
@@ -172,12 +175,12 @@ export function HomePage() {
                     <span className="tag">Star Product</span>
                     <h3 className="mname">MIRA</h3>
                     <p className="mtag">Smart Mobility. Sustainable Future.</p>
-                    <p className="desc">60V 30Ah battery: up to 85 km with LiFePO4, 65–70 km with SLA. 250W BLDC motor, disc brakes with CBS, cruise control. Pink, orange, and brown beige.</p>
+                    <p className="desc">60V 30Ah battery: up to 85 km with LiFePO4, 65–70 km with SLA. 250W BLDC motor, disc brakes with CBS, cruise control. {MIRA_COLOUR_LINE[0].toUpperCase() + MIRA_COLOUR_LINE.slice(1)}.</p>
                     <div className="pills" style={{ marginTop: 14 }}>
                       <span className="pill">Lithium <b>{content.lithiumPrice} · 3 yr</b></span>
                       <span className="pill">Lead-acid <b>{content.leadPrice} · 1 yr</b></span>
                     </div>
-                    <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#E7A0B8" }} /><i style={{ background: "#E36A2C" }} /><i style={{ background: "#C4A484" }} /></div>
+                    <div className="swatches" style={{ marginTop: 14 }}>{MIRA_COLOURS.map((item) => <i key={item.id} style={{ background: item.swatch }} />)}</div>
                     <a href="/mira" className="explore">
                       View specifications <Arrow size={14} />
                     </a>
@@ -194,7 +197,7 @@ export function HomePage() {
                     <h3 className="mname">VIRA</h3>
                     <p className="mtag">{specs.vira.tagline}</p>
                     <p className="desc">{specs.vira.summary}</p>
-                    <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>
+                    <div className="swatches" style={{ marginTop: 14 }}>{VIRA_COLOURS.map((item) => <i key={item.id} style={{ background: item.swatch }} />)}</div>
                     <a href="/vira" className="explore">
                       Explore VIRA <Arrow size={14} />
                     </a>

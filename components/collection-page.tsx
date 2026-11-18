@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
+import { MIRA_COLOURS, MIRA_COLOUR_LINE, type MiraColourId } from "@/lib/mira";
+import { RIVA_COLOURS, type RivaColourId } from "@/lib/riva";
+import { VIRA_COLOURS, type ViraColourId } from "@/lib/vira";
 import { useModels, useSiteContent } from "@/components/site-content";
 
 const TABS = [
@@ -14,9 +16,13 @@ const TABS = [
 export function CollectionPage() {
   const [filter, setFilter] = useState("all");
   const [miraColour, setMiraColour] = useState<MiraColourId>("pink");
+  const [rivaColour, setRivaColour] = useState<RivaColourId>("grey");
+  const [viraColour, setViraColour] = useState<ViraColourId>("blue");
   const content = useSiteContent();
-  const { specs, photos } = useModels();
+  const { specs } = useModels();
   const mira = MIRA_COLOURS.find((item) => item.id === miraColour) ?? MIRA_COLOURS[0];
+  const riva = RIVA_COLOURS.find((item) => item.id === rivaColour) ?? RIVA_COLOURS[0];
+  const vira = VIRA_COLOURS.find((item) => item.id === viraColour) ?? VIRA_COLOURS[0];
   function visible(key: string) {
     return filter === "all" || filter === key;
   }
@@ -32,7 +38,7 @@ export function CollectionPage() {
 <h1 className="h1 mixed"><span className="ln"><span>RIVA, MIRA,</span></span><span className="ln"><span>and VIRA</span></span></h1>
 <p className="ital fade-up d1">MIRA is on sale now.</p>
 </div>
-<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA is our star scooter, on sale in three colours. RIVA and VIRA add a full mobile app and keyless entry: see the full specifications on each model's page.</p>
+<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA is our star scooter, on sale in {MIRA_COLOUR_LINE}. RIVA and VIRA add a full mobile app and keyless entry: see the full specifications on each model's page.</p>
 </div>
 <div className="filters fade-up d3">
 <div className="tabs" role="group" aria-label="Filter models">
@@ -50,8 +56,13 @@ export function CollectionPage() {
 <article className="model">
 <div className="m-media">
 <div className="m-top"><span className="series">RIVA</span><span className="idx">01</span></div>
-<div className={photos.riva[0] ? "m-img has-photo" : "m-img"}>
-{photos.riva[0] ? <img className="prod-photo" src={`/media/${photos.riva[0]}`} alt="RIVA" /> : null}
+<div className="m-img has-photo" style={{ background: riva.wash }}>
+<img className="mira-shot" src={riva.shots[0]} alt={`RIVA in ${riva.name}`} />
+<div className="mira-switch">
+{RIVA_COLOURS.map((item) => (
+<button key={item.id} type="button" className={item.id === riva.id ? "on" : undefined} style={{ background: item.swatch }} aria-label={item.name} onClick={() => setRivaColour(item.id)} />
+))}
+</div>
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <g className="spin"><circle cx="96" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="96" cy="236" r="27" fill="#d8d2c6"></circle><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#8d867a" strokeWidth="3"></path></g>
 <g className="spin"><circle cx="318" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="318" cy="236" r="27" fill="#d8d2c6"></circle><path d="M318 211v50M293 236h50M300 218l36 36M336 218l-36 36" stroke="#8d867a" strokeWidth="3"></path></g>
@@ -75,7 +86,7 @@ export function CollectionPage() {
 <p className="mtag">{specs.riva.tagline}</p>
 <p className="desc" style={{marginTop: "18px"}}>{specs.riva.summary}</p>
 <div className="m-acts">
-<a href="/riva" className="btn btn-p btn-sm">Explore RIVA</a>
+<a href={`/riva?colour=${riva.id}`} className="btn btn-p btn-sm">Explore RIVA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
 <a href="#book" className="btn btn-l btn-sm">Enquire</a>
 </div>
@@ -105,11 +116,11 @@ export function CollectionPage() {
 <div className="kicker">Star Product</div>
 <h2>MIRA</h2>
 <p className="mtag">Smart Mobility. Sustainable Future.</p>
-<p className="desc" style={{marginTop: "18px"}}>MIRA by MRIGA is the first model we are building. Three colours: pink, orange, and brown beige. Range follows the battery you choose.</p>
+<p className="desc" style={{marginTop: "18px"}}>MIRA by MRIGA is the first model we are building. Colours: {MIRA_COLOUR_LINE}. Range follows the battery you choose.</p>
 <div className="m-list">
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"></path></svg></span><div><h4>Lithium-ion · {content.lithiumPrice}</h4><p>{content.lithiumDetail} About 5 hours to charge. Charger warranty is 1 year.</p></div></div>
 <div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2"></rect><path d="M22 11v2"></path></svg></span><div><h4>Lead-acid · {content.leadPrice}</h4><p>{content.leadDetail}</p></div></div>
-<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><h4>Colours</h4><p>Pink, orange, and brown beige.</p></div></div>
+<div className="m-li"><span className="feat-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><div><h4>Colours</h4><p>{MIRA_COLOUR_LINE[0].toUpperCase() + MIRA_COLOUR_LINE.slice(1)}.</p></div></div>
 </div>
 <div className="m-acts">
 <a href={`/mira?colour=${mira.id}`} className="btn btn-p btn-sm">MIRA specifications</a>
@@ -124,8 +135,13 @@ export function CollectionPage() {
 <article className="model dark">
 <div className="m-media">
 <div className="m-top"><span className="series">VIRA</span><span className="idx">03</span></div>
-<div className={photos.vira[0] ? "m-img has-photo" : "m-img"}>
-{photos.vira[0] ? <img className="prod-photo" src={`/media/${photos.vira[0]}`} alt="VIRA" /> : null}
+<div className="m-img has-photo" style={{ background: vira.wash }}>
+<img className="mira-shot" src={vira.shots[0]} alt={`VIRA in ${vira.name}`} />
+<div className="mira-switch">
+{VIRA_COLOURS.map((item) => (
+<button key={item.id} type="button" className={item.id === vira.id ? "on" : undefined} style={{ background: item.swatch }} aria-label={item.name} onClick={() => setViraColour(item.id)} />
+))}
+</div>
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <path className="beam" d="M318 58 L420 34 L420 86 Z" fill="#E0602A" opacity=".3"></path>
 <g className="spin"><circle cx="96" cy="236" r="44" fill="#0b0b0e"></circle><circle cx="96" cy="236" r="27" fill="#3a3a42"></circle><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#E0602A" strokeWidth="3"></path></g>
@@ -150,7 +166,7 @@ export function CollectionPage() {
 <p className="mtag">{specs.vira.tagline}</p>
 <p className="desc" style={{marginTop: "18px"}}>{specs.vira.summary}</p>
 <div className="m-acts">
-<a href="/vira" className="btn btn-p btn-sm">Explore VIRA</a>
+<a href={`/vira?colour=${vira.id}`} className="btn btn-p btn-sm">Explore VIRA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
 <a href="#book" className="btn btn-l btn-sm">Enquire</a>
 </div>

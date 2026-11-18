@@ -4,10 +4,11 @@ import { ModelPage } from "@/components/model-page";
 
 export const metadata: Metadata = { title: "MRIGA — VIRA" };
 
-export default function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<{ colour?: string }> }) {
+  const query = await searchParams;
   return (
     <SiteFrame>
-      <ModelPage model="vira" />
+      <ModelPage model="vira" initialColour={query.colour} />
     </SiteFrame>
   );
 }
