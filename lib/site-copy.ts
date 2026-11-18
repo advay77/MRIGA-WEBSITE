@@ -33,23 +33,34 @@ export const CONTENT_GROUPS = [
 export const MEDIA_SLOTS = [
   { id: "logo", label: "Logo", group: "brand", fallback: "logo.png" },
   { id: "founder-pankaj", label: "Pankaj Jain", group: "founders", fallback: "founders/pankaj.jpg" },
-  { id: "founder-ashish", label: "Ashish Jain", group: "founders", fallback: "logo.png" },
-  { id: "founder-jiten", label: "Jiten Jain", group: "founders", fallback: "logo.png" },
+  { id: "founder-ashish", label: "Ashish Jain", group: "founders", fallback: "founders/ashish.jpg" },
+  { id: "founder-jiten", label: "Jiten Jain", group: "founders", fallback: "founders/jiten.jpg" },
   { id: "mira-pink", label: "Pink · 1", group: "mira", fallback: "mira/pink.png" },
   { id: "mira-pink-2", label: "Pink · 2", group: "mira", fallback: "mira/pink-2.png" },
   { id: "mira-pink-3", label: "Pink · 3", group: "mira", fallback: "mira/pink-3.png" },
   { id: "mira-orange", label: "Orange", group: "mira", fallback: "mira/orange.png" },
   { id: "mira-beige", label: "Brown beige · 1", group: "mira", fallback: "mira/beige.png" },
   { id: "mira-beige-2", label: "Brown beige · 2", group: "mira", fallback: "mira/beige-2.png" },
-  { id: "riva", label: "RIVA", group: "models", fallback: "logo.png" },
-  { id: "vira", label: "VIRA", group: "models", fallback: "logo.png" },
+  // RIVA and VIRA galleries: photo 1 is the cover (Home, Explore, PDF catalogue). A slot whose
+  // fallback is the logo stays hidden on the site until a photo is uploaded into it.
+  { id: "riva", label: "Photo 1 · cover", group: "riva", fallback: "logo.png" },
+  { id: "riva-2", label: "Photo 2", group: "riva", fallback: "logo.png" },
+  { id: "riva-3", label: "Photo 3", group: "riva", fallback: "logo.png" },
+  { id: "riva-4", label: "Photo 4", group: "riva", fallback: "logo.png" },
+  { id: "riva-5", label: "Photo 5", group: "riva", fallback: "logo.png" },
+  { id: "riva-6", label: "Photo 6", group: "riva", fallback: "logo.png" },
+  { id: "vira", label: "Photo 1 · cover", group: "vira", fallback: "logo.png" },
+  { id: "vira-2", label: "Photo 2", group: "vira", fallback: "logo.png" },
+  { id: "vira-3", label: "Photo 3", group: "vira", fallback: "logo.png" },
+  { id: "vira-4", label: "Photo 4", group: "vira", fallback: "logo.png" },
+  { id: "vira-5", label: "Photo 5", group: "vira", fallback: "logo.png" },
+  { id: "vira-6", label: "Photo 6", group: "vira", fallback: "logo.png" },
 ] as const;
 
+// Groups shown in the admin Photos section. Model galleries (mira, riva, vira) live in Models.
 export const PHOTO_GROUPS = [
   { id: "brand", title: "Brand", note: "The mark in the navigation and footer." },
-  { id: "founders", title: "Founders", note: "Portraits on the About page. A missing photo shows the logo until you upload one." },
-  { id: "models", title: "RIVA and VIRA", note: "Main photo for each model. It shows on its page and on the cover of its PDF catalogue." },
-  { id: "mira", title: "MIRA colours", note: "Pink, orange, and brown beige. These are the shots on Home, Explore, and the MIRA page." },
+  { id: "founders", title: "Founders", note: "Passport-style portraits on the About page. Upload a tall photo (about 2:3) to replace one." },
 ] as const;
 
 export function mediaSlot(id: string) {

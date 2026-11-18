@@ -4,7 +4,8 @@ import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFImage, type PDFP
 import { getSiteContent } from "@/lib/content";
 import { prisma } from "@/lib/db";
 import { mediaSlot } from "@/lib/site-copy";
-import { APP_FEATURES, isModelId, SPECS, WARRANTY, type ModelId } from "@/lib/specs";
+import { getModels } from "@/lib/models";
+import { APP_FEATURES, isModelId, WARRANTY, type ModelId } from "@/lib/specs";
 import { sniff } from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
@@ -97,7 +98,8 @@ export async function GET(request: Request, context: { params: Promise<{ model: 
   const { model } = await context.params;
   const id = model.replace(/\.pdf$/i, "").toLowerCase();
   if (!isModelId(id)) return new Response("Not found", { status: 404 });
-  const spec = SPECS[id];
+  const { specs, photos } = await getModels();
+  const spec = specs[id];
   const content = await getSiteContent();
   const site = (process.env.SITE_URL || new URL(request.url).origin).replace(/\/+$/, "");
 
@@ -108,7 +110,7 @@ export async function GET(request: Request, context: { params: Promise<{ model: 
   const regular = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
   const serif = await doc.embedFont(StandardFonts.TimesRomanBold);
-  const [logo, hero] = await Promise.all([photo(doc, "logo"), photo(doc, HERO_SLOT[id])]);
+  const [logo, hero] = await Promise.all([photo(doc, "logo"), photo(doc, id === "mira" ? HERO_SLOT.mira : photos[id][0] ?? HERO_SLOT[id])]);
   const contact = [
     `MRIGA showroom: ${content.address}`,
     `Call ${content.phone}  ·  WhatsApp +${content.whatsapp}  ·  ${site}/${id}`,

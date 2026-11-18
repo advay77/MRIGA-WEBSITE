@@ -13,11 +13,12 @@ import { MAX_UPLOAD_BYTES, MAX_UPLOAD_LABEL } from "@/lib/uploads";
 import { whatsappLink } from "@/lib/whatsapp";
 import "./admin.css";
 import { PhotoPicker, SubmitButton } from "@/components/admin-controls";
+import { ModelsPanel } from "./models-panel";
 
 export const metadata: Metadata = { title: "MRIGA — Admin", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
-const SECTIONS = ["overview", "logins", "customers", "retailers", "rides", "applications", "website", "photos"] as const;
+const SECTIONS = ["overview", "logins", "customers", "retailers", "rides", "applications", "models", "website", "photos"] as const;
 type Section = (typeof SECTIONS)[number];
 
 const COPY: Record<Section, { kicker: string; title: string; note: string }> = {
@@ -27,8 +28,9 @@ const COPY: Record<Section, { kicker: string; title: string; note: string }> = {
   retailers: { kicker: "People", title: "Retailers", note: "Accounts created on the retailer login. Separate from customers." },
   rides: { kicker: "Forms", title: "Test rides", note: "Reservations sent from the booking form." },
   applications: { kicker: "Forms", title: "Dealer enquiries", note: "People who want to sell MRIGA: name, location, phone, and the model they want." },
-  website: { kicker: "Content", title: "Website text", note: "Each block saves on its own. Photos are in the next section." },
-  photos: { kicker: "Content", title: "Photos", note: "Replace a photo in its group. The public site picks it up within a minute." },
+  models: { kicker: "Content", title: "Models", note: "Photos, text, highlights and specifications for MIRA, RIVA and VIRA. Every save shows on the site and in the PDF catalogue at once." },
+  website: { kicker: "Content", title: "Website text", note: "Showroom details and page introductions. Each block saves on its own. Model text and prices are in Models." },
+  photos: { kicker: "Content", title: "Photos", note: "Logo and founder portraits. Model photos are in Models." },
 };
 
 const PATH_LABELS: Record<string, string> = {
@@ -120,7 +122,7 @@ async function loadActivity(section: Section, monthAgo: Date): Promise<ActivityR
 const PAGE_SIZE = 50;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-type Params = { section?: string; saved?: string; page?: string; q?: string; who?: string; status?: string; sort?: string; block?: string; slot?: string; t?: string; lead?: string; updated?: string };
+type Params = { section?: string; saved?: string; page?: string; q?: string; who?: string; status?: string; sort?: string; block?: string; slot?: string; t?: string; lead?: string; updated?: string; model?: string; field?: string };
 
 function pageOf(value: string | undefined) {
   const page = Number(value);
@@ -344,7 +346,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
     { label: "Desk", items: [{ id: "overview" as const, label: "Overview", count: undefined }] },
     { label: "People", items: [{ id: "logins" as const, label: "Login history", count: undefined }, { id: "customers" as const, label: "Customers", count: customers, fresh: newCustomers, freshLabel: "joined in the last 24 hours" }, { id: "retailers" as const, label: "Retailers", count: retailers, fresh: newRetailers, freshLabel: "joined in the last 24 hours" }] },
     { label: "Forms", items: [{ id: "rides" as const, label: "Test rides", count: rideCount, fresh: rideByStatus.NEW ?? 0, freshLabel: "new, not contacted yet" }, { id: "applications" as const, label: "Dealer enquiries", count: applicationCount, fresh: applicationByStatus.NEW ?? 0, freshLabel: "new, not contacted yet" }] },
-    { label: "Content", items: [{ id: "website" as const, label: "Website text", count: undefined }, { id: "photos" as const, label: "Photos", count: MEDIA_SLOTS.length }] },
+    { label: "Content", items: [{ id: "models" as const, label: "Models", count: 3 }, { id: "website" as const, label: "Website text", count: undefined }, { id: "photos" as const, label: "Photos", count: MEDIA_SLOTS.filter((slot) => PHOTO_GROUPS.some((group) => group.id === slot.group)).length }] },
   ];
   const matching = q ? ` matching "${q}"` : "";
   const loginFilters = { ...(loginRole !== "all" ? { who: loginRole } : {}), ...(failedOnly ? { status: "failed" } : {}) };
@@ -533,7 +535,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
 
         {content ? (
           <div className="desk-stack">
-            {CONTENT_GROUPS.map((group) => (
+            {CONTENT_GROUPS.filter((group) => group.id !== "mira").map((group) => (
               <section className="desk-panel" key={group.id} id={`block-${group.id}`}>
                 <h2>{group.title}</h2>
                 <p>{group.note}</p>
@@ -565,6 +567,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<Par
             ))}
           </div>
         ) : null}
+
+        {section === "models" ? <ModelsPanel query={params} /> : null}
 
         {section === "photos" ? (
           <div className="desk-stack">

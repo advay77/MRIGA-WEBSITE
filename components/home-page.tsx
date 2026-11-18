@@ -1,7 +1,7 @@
 ﻿"use client";
 
-import { useSiteContent } from "@/components/site-content";
-import { MIRA_COLOURS } from "@/lib/mira";
+import { useModels, useSiteContent } from "@/components/site-content";
+import { ModelPicker } from "@/components/model-picker";
 
 function Arrow({ size = 16 }: { size?: number }) {
   return (
@@ -46,6 +46,9 @@ function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: 
 
 export function HomePage() {
   const content = useSiteContent();
+  const { specs, photos } = useModels();
+  const rivaCover = photos.riva[0];
+  const viraCover = photos.vira[0];
 
   return (
       <main className="page">
@@ -130,7 +133,7 @@ export function HomePage() {
               <div>
                 <div className="kicker">The scooters</div>
                 <h2 className="h2">RIVA, MIRA, and VIRA.</h2>
-                <p className="sub">MIRA is ready to see. RIVA and VIRA stay on the site until their photographs and specifications arrive.</p>
+                <p className="sub">MIRA is on sale now. RIVA and VIRA bring a full mobile app and keyless entry.</p>
               </div>
               <a href="/collection" className="tlink">Compare All Models <Arrow size={14} /></a>
             </div>
@@ -138,16 +141,17 @@ export function HomePage() {
               <article className="card lift big rv-s">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                   <div>
-                    <span className="tag">Coming soon</span>
+                    <span className="tag">{specs.riva.status}</span>
                     <h3 className="mname">RIVA</h3>
-                    <p className="mtag">Specifications out · photographs soon</p>
+                    <p className="mtag">{specs.riva.tagline}</p>
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div className="foot-note" style={{ marginBottom: 8 }}>Aesthetic</div>
                     <div className="swatches"><i style={{ background: "#EFE6CF" }} /><i style={{ background: "#A8642F" }} /><i style={{ background: "#4A0E1F" }} /></div>
                   </div>
                 </div>
-                <div className="prod">
+                <div className={rivaCover ? "prod has-photo" : "prod"}>
+                  {rivaCover ? <img className="prod-photo" src={`/media/${rivaCover}`} alt="RIVA" /> : null}
                   <svg viewBox="0 0 420 300" aria-hidden="true">
                     <Wheels />
                     <CreamScooter />
@@ -156,7 +160,7 @@ export function HomePage() {
                   </svg>
                   <span className="ptag">Featured Spec: Crema & Cuoio</span>
                 </div>
-                <p className="desc">RIVA adds a full mobile app, keyless smart-card entry, Find My Scooter and reverse mode. Specifications are out; photographs are coming soon.</p>
+                <p className="desc">{specs.riva.summary}</p>
                 <div className="card-foot">
                   <a href="/riva" className="btn btn-d btn-sm">Explore RIVA <Arrow size={14} /></a>
                 </div>
@@ -171,7 +175,7 @@ export function HomePage() {
                     <p className="desc">60V 30Ah battery: up to 85 km with LiFePO4, 65–70 km with SLA. 250W BLDC motor, disc brakes with CBS, cruise control. Pink, orange, and brown beige.</p>
                     <div className="pills" style={{ marginTop: 14 }}>
                       <span className="pill">Lithium <b>{content.lithiumPrice} · 3 yr</b></span>
-                      <span className="pill">Lead-acid <b>{content.leadPrice} Â· 1 yr</b></span>
+                      <span className="pill">Lead-acid <b>{content.leadPrice} · 1 yr</b></span>
                     </div>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#E7A0B8" }} /><i style={{ background: "#E36A2C" }} /><i style={{ background: "#C4A484" }} /></div>
                     <a href="/mira" className="explore">
@@ -186,16 +190,17 @@ export function HomePage() {
 
                 <article className="card lift mini rv-s">
                   <div>
-                    <span className="tag">Coming soon</span>
+                    <span className="tag">{specs.vira.status}</span>
                     <h3 className="mname">VIRA</h3>
-                    <p className="mtag">Specifications out · photographs soon</p>
-                    <p className="desc">VIRA will get its own page details when the photographs and numbers are ready.</p>
+                    <p className="mtag">{specs.vira.tagline}</p>
+                    <p className="desc">{specs.vira.summary}</p>
                     <div className="swatches" style={{ marginTop: 14 }}><i style={{ background: "#2a2a30" }} /><i style={{ background: "#E0602A" }} /><i style={{ background: "#9a9aa4" }} /></div>
                     <a href="/vira" className="explore">
                       Explore VIRA <Arrow size={14} />
                     </a>
                   </div>
-                  <div className="prod dark-prod">
+                  <div className={viraCover ? "prod dark-prod has-photo" : "prod dark-prod"}>
+                    {viraCover ? <img className="prod-photo" src={`/media/${viraCover}`} alt="VIRA" /> : null}
                     <svg viewBox="0 0 420 300" aria-hidden="true">
                       <path className="beam" d="M318 58 L420 34 L420 86 Z" fill="#E0602A" opacity=".25" />
                       <g className="spin"><circle cx="96" cy="236" r="44" fill="#0b0b0e" /><circle cx="96" cy="236" r="27" fill="#3a3a42" /><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#E0602A" strokeWidth="3" /></g>
@@ -217,47 +222,8 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="sec mira-sec" id="mira">
-          <div className="wrap">
-            <div className="sec-head rv">
-              <div>
-                <div className="kicker">Star Product · Three Colours</div>
-                <h2 className="h2">MIRA, in the colour you ride.</h2>
-                <p className="sub">Pink, orange, and brown beige. Open a colour to read the full specifications.</p>
-              </div>
-            </div>
-            <div className="mira-row">
-              {MIRA_COLOURS.map((item, index) => (
-                <a key={item.id} href={`/mira?colour=${item.id}`} className="mira-card" style={{ background: item.wash, animationDelay: `${index * 0.12}s` }}>
-                  <img src={item.shots[0]} alt="" />
-                  <span className="mira-meta">
-                    <i style={{ background: item.swatch }} />
-                    {item.name}
-                  </span>
-                  <span className="mira-price">From {content.leadPrice}</span>
-                  <span className="mira-view">View {item.name} →</span>
-                </a>
-              ))}
-            </div>
-            <ul className="mira-glance">
-              {[
-                ["85 km", "Range, LiFePO4"],
-                ["25 km/h", "Top speed"],
-                ["250W", "BLDC hub motor"],
-                ["CBS", "Front & rear disc"],
-                ["Cruise", "control"],
-                ["Warranty", "Motor, battery, charger"],
-              ].map(([value, label], index) => (
-                <li key={label} style={{ animationDelay: `${index * 0.08}s` }}><b>{value}</b><span>{label}</span></li>
-              ))}
-            </ul>
-            <div className="cta-row mira-actions">
-              <a href="#book" className="btn btn-p">Book a MIRA test ride</a>
-              <a href="/catalogue/mira" className="btn btn-d" download="MRIGA-MIRA-catalogue.pdf">Download MIRA catalogue</a>
-              <a href="/collection" className="btn btn-g">Compare models</a>
-            </div>
-          </div>
-        </section>
+        <ModelPicker />
+
 
         <section className="cta" id="book">
           <div className="wrap cta-in rv">

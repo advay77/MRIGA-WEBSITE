@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MIRA_COLOURS, type MiraColourId } from "@/lib/mira";
-import { useSiteContent } from "@/components/site-content";
+import { useModels, useSiteContent } from "@/components/site-content";
 
 const TABS = [
   { key: "all", label: "All" },
@@ -15,6 +15,7 @@ export function CollectionPage() {
   const [filter, setFilter] = useState("all");
   const [miraColour, setMiraColour] = useState<MiraColourId>("pink");
   const content = useSiteContent();
+  const { specs, photos } = useModels();
   const mira = MIRA_COLOURS.find((item) => item.id === miraColour) ?? MIRA_COLOURS[0];
   function visible(key: string) {
     return filter === "all" || filter === key;
@@ -31,7 +32,7 @@ export function CollectionPage() {
 <h1 className="h1 mixed"><span className="ln"><span>RIVA, MIRA,</span></span><span className="ln"><span>and VIRA</span></span></h1>
 <p className="ital fade-up d1">MIRA is on sale now.</p>
 </div>
-<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA is our star scooter, on sale in three colours. RIVA and VIRA add a full mobile app and keyless entry: their specifications are out and photographs are coming soon.</p>
+<p className="lead fade-up d2" style={{fontSize: "15px"}}>MIRA is our star scooter, on sale in three colours. RIVA and VIRA add a full mobile app and keyless entry: see the full specifications on each model's page.</p>
 </div>
 <div className="filters fade-up d3">
 <div className="tabs" role="group" aria-label="Filter models">
@@ -49,7 +50,8 @@ export function CollectionPage() {
 <article className="model">
 <div className="m-media">
 <div className="m-top"><span className="series">RIVA</span><span className="idx">01</span></div>
-<div className="m-img">
+<div className={photos.riva[0] ? "m-img has-photo" : "m-img"}>
+{photos.riva[0] ? <img className="prod-photo" src={`/media/${photos.riva[0]}`} alt="RIVA" /> : null}
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <g className="spin"><circle cx="96" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="96" cy="236" r="27" fill="#d8d2c6"></circle><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#8d867a" strokeWidth="3"></path></g>
 <g className="spin"><circle cx="318" cy="236" r="44" fill="#1d1a1a"></circle><circle cx="318" cy="236" r="27" fill="#d8d2c6"></circle><path d="M318 211v50M293 236h50M300 218l36 36M336 218l-36 36" stroke="#8d867a" strokeWidth="3"></path></g>
@@ -68,10 +70,10 @@ export function CollectionPage() {
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Coming soon</div>
+<div className="kicker">{specs.riva.status}</div>
 <h2>RIVA</h2>
-<p className="mtag">Specifications out · photographs soon</p>
-<p className="desc" style={{marginTop: "18px"}}>RIVA does not have confirmed numbers yet, so this page does not list a range, speed, or price for it.</p>
+<p className="mtag">{specs.riva.tagline}</p>
+<p className="desc" style={{marginTop: "18px"}}>{specs.riva.summary}</p>
 <div className="m-acts">
 <a href="/riva" className="btn btn-p btn-sm">Explore RIVA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>
@@ -122,7 +124,8 @@ export function CollectionPage() {
 <article className="model dark">
 <div className="m-media">
 <div className="m-top"><span className="series">VIRA</span><span className="idx">03</span></div>
-<div className="m-img">
+<div className={photos.vira[0] ? "m-img has-photo" : "m-img"}>
+{photos.vira[0] ? <img className="prod-photo" src={`/media/${photos.vira[0]}`} alt="VIRA" /> : null}
 <svg viewBox="0 0 420 300" aria-hidden="true">
 <path className="beam" d="M318 58 L420 34 L420 86 Z" fill="#E0602A" opacity=".3"></path>
 <g className="spin"><circle cx="96" cy="236" r="44" fill="#0b0b0e"></circle><circle cx="96" cy="236" r="27" fill="#3a3a42"></circle><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#E0602A" strokeWidth="3"></path></g>
@@ -142,10 +145,10 @@ export function CollectionPage() {
 </div>
 </div>
 <div className="m-body">
-<div className="kicker">Coming soon</div>
+<div className="kicker">{specs.vira.status}</div>
 <h2>VIRA</h2>
-<p className="mtag">Specifications out · photographs soon</p>
-<p className="desc" style={{marginTop: "18px"}}>VIRA does not have confirmed numbers yet, so this page does not list a speed, torque, or price for it.</p>
+<p className="mtag">{specs.vira.tagline}</p>
+<p className="desc" style={{marginTop: "18px"}}>{specs.vira.summary}</p>
 <div className="m-acts">
 <a href="/vira" className="btn btn-p btn-sm">Explore VIRA</a>
 <a href="#book" className="btn btn-d btn-sm">Book Test Ride</a>

@@ -4,8 +4,8 @@ export async function AboutPage() {
   const content = await getSiteContent();
   const founders = [
     { name: content.founder1, slot: "founder-pankaj", portrait: true },
-    { name: content.founder2, slot: "founder-ashish", portrait: false },
-    { name: content.founder3, slot: "founder-jiten", portrait: false },
+    { name: content.founder2, slot: "founder-ashish", portrait: true },
+    { name: content.founder3, slot: "founder-jiten", portrait: true },
   ];
   return (
     <main className="page">

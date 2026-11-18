@@ -59,16 +59,16 @@ export function PhotoPicker({ current, maxBytes, maxLabel }: { current: string; 
     <>
       <div className="photo-frame">
         {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview and a dynamic /media route */}
-        <img src={preview ?? current} alt="" />
+        {preview ?? current ? <img src={preview ?? current} alt="" /> : <span className="photo-empty">No photo yet</span>}
         {preview ? <span className="photo-tag">New · not saved yet</span> : null}
       </div>
       <label className="photo-drop" htmlFor={id}>
         <input id={id} name="file" type="file" accept={ACCEPT.join(",")} required onChange={choose} />
-        <span>{name || "Choose or drop a photo"}</span>
+        <span>{name || (current ? "Choose a new photo" : "Choose or drop a photo")}</span>
         <small>JPG, PNG, or WEBP · under {maxLabel}</small>
       </label>
       {error ? <p className="desk-note bad" role="alert">{error}</p> : null}
-      {preview ? <SubmitButton className="btn btn-p btn-sm" pending="Uploading…">Replace photo</SubmitButton> : null}
+      {preview ? <SubmitButton className="btn btn-p btn-sm" pending="Uploading…">{current ? "Replace photo" : "Upload photo"}</SubmitButton> : null}
     </>
   );
 }
