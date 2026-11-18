@@ -16,7 +16,7 @@ const TABS = [
 export function CollectionPage() {
   const [filter, setFilter] = useState("all");
   const [miraColour, setMiraColour] = useState<MiraColourId>("pink");
-  const [rivaColour, setRivaColour] = useState<RivaColourId>("grey");
+  const [rivaColour, setRivaColour] = useState<RivaColourId>("silver");
   const [viraColour, setViraColour] = useState<ViraColourId>("blue");
   const content = useSiteContent();
   const { specs } = useModels();

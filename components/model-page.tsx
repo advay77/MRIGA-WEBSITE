@@ -69,7 +69,7 @@ export function ModelPage({ model, initialColour = "" }: { model: ModelId; initi
                   </button>
                 ))}
               </div>
-              <div className="photo-frame">
+              <div className={model === "riva" ? "photo-frame riva-frame" : "photo-frame"}>
                 <img key={frame} className="model-photo" src={frame} alt={colour.id === "all" ? spec.name : `${spec.name} in ${colour.name}`} />
               </div>
               <div className="shot-row">

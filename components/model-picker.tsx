@@ -44,7 +44,7 @@ export function ModelPicker() {
   const content = useSiteContent();
   const [active, setActive] = useState<ModelId>("mira");
   const [colourId, setColourId] = useState<MiraColourId>("pink");
-  const [rivaId, setRivaId] = useState<RivaColourId>("grey");
+  const [rivaId, setRivaId] = useState<RivaColourId>("silver");
   const [viraId, setViraId] = useState<ViraColourId>("blue");
   const spec = specs[active];
   const star = active === "mira";

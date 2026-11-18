@@ -8,7 +8,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ c
   const query = await searchParams;
   return (
     <SiteFrame>
-      <ModelPage model="riva" initialColour={query.colour} />
+      <ModelPage model="riva" initialColour={query.colour || "silver"} />
     </SiteFrame>
   );
 }
