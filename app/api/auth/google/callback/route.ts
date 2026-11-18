@@ -1,5 +1,5 @@
 import { recordLogin } from "@/lib/audit";
-import { createSession } from "@/lib/auth";
+import { CUSTOMER_SESSION_DAYS, createSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { clearGoogleStateCookie, googleConfigured, googleRedirectUri, GOOGLE_STATE_COOKIE, readGoogleState } from "@/lib/google";
 import { rateLimit } from "@/lib/guards";
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
     const user = existing
       ? await prisma.user.update({ where: { id: existing.id }, data: { googleId: profile.sub } })
       : await prisma.user.create({ data: { email, name, googleId: profile.sub, role: "MEMBER" } });
-    await createSession(user.id, 7);
+    await createSession(user.id, CUSTOMER_SESSION_DAYS);
     await recordLogin({ userId: user.id, role: user.role, method: existing ? "google" : "signup", success: true, identifier: email });
     const next = saved.next.startsWith("/admin") ? "/" : saved.next;
     return go(request, user.role === "RETAILER" && next === "/" ? "/account" : next);

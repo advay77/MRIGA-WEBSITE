@@ -33,28 +33,82 @@ function cookieOptions(maxAge: number) {
 // Never select passwordHash or googleId into a session: callers only need who and what role.
 const sessionUser = { id: true, name: true, email: true, phone: true, role: true } as const;
 
+// Customers and retailers stay signed in for 30 days, renewed while they keep visiting
+// (see renewSession). The desk's sessions are short and never renewed.
+export const CUSTOMER_SESSION_DAYS = 30;
+const RENEW_BELOW_MS = 20 * DAY_MS;
+
+function findSession(token: string) {
+  return prisma.session.findUnique({
+    where: { tokenHash: tokenHash(token) },
+    select: { id: true, expiresAt: true, createdAt: true, user: { select: sessionUser } },
+  });
+}
+
+type Lookup =
+  | { status: "ok"; session: NonNullable<Awaited<ReturnType<typeof findSession>>>; token: string }
+  | { status: "none" }
+  | { status: "error" };
+
 // cache() dedupes the lookup within one request, so a layout and a page share one query.
-export const getSession = cache(async () => {
+// A database blip is retried once and reported as "error", never as "signed out": treating it
+// as signed out is what made people look logged out at random.
+const lookupSession = cache(async (): Promise<Lookup> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
-  if (!token || token.length < 20 || token.length > 128) return null;
-  let session;
+  if (!token || token.length < 20 || token.length > 128) return { status: "none" };
+  let session: Awaited<ReturnType<typeof findSession>> = null;
   try {
-    session = await prisma.session.findUnique({
-      where: { tokenHash: tokenHash(token) },
-      select: { id: true, expiresAt: true, user: { select: sessionUser } },
-    });
+    session = await findSession(token);
   } catch {
-    // Database unreachable: treat as signed out so public pages still render.
-    console.error("session lookup failed");
-    return null;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    try {
+      session = await findSession(token);
+    } catch {
+      console.error("session lookup failed twice");
+      return { status: "error" };
+    }
   }
-  if (!session) return null;
+  if (!session) return { status: "none" };
   if (session.expiresAt < new Date()) {
     await prisma.session.delete({ where: { id: session.id } }).catch(() => undefined);
-    return null;
+    return { status: "none" };
   }
-  return session;
+  return { status: "ok", session, token };
 });
+
+// The signed-in session, or null. Public pages use this: an outage just renders them signed out.
+export async function getSession() {
+  const lookup = await lookupSession();
+  return lookup.status === "ok" ? lookup.session : null;
+}
+
+// Like getSession, but throws when the database could not be reached, so private pages show
+// "try again" instead of sending a signed-in person to the login page.
+export async function requireSessionLookup() {
+  const lookup = await lookupSession();
+  if (lookup.status === "error") throw new Error("Session lookup is temporarily unavailable.");
+  return lookup.status === "ok" ? lookup.session : null;
+}
+
+// Sliding expiry for customers and retailers: once less than 20 of the 30 days are left, push the
+// expiry back to 30 days. Only callable where cookies can be written (route handlers, actions).
+// Returns "ok", "none" (signed out) or "error" (database unreachable; keep the current state).
+export async function renewSession() {
+  const lookup = await lookupSession();
+  if (lookup.status !== "ok") return lookup.status;
+  const { session, token } = lookup;
+  // "Remember this device" off gives a one-day session; those are never stretched.
+  const remembered = session.expiresAt.getTime() - session.createdAt.getTime() > 2 * DAY_MS;
+  if (session.user.role === "ADMIN" || !remembered || session.expiresAt.getTime() - Date.now() > RENEW_BELOW_MS) return "ok";
+  const expiresAt = new Date(Date.now() + CUSTOMER_SESSION_DAYS * DAY_MS);
+  try {
+    await prisma.session.update({ where: { id: session.id }, data: { expiresAt } });
+    (await cookies()).set(SESSION_COOKIE, token, cookieOptions(CUSTOMER_SESSION_DAYS * 24 * 60 * 60));
+  } catch {
+    console.error("session renewal failed");
+  }
+  return "ok";
+}
 
 export async function createSession(userId: string, days: number) {
   const token = randomBytes(32).toString("base64url");

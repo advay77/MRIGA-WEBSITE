@@ -37,12 +37,19 @@ function tokenOf(form: HTMLFormElement) {
   return form.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]')?.value || "";
 }
 
+// True while Cloudflare is showing its "Verify you are human" tick box in this form.
+function asking(form: HTMLFormElement) {
+  return Boolean(form.querySelector('.ts-box[data-interactive="1"]'));
+}
+
 // Waits until the form's Turnstile widget has a token (other than `used`, which the server has
-// already spent). Resolves at once when Turnstile is off.
+// already spent). Resolves at once when Turnstile is off. While Cloudflare asks the visitor to tick
+// its box, it keeps waiting (up to 3 minutes), so the form sends itself the moment they tick it:
+// one press of the form's button is always enough.
 async function waitForToken(form: HTMLFormElement, timeoutMs: number, used = "") {
   if (!SITE_KEY) return true;
   const started = Date.now();
-  while (Date.now() - started < timeoutMs) {
+  while (Date.now() - started < (asking(form) ? 180_000 : timeoutMs)) {
     const token = tokenOf(form);
     if (token && token !== used) return true;
     await sleep(200);
@@ -112,6 +119,14 @@ export function Turnstile({ action }: { action: string }) {
           "response-field-name": "cf-turnstile-response",
           "error-callback": (code: string | number) => {
             console.warn(`turnstile error ${code}`);
+          },
+          "before-interactive-callback": () => {
+            if (!box.current) return;
+            box.current.dataset.interactive = "1";
+            box.current.scrollIntoView({ block: "center", behavior: "smooth" });
+          },
+          "after-interactive-callback": () => {
+            if (box.current) delete box.current.dataset.interactive;
           },
         });
       })

@@ -102,7 +102,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
               <div className="auth-feats">
                 <span className="dchip"><svg {...ICON}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg> Your test-ride bookings</span>
                 <span className="dchip"><svg {...ICON}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg> Help on WhatsApp</span>
-                <span className="dchip"><svg {...ICON}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg> Your sign-in history</span>
+                <span className="dchip"><svg {...ICON}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg> Stay signed in for 30 days</span>
               </div>
               <div className="auth-stats">
                 <div><b>{rangeFrom(content.lithiumDetail)} <small>km</small></b><span>MIRA range per charge</span></div>
@@ -118,7 +118,7 @@ export function LoginPanel({ user, nextPath, startTab, notice = "", audience = "
                   </div>
                   <div className="kicker plain">Signed in</div>
                   <h2 style={{ margin: 0 }}>Welcome, {firstName}</h2>
-                  <p className="sub" style={{ fontSize: 14 }}>Your bookings, details and sign-in history are in My account.</p>
+                  <p className="sub" style={{ fontSize: 14 }}>Your bookings and details are in My account.</p>
                   <div className="cta-row" style={{ justifyContent: "center", marginTop: 10 }}>
                     <Link href="/account" className="btn btn-p">My account</Link>
                     <WhatsAppButton message={`Hi MRIGA, this is ${firstName}. ${retailer ? "I just signed in to my retailer account." : "I just signed in and have a question."}`}>Chat on WhatsApp</WhatsAppButton>

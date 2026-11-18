@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { initials } from "@/lib/initials";
 
 export type Me = { name: string; role: "MEMBER" | "RETAILER"; email: string | null; phone: string | null };
@@ -22,16 +22,62 @@ export function announceAuthChange() {
   window.dispatchEvent(new Event(AUTH_CHANGED));
 }
 
+// Last known signed-in name and role, so the header shows the account at once on every page
+// instead of flashing "Login" until /api/me answers. Only name and role; the server stays the
+// source of truth and clears this the moment it says nobody is signed in.
+const HINT_KEY = "mriga:me";
+
+function readHintRaw() {
+  try {
+    return window.localStorage.getItem(HINT_KEY);
+  } catch {
+    return null;
+  }
+}
+
+const noSubscribe = () => () => undefined;
+
+function parseHint(raw: string | null): Me | null {
+  try {
+    if (!raw) return null;
+    const hint = JSON.parse(raw) as { name?: unknown; role?: unknown };
+    if (typeof hint.name !== "string" || (hint.role !== "MEMBER" && hint.role !== "RETAILER")) return null;
+    return { name: hint.name.slice(0, 80), role: hint.role, email: null, phone: null };
+  } catch {
+    return null;
+  }
+}
+
+function writeHint(me: Me | null) {
+  try {
+    if (me) window.localStorage.setItem(HINT_KEY, JSON.stringify({ name: me.name, role: me.role }));
+    else window.localStorage.removeItem(HINT_KEY);
+  } catch {
+    // Private mode or blocked storage: the header just waits for /api/me.
+  }
+}
+
 export function MeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [me, setMe] = useState<Me | null>(null);
+  const [known, setKnown] = useState(false);
+  // Read once on the client; the server render always starts signed out.
+  const hintRaw = useSyncExternalStore(noSubscribe, readHintRaw, () => null);
+  const hint = useMemo(() => parseHint(hintRaw), [hintRaw]);
   useEffect(() => {
     let live = true;
     const load = () => {
       fetch("/api/me", { cache: "no-store", credentials: "same-origin" })
-        .then((response) => (response.ok ? response.json() : { user: null }))
-        .then((data: { user: Me | null }) => {
-          if (live) setMe(data.user);
+        .then((response) => {
+          // 503 or a network error: keep showing whoever was signed in rather than "Login".
+          if (!response.ok) return undefined;
+          return response.json() as Promise<{ user: Me | null }>;
+        })
+        .then((data) => {
+          if (!live || !data) return;
+          setMe(data.user);
+          setKnown(true);
+          writeHint(data.user);
         })
         .catch(() => undefined);
     };
@@ -42,7 +88,7 @@ export function MeProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener(AUTH_CHANGED, load);
     };
   }, [pathname]);
-  return <MeContext.Provider value={me}>{children}</MeContext.Provider>;
+  return <MeContext.Provider value={known ? me : me ?? hint}>{children}</MeContext.Provider>;
 }
 
 

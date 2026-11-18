@@ -4,7 +4,7 @@ import { randomInt } from "crypto";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { recordLogin } from "@/lib/audit";
-import { createSession, clearSession, getSession } from "@/lib/auth";
+import { CUSTOMER_SESSION_DAYS, createSession, clearSession, getSession } from "@/lib/auth";
 import { dummyPasswordHash, hashPassword, verifyPassword } from "@/lib/password";
 import { clearLimit, clientIp, hit, rateLimit, sameOrigin } from "@/lib/guards";
 import { TURNSTILE_FIELD, verifyTurnstile } from "@/lib/turnstile";
@@ -147,7 +147,7 @@ export async function signIn(form: FormData) {
     }
     await clearLimit(accountKey);
     // Admin sessions are short and never "remembered".
-    const days = expected === "ADMIN" ? 0.5 : parsed.data.remember === "on" ? 30 : 1;
+    const days = expected === "ADMIN" ? 0.5 : parsed.data.remember === "on" ? CUSTOMER_SESSION_DAYS : 1;
     await createSession(user.id, days);
     await recordLogin({ ...attempt, userId: user.id, success: true });
     const requested = safeNext(parsed.data.next);
@@ -188,7 +188,7 @@ async function createAccount(form: FormData, role: "MEMBER" | "RETAILER") {
         role,
       },
     });
-    await createSession(user.id, 7);
+    await createSession(user.id, CUSTOMER_SESSION_DAYS);
     await recordLogin({ userId: user.id, role, method: "signup", success: true, identifier: who.email || who.phone || "" });
     return { ok: true as const, name: user.name, href: role === "RETAILER" ? "/account" : "/" };
   } catch (error) {

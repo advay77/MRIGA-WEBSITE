@@ -56,13 +56,16 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const [check, setCheck] = useState(0);
 
   const openBook = useCallback((next?: Model) => {
-    if (next) setModel(next);
+    // On /riva or /vira, the booking form starts on that model.
+    const fromPage: Model | null = pathname === "/riva" ? "RIVA" : pathname === "/vira" ? "VIRA" : pathname === "/mira" ? "MIRA" : null;
+    const pick = next ?? fromPage;
+    if (pick) setModel(pick);
     setDone(false);
     setErr("");
     setBusy(false);
     setMenuOpen(false);
     setBook(true);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = book ? "hidden" : "";

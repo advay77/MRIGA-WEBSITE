@@ -1,12 +1,15 @@
-import { getSession } from "@/lib/auth";
+import { getSession, renewSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 // Who is signed in, for the header on otherwise static (CDN-cached) pages.
 // Returns only what the header and booking form need; never cached.
 export async function GET() {
-  const session = await getSession();
   const headers = { "Cache-Control": "private, no-store" };
+  // Also keeps an active customer signed in: renews the 30-day session while they visit.
+  // A database blip answers 503, and the header keeps showing whoever was signed in.
+  if ((await renewSession()) === "error") return Response.json({ error: "unavailable" }, { status: 503, headers });
+  const session = await getSession();
   if (!session || session.user.role === "ADMIN") return Response.json({ user: null }, { headers });
   const { name, role, email, phone } = session.user;
   return Response.json({ user: { name, role, email, phone } }, { headers });

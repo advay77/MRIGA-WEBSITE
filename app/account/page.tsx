@@ -4,8 +4,7 @@ import { redirect } from "next/navigation";
 import { AccountWhatsApp } from "@/components/account-whatsapp";
 import { PasswordForm, ProfileForm, SignOutButton } from "@/components/account-forms";
 import { SiteFrame } from "@/components/site-frame";
-import { deviceLabel } from "@/lib/audit";
-import { getSession } from "@/lib/auth";
+import { requireSessionLookup } from "@/lib/auth";
 import { initials } from "@/lib/initials";
 import { prisma } from "@/lib/db";
 
@@ -35,19 +34,18 @@ function day(date: Date) {
 }
 
 export default async function Page() {
-  const session = await getSession();
+  const session = await requireSessionLookup();
   if (!session) redirect("/login?next=/account");
   if (session.user.role === "ADMIN") redirect("/admin");
   const userId = session.user.id;
 
-  const [user, rides, enquiries, logins] = await Promise.all([
+  const [user, rides, enquiries] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
       select: { name: true, email: true, phone: true, role: true, createdAt: true, lastLoginAt: true, passwordHash: true, googleId: true, city: true, preferredModel: true, updatesOptIn: true },
     }),
     prisma.testRide.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 20, select: { id: true, model: true, city: true, date: true, status: true, createdAt: true } }),
     prisma.dealerApplication.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 20, select: { id: true, reference: true, model: true, location: true, status: true, createdAt: true } }),
-    prisma.loginEvent.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 8, select: { id: true, createdAt: true, method: true, success: true, userAgent: true } }),
   ]);
   if (!user) redirect("/login");
   const retailer = user.role === "RETAILER";
@@ -60,7 +58,7 @@ export default async function Page() {
           <div className="wrap">
             <span className="eyebrow"><span className="dot" />{retailer ? "Retailer account" : "My account"}</span>
             <h1 className="h1 mixed">Hello, {first}.</h1>
-            <p className="lead">Your details, bookings and sign-in history in one place.</p>
+            <p className="lead">Your details and bookings in one place.</p>
           </div>
         </section>
 
@@ -159,23 +157,6 @@ export default async function Page() {
               </article>
             ) : null}
 
-            <article className="card acct-card acct-wide">
-              <div className="acct-card-h"><h2>Recent sign-ins</h2></div>
-              <p className="acct-note">If you do not recognise one, change your password and tell us on WhatsApp.</p>
-              {logins.length === 0 ? <p className="acct-empty">No sign-ins recorded yet.</p> : (
-                <ul className="acct-list">
-                  {logins.map((login) => (
-                    <li key={login.id}>
-                      <div>
-                        <b>{deviceLabel(login.userAgent)}</b>
-                        <small>{when(login.createdAt)} · {login.method === "google" ? "Google" : login.method === "signup" ? "Account created" : "Password"}</small>
-                      </div>
-                      <span className={`acct-pill ${login.success ? "ok" : "off"}`}>{login.success ? "Signed in" : "Failed attempt"}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </article>
           </div>
         </section>
       </main>
