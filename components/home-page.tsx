@@ -49,9 +49,9 @@ function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: 
 
 export function HomePage() {
   const content = useSiteContent();
-  const { specs, photos } = useModels();
-  const rivaCover = photos.riva[0];
-  const viraCover = photos.vira[0];
+  const { specs } = useModels();
+  const viraLook = VIRA_COLOURS[0];
+  const miraLook = MIRA_COLOURS[0];
 
   return (
       <main className="page">
@@ -153,15 +153,15 @@ export function HomePage() {
                     <div className="swatches">{RIVA_COLOURS.map((item) => <i key={item.id} style={{ background: item.swatch }} />)}</div>
                   </div>
                 </div>
-                <div className={rivaCover ? "prod has-photo" : "prod"}>
-                  {rivaCover ? <img className="prod-photo" src={`/media/${rivaCover}`} alt="RIVA" /> : null}
+                <div className="prod has-photo prod-portrait" style={{ background: "#E4EEF1" }}>
+                  <img className="prod-photo" src="/media/riva-5" alt="RIVA" />
                   <svg viewBox="0 0 420 300" aria-hidden="true">
                     <Wheels />
                     <CreamScooter />
                     <circle cx="304" cy="54" r="15" fill="#EFE6CF" />
                     <circle cx="306" cy="54" r="9" fill="#fff8e6" stroke="#b9ad92" strokeWidth="2" />
                   </svg>
-                  <span className="ptag">Grey</span>
+                  <span className="ptag">RIVA</span>
                 </div>
                 <p className="desc">{specs.riva.summary}</p>
                 <div className="card-foot">
@@ -185,7 +185,7 @@ export function HomePage() {
                       View specifications <Arrow size={14} />
                     </a>
                   </div>
-                  <a href="/mira" className="prod mira-prod" aria-label="MIRA specifications">
+                  <a href="/mira" className="prod mira-prod" style={{ background: miraLook.wash }} aria-label="MIRA specifications">
                     <img src="/mira/pink.png" alt="MIRA in pink" />
                     <span className="ptag">Pink</span>
                   </a>
@@ -202,8 +202,8 @@ export function HomePage() {
                       Explore VIRA <Arrow size={14} />
                     </a>
                   </div>
-                  <div className={viraCover ? "prod dark-prod has-photo" : "prod dark-prod"}>
-                    {viraCover ? <img className="prod-photo" src={`/media/${viraCover}`} alt="VIRA" /> : null}
+                  <div className="prod has-photo prod-tall" style={{ background: viraLook.wash }}>
+                    <img className="prod-photo" src={viraLook.shots[0]} alt={`VIRA in ${viraLook.name}`} />
                     <svg viewBox="0 0 420 300" aria-hidden="true">
                       <path className="beam" d="M318 58 L420 34 L420 86 Z" fill="#E0602A" opacity=".25" />
                       <g className="spin"><circle cx="96" cy="236" r="44" fill="#0b0b0e" /><circle cx="96" cy="236" r="27" fill="#3a3a42" /><path d="M96 211v50M71 236h50M78 218l36 36M114 218l-36 36" stroke="#E0602A" strokeWidth="3" /></g>
@@ -217,7 +217,7 @@ export function HomePage() {
                       <path d="M296 64 L286 34M258 36 L320 30" stroke="#9a9aa4" strokeWidth="6" strokeLinecap="round" />
                       <path d="M300 58 L322 52 L318 66 Z" fill="#E0602A" />
                     </svg>
-                    <span className="ptag">Apex Performance</span>
+                    <span className="ptag">{viraLook.name}</span>
                   </div>
                 </article>
               </div>

@@ -164,7 +164,7 @@ a{color:inherit;text-decoration:none}
 .mira-meta{display:flex;align-items:center;gap:8px;margin-top:8px;font-family:var(--serif);font-size:18px}
 .mira-meta i{width:14px;height:14px;border-radius:50%;display:block;box-shadow:inset 0 0 0 1px rgba(74,14,31,.15)}
 .mira-prod{border:0;padding:0;cursor:pointer;width:100%}
-.mira-prod img{width:86%;height:86%;object-fit:contain;animation:miraFloat 6s ease-in-out infinite}
+.mira-prod img{width:100%;height:100%;object-fit:cover;object-position:center;animation:none}
 .sheet.mira-sheet{max-width:880px;max-height:min(86vh,760px);overflow:auto}
 .mira-sheet-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px;align-items:center}
 .mira-sheet-photo{border-radius:20px;min-height:280px;display:grid;place-items:center;padding:12px}
@@ -178,7 +178,7 @@ a{color:inherit;text-decoration:none}
 .swatch-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 12px;color:var(--ink);cursor:pointer}
 .swatch-btn i{width:12px;height:12px;border-radius:50%;display:block}
 .swatch-btn.on{border-color:var(--accent);color:var(--ink)}
-.m-img .mira-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;animation:miraFloat 6.5s ease-in-out infinite}
+.m-img .mira-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;animation:none}
 .mira-switch{position:absolute;left:14px;bottom:14px;z-index:2;display:flex;gap:8px}
 .mira-switch button{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(74,14,31,.25);cursor:pointer}
 .mira-switch button.on{box-shadow:0 0 0 2px var(--accent)}
@@ -186,7 +186,8 @@ a{color:inherit;text-decoration:none}
 button.explore{background:none;border:0;padding:0;cursor:pointer;font:inherit}
 .model-layout{display:grid;gap:28px}
 .model-stage{border-radius:28px;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 22px 18px;position:relative}
-.model-stage > img{width:min(100%,560px);max-height:460px;object-fit:contain;animation:miraIn .55s cubic-bezier(.2,.9,.2,1)}
+.photo-frame{width:100%;aspect-ratio:4/3;border-radius:22px;overflow:hidden}
+.photo-frame img{width:100%;height:100%;max-height:none;object-fit:cover;object-position:center;display:block;animation:none}
 .shot-row{display:flex;gap:10px;margin-top:14px}
 .shot-row button{width:78px;height:78px;padding:0;border-radius:16px;overflow:hidden;border:2px solid transparent;background:rgba(255,255,255,.45);cursor:pointer}
 .shot-row button.on{border-color:var(--accent)}
@@ -265,6 +266,8 @@ button.explore{background:none;border:0;padding:0;cursor:pointer;font:inherit}
 .stack{display:grid;gap:24px}
 .mini{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:24px;align-items:center}
 .mini .prod{margin:0;aspect-ratio:4/3.4}
+.mini .prod.prod-tall{aspect-ratio:3/4}
+.prod.prod-portrait{aspect-ratio:3/4;width:min(100%,320px);margin-inline:auto}
 .mini .mname{font-size:26px;margin-top:12px}
 .mini .desc{font-size:13px;margin-top:12px}
 .explore{display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-weight:700;font-size:13px;color:var(--accent-text);padding:10px 0}
@@ -372,7 +375,7 @@ button.explore{background:none;border:0;padding:0;cursor:pointer;font:inherit}
 .m-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .series{padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
 .idx{font-family:var(--serif);font-size:34px;color:color-mix(in srgb,var(--ink) 22%,transparent)}
-.m-img{flex:1;border-radius:22px;background:radial-gradient(70% 70% at 50% 55%,var(--surface),var(--bg2));display:grid;place-items:center;min-height:300px;overflow:hidden;position:relative}
+.m-img{flex:1;border-radius:22px;background:radial-gradient(70% 70% at 50% 55%,var(--surface),var(--bg2));display:grid;place-items:center;min-height:300px;aspect-ratio:4/3;overflow:hidden;position:relative}
 .m-img svg{width:80%;transition:transform 1.2s cubic-bezier(.2,.9,.2,1)}
 .model:hover .m-img svg{transform:scale(1.06) translateX(-10px)}
 .m-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:14px 18px;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
@@ -722,7 +725,11 @@ textarea.plain-in{min-height:88px;resize:vertical}
 .ts-box:empty{display:none}
 .ts-box{display:flex;justify-content:center;width:100%;min-height:65px}
 /* Dealer enquiry */
-.dealer-card{max-width:560px;margin:0 auto}
+.dealer-layout{display:grid;grid-template-columns:minmax(240px,380px) minmax(0,560px);gap:28px;align-items:center;justify-content:center}
+.dealer-film{margin:0;border-radius:28px;overflow:hidden;background:#141414;box-shadow:0 28px 60px -36px rgba(0,0,0,.55)}
+.dealer-film video{display:block;width:100%;height:auto;max-height:680px;object-fit:cover;background:#141414}
+.dealer-card{max-width:560px;margin:0}
+@media (max-width:860px){.dealer-layout{grid-template-columns:minmax(0,1fr)}.dealer-film{max-width:420px;margin:0 auto}}
 .dealer-form{display:grid;gap:18px}
 .model-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .model-pick button{display:grid;gap:2px;padding:14px 10px;border:1.5px solid var(--line);border-radius:16px;background:var(--field);color:var(--ink);font:inherit;cursor:pointer;text-align:center}
@@ -783,7 +790,7 @@ a.ulink{display:inline-flex;align-items:center;gap:6px}
 .star-stage::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--spin,0deg),var(--accent),transparent 30%,#e8873c 55%,transparent 80%,var(--accent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ring-spin 6s linear infinite;pointer-events:none}
 @property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
 @keyframes ring-spin{to{--spin:360deg}}
-.model-photo{animation:photo-float 6s ease-in-out infinite}
+.model-photo{animation:none}
 @keyframes photo-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 .model-soon{position:relative;overflow:hidden;display:grid;place-content:center;text-align:center;gap:8px;min-height:420px}
 .soon-ring{position:absolute;width:340px;height:340px;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent);animation:soon-turn 18s linear infinite}
@@ -875,7 +882,7 @@ a.ulink{display:inline-flex;align-items:center;gap:6px}
 .shot-row{flex-wrap:wrap;justify-content:center}
 @media (max-width:600px){.shot-row button{width:60px;height:60px;border-radius:12px}}
 .has-photo > svg{display:none}
-.prod-photo{width:100%;height:100%;max-height:300px;object-fit:contain;display:block;animation:photo-float 6s ease-in-out infinite}
+.prod-photo{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:cover;object-position:center;display:block;animation:none}
 @media (prefers-reduced-motion:reduce){.prod-photo{animation:none}}
 
 /* Home: "Which MRIGA is yours?" model picker + comparison */
@@ -892,7 +899,7 @@ a.ulink{display:inline-flex;align-items:center;gap:6px}
 .pk-panel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:center;padding:20px;border:1px solid var(--line);border-radius:30px;background:var(--surface);box-shadow:0 30px 70px -50px rgba(74,14,31,.55);animation:pkIn .5s cubic-bezier(.2,.9,.2,1)}
 @keyframes pkIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .pk-stage{position:relative;border-radius:24px;min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;background:linear-gradient(160deg,#f6efe6,#efe4d6);transition:background .5s}
-.pk-stage img{width:min(100%,460px);max-height:360px;object-fit:contain;animation:pkPhoto .55s cubic-bezier(.2,.9,.2,1),photo-float 6s ease-in-out .55s infinite}
+.pk-stage img{width:100%;aspect-ratio:4/3;height:auto;max-height:none;object-fit:cover;object-position:center;border-radius:18px;animation:pkPhoto .45s cubic-bezier(.2,.9,.2,1)}
 @keyframes pkPhoto{from{opacity:0;transform:scale(.94) translateX(18px)}to{opacity:1;transform:none}}
 .pk-soon{display:grid;justify-items:center;gap:6px;position:relative;text-align:center}
 .pk-soon b{font-family:var(--serif);font-size:44px;font-weight:500;letter-spacing:.1em;color:var(--ink)}

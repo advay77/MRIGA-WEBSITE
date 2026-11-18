@@ -69,7 +69,9 @@ export function ModelPage({ model, initialColour = "" }: { model: ModelId; initi
                   </button>
                 ))}
               </div>
-              <img key={frame} className="model-photo" src={frame} alt={colour.id === "all" ? spec.name : `${spec.name} in ${colour.name}`} />
+              <div className="photo-frame">
+                <img key={frame} className="model-photo" src={frame} alt={colour.id === "all" ? spec.name : `${spec.name} in ${colour.name}`} />
+              </div>
               <div className="shot-row">
                 {colour.shots.map((src, index) => (
                   <button key={src} type="button" className={index === shot ? "on" : undefined} onClick={() => setShot(index)} aria-label={`${colour.name} photo ${index + 1}`}>
@@ -82,7 +84,9 @@ export function ModelPage({ model, initialColour = "" }: { model: ModelId; initi
             <div className={current ? "model-stage gallery-stage" : "model-stage model-soon"} data-reveal>
               {current ? (
                 <>
-                  <img key={current} className="model-photo" src={current} alt={`${spec.name} photo ${pic + 1}`} />
+                  <div className="photo-frame">
+                    <img key={current} className="model-photo" src={current} alt={`${spec.name} photo ${pic + 1}`} />
+                  </div>
                   {gallery.length > 1 ? (
                     <div className="shot-row">
                       {gallery.map((src, index) => (

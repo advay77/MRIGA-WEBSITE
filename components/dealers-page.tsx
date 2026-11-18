@@ -50,7 +50,10 @@ export function DealersPage() {
 </div>
 </section>
 <section className="sec" id="apply">
-<div className="wrap">
+<div className="wrap dealer-layout">
+          <figure className="dealer-film">
+            <video src="/dealers.mp4" poster="/riva/grey-2.jpg" autoPlay muted loop playsInline controls />
+          </figure>
           <div className="card formcard dealer-card">
             {sent ? (
               <div className="success">

@@ -47,13 +47,13 @@ export const MEDIA_SLOTS = [
   { id: "mira-cream", label: "Cream", group: "mira", fallback: "mira/cream.jpg" },
   // RIVA and VIRA galleries: photo 1 is the cover (Home, Explore, PDF catalogue). A slot whose
   // fallback is the logo stays hidden on the site until a photo is uploaded into it.
-  { id: "riva", label: "Grey · 1 · cover", group: "riva", fallback: "riva/grey.jpg" },
+  { id: "riva", label: "Grey · 1 · cover", group: "riva", fallback: "riva/grey-front.jpg" },
   { id: "riva-2", label: "Grey · 2", group: "riva", fallback: "riva/grey-side.jpg" },
   { id: "riva-3", label: "Grey · 3", group: "riva", fallback: "riva/grey-2.jpg" },
   { id: "riva-4", label: "Silver · 1", group: "riva", fallback: "riva/silver-rear.jpg" },
-  { id: "riva-5", label: "Silver · 2", group: "riva", fallback: "riva/silver.jpg" },
-  { id: "riva-6", label: "Silver · 3", group: "riva", fallback: "riva/silver-dash.jpg" },
-  { id: "riva-7", label: "Silver · 4", group: "riva", fallback: "riva/silver-dash-2.jpg" },
+  { id: "riva-5", label: "Silver · 2", group: "riva", fallback: "riva/ride.jpg" },
+  { id: "riva-6", label: "Silver · 3", group: "riva", fallback: "riva/panel.jpg" },
+  { id: "riva-7", label: "Silver · 4", group: "riva", fallback: "logo.png" },
   { id: "riva-8", label: "Light blue · 1", group: "riva", fallback: "riva/blue.jpg" },
   { id: "riva-9", label: "Light blue · 2", group: "riva", fallback: "riva/blue-2.jpg" },
   { id: "riva-10", label: "Cream · 1", group: "riva", fallback: "riva/cream-rear.jpg" },
