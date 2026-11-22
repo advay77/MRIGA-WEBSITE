@@ -6,7 +6,7 @@ import { useEffect } from "react";
 // Shown when the desk cannot load, most often because the database is unreachable.
 export default function DeskError({ error, retry }: { error: unknown; retry: () => void }) {
   useEffect(() => {
-    console.error("admin desk failed to load", error);
+    if (process.env.NODE_ENV !== "production") console.error("admin desk failed to load", error);
   }, [error]);
 
   return (

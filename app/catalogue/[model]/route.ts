@@ -8,6 +8,7 @@ import { MIRA_COLOUR_LINE } from "@/lib/mira";
 import { getModels } from "@/lib/models";
 import { APP_FEATURES, isModelId, WARRANTY, type ModelId } from "@/lib/specs";
 import { sniff } from "@/lib/uploads";
+import { rateLimit } from "@/lib/guards";
 
 export const dynamic = "force-dynamic";
 
@@ -99,6 +100,9 @@ export async function GET(request: Request, context: { params: Promise<{ model: 
   const { model } = await context.params;
   const id = model.replace(/\.pdf$/i, "").toLowerCase();
   if (!isModelId(id)) return new Response("Not found", { status: 404 });
+  if (!(await rateLimit("catalogue", 30, 10 * 60 * 1000))) {
+    return new Response("Too many downloads. Please wait a few minutes.", { status: 429, headers: { "Cache-Control": "no-store" } });
+  }
   const { specs, photos } = await getModels();
   const spec = specs[id];
   const content = await getSiteContent();

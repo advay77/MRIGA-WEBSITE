@@ -31,7 +31,7 @@ export async function updateProfile(_previous: Result | null, form: FormData): P
   if (!(await hit(`acct-edit:${session.user.id}`, 20, HOUR))) return { ok: false, error: "Too many changes. Please try again later." };
 
   const name = field(form, "name");
-  if (name.length < 2 || name.length > 80 || controlChars.test(name)) return { ok: false, error: "Please enter your full name (2 to 80 characters)." };
+  if (name.length < 2 || name.length > 80 || controlChars.test(name) || /[<>]/.test(name)) return { ok: false, error: "Please enter your full name (2 to 80 characters)." };
   const emailRaw = field(form, "email").toLowerCase();
   const email = emailRaw || null;
   if (email && (email.length > 120 || !z.string().email().safeParse(email).success)) return { ok: false, error: "Enter a valid email address." };
@@ -40,7 +40,7 @@ export async function updateProfile(_previous: Result | null, form: FormData): P
   if (phone && (phone.length < 10 || phone.length > 15)) return { ok: false, error: "Enter a valid 10-digit mobile number." };
   if (!email && !phone) return { ok: false, error: "Keep at least an email or a mobile number, so you can sign in." };
   const city = field(form, "city").slice(0, 80) || null;
-  if (city && controlChars.test(city)) return { ok: false, error: "Please check the city." };
+  if (city && (controlChars.test(city) || /[<>]/.test(city))) return { ok: false, error: "Please check the city." };
   const model = field(form, "preferredModel").toUpperCase();
   const preferredModel = (MODELS as readonly string[]).includes(model) ? model : null;
   const updatesOptIn = form.get("updatesOptIn") === "on";

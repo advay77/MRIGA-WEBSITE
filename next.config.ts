@@ -9,6 +9,8 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   { key: "X-DNS-Prefetch-Control", value: "off" },
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
   ...(production ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" }] : []),
   {
     key: "Content-Security-Policy",
@@ -33,6 +35,11 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  compiler: {
+    // Production bundles drop console.log / debug / warn. console.error stays for real failures.
+    removeConsole: production ? { exclude: ["error"] } : false,
+  },
   experimental: {
     serverActions: {
       // Uploads are capped at 4MB (lib/uploads.ts); the extra room is for the other form fields.

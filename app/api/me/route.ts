@@ -1,4 +1,5 @@
 import { getSession, renewSession } from "@/lib/auth";
+import { rateLimit, sameOrigin } from "@/lib/guards";
 
 export const dynamic = "force-dynamic";
 
@@ -6,6 +7,8 @@ export const dynamic = "force-dynamic";
 // Returns only what the header and booking form need; never cached.
 export async function GET() {
   const headers = { "Cache-Control": "private, no-store" };
+  if (!(await sameOrigin())) return Response.json({ user: null }, { status: 403, headers });
+  if (!(await rateLimit("me", 300, 60 * 1000))) return Response.json({ error: "unavailable" }, { status: 429, headers });
   // Also keeps an active customer signed in: renews the 30-day session while they visit.
   // A database blip answers 503, and the header keeps showing whoever was signed in.
   if ((await renewSession()) === "error") return Response.json({ error: "unavailable" }, { status: 503, headers });

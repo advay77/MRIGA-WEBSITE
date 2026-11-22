@@ -16,7 +16,7 @@ export function normalizePhone(value: string) {
 const phoneField = (message: string) =>
   z.string().trim().max(24).transform(normalizePhone).refine((value) => value.length >= 10 && value.length <= 15, message);
 const plainText = (min: number, max: number, message: string) =>
-  z.string().trim().min(min, message).max(max).refine((value) => !controlChars.test(value), message);
+  z.string().trim().min(min, message).max(max).refine((value) => !controlChars.test(value) && !/[<>]/.test(value), message);
 
 export const rideSchema = z.object({
   name: plainText(2, 80, "Please enter your name."),
@@ -41,7 +41,7 @@ export const dealerSchema = z.object({
   name: plainText(2, 80, "Please enter your name."),
   phone: phoneField("Please enter a valid 10-digit mobile number."),
   location: plainText(2, 120, "Please enter your city or area."),
-  model: z.enum(MODELS, { errorMap: () => ({ message: "Please choose a model." }) }),
+  model: z.enum(MODELS, { error: "Please choose a model." }),
 });
 
 export const passwordSchema = z
@@ -61,7 +61,7 @@ export const signUpSchema = z.object({
   name: plainText(2, 80, "Please enter your full name."),
   id: accountId,
   pw: passwordSchema,
-  terms: z.literal("on", { errorMap: () => ({ message: "Please accept the terms to continue." }) }),
+  terms: z.literal("on", { error: "Please accept the terms to continue." }),
 });
 
 // Sign-in checks shape only. Strength rules belong to sign-up, so an older or

@@ -25,7 +25,7 @@ export async function saveSiteContent(form: FormData) {
   const rows = CONTENT_FIELDS.flatMap((field) => {
     if (!form.has(field.key)) return [];
     const raw = form.get(field.key);
-    let value = typeof raw === "string" ? raw.trim().slice(0, 600) : "";
+    let value = typeof raw === "string" ? raw.replace(/[<>]/g, "").trim().slice(0, 600) : "";
     if (field.key === "phoneHref") value = value.replace(/[^\d+]/g, "").slice(0, 16);
     if (field.key === "whatsapp") value = whatsappDigits(value).slice(0, 15);
     if (field.key === "instagram" && value && !/^https:\/\/(www\.)?instagram\.com\//.test(value)) value = field.fallback;
@@ -85,7 +85,7 @@ export async function removeMedia(form: FormData) {
 }
 
 const CONTROL = /[\u0000-\u0008\u000B-\u001F\u007F]/g;
-const clean = (value: FormDataEntryValue | null) => (typeof value === "string" ? value.replace(CONTROL, "").trim() : "");
+const clean = (value: FormDataEntryValue | null) => (typeof value === "string" ? value.replace(CONTROL, "").replace(/[<>]/g, "").trim() : "");
 
 // Reads the Models form: status and copy, up to 6 highlights, and spec groups written one
 // "Label: value" per line. Empty highlight rows and groups are dropped, so clearing them deletes.
@@ -152,7 +152,7 @@ export async function updateLead(form: FormData) {
   const id = String(form.get("id") || "").slice(0, 40);
   const status = form.get("status");
   const rawNote = form.get("note");
-  const note = typeof rawNote === "string" ? rawNote.replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "").trim().slice(0, NOTE_MAX) : "";
+  const note = typeof rawNote === "string" ? rawNote.replace(/[\u0000-\u0008\u000B-\u001F\u007F<>]/g, "").trim().slice(0, NOTE_MAX) : "";
   const back = safeNext(String(form.get("back") || ""));
   const returnTo = back.startsWith("/admin?") ? back : `/admin?section=${kind === "ride" ? "rides" : "applications"}`;
   if (!id || !isStatus(kind, status)) redirect(returnTo);

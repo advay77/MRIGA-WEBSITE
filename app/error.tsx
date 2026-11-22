@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export default function SiteError({ error, retry }: { error: unknown; retry: () => void }) {
   useEffect(() => {
-    console.error("page failed to load", error);
+    if (process.env.NODE_ENV !== "production") console.error("page failed to load", error);
   }, [error]);
 
   return (

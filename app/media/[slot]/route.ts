@@ -47,7 +47,12 @@ export async function GET(request: Request, context: { params: Promise<{ slot: s
     }
   }
   try {
-    const file = await readFile(path.join(process.cwd(), "public", slot.fallback));
+    const root = path.resolve(process.cwd(), "public");
+    const filePath = path.resolve(root, slot.fallback);
+    if (slot.fallback.includes("..") || (filePath !== root && !filePath.startsWith(root + path.sep))) {
+      return new Response("Not found", { status: 404 });
+    }
+    const file = await readFile(filePath);
     return new Response(file, { headers: { ...base, "Content-Type": sniff(new Uint8Array(file)) ?? mimeFor(slot.fallback) } });
   } catch {
     return new Response("Not found", { status: 404 });

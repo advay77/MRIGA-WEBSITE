@@ -18,9 +18,10 @@ if (password.length < 12 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) 
   process.exit(1);
 }
 
-// Same format as lib/password.ts: "<salt hex>:<scrypt hash hex>".
+// Same format as lib/password.ts. Older "<salt>:<hash>" rows still verify.
 const salt = randomBytes(16).toString("hex");
-const passwordHash = `${salt}:${(await stretch(password, salt, 64)).toString("hex")}`;
+const hash = (await stretch(password, salt, 64, { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 })).toString("hex");
+const passwordHash = `scrypt$32768$${salt}$${hash}`;
 
 const prisma = new PrismaClient();
 try {
