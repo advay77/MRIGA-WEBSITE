@@ -3,9 +3,9 @@ import { getSiteContent } from "@/lib/content";
 export async function AboutPage() {
   const content = await getSiteContent();
   const founders = [
-    { name: content.founder1, slot: "founder-pankaj", portrait: true },
-    { name: content.founder2, slot: "founder-ashish", portrait: true },
-    { name: content.founder3, slot: "founder-jiten", portrait: true },
+    { name: "", slot: "founder-open", empty: true },
+    { name: content.founder2, slot: "founder-ashish", portrait: true, empty: false },
+    { name: content.founder3, slot: "founder-jiten", portrait: true, empty: false },
   ];
   return (
     <main className="page">
@@ -15,13 +15,17 @@ export async function AboutPage() {
           <h2 className="h2">Founders</h2>
           <div className="founder-row">
             {founders.map((person) => (
-              <article key={person.slot} className="founder-card">
-                <div className={person.portrait ? "founder-photo portrait" : "founder-photo"}>
-                  <img src={`/media/${person.slot}`} alt={person.name} />
-                </div>
-                <span className="founder-label">Founder</span>
-                <h3>{person.name}</h3>
-              </article>
+              person.empty ? (
+                <article key={person.slot} className="founder-card founder-empty" aria-hidden="true" />
+              ) : (
+                <article key={person.slot} className="founder-card">
+                  <div className={person.portrait ? "founder-photo portrait" : "founder-photo"}>
+                    <img src={`/media/${person.slot}`} alt={person.name} />
+                  </div>
+                  <span className="founder-label">Founder</span>
+                  <h3>{person.name}</h3>
+                </article>
+              )
             ))}
           </div>
         </div>

@@ -204,6 +204,8 @@ button.explore{background:none;border:0;padding:0;cursor:pointer;font:inherit}
 .founder-photo.portrait img{object-position:center 18%}
 .founder-label{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text);font-weight:700}
 .founder-card h3{margin:8px 0 0;font-family:var(--serif);font-size:26px;color:var(--ink)}
+.founder-card.founder-empty{background:transparent;border-color:transparent;box-shadow:none}
+@container (max-width:1120px){.founder-card.founder-empty{display:none}}
 .model-colours{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .model-soon{background:var(--surface);border:1px solid var(--line);align-items:flex-start;text-align:left;padding:36px}
 .model-soon p{max-width:420px;line-height:1.6}

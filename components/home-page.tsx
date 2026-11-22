@@ -14,39 +14,6 @@ function Arrow({ size = 16 }: { size?: number }) {
   );
 }
 
-function Wheels({ light = "#d8d2c6", spoke = "#8d867a", cross = true }: { light?: string; spoke?: string; cross?: boolean }) {
-  const spokes = (cx: number) => (
-    <path d={`M${cx} 211v50M${cx - 25} 236h50${cross ? `M${cx - 18} 218l36 36M${cx + 18} 218l-36 36` : ""}`} stroke={spoke} strokeWidth="3" />
-  );
-  return (
-    <>
-      <g className="spin">
-        <circle cx="96" cy="236" r="44" fill="#1d1a1a" />
-        <circle cx="96" cy="236" r="27" fill={light} />
-        {spokes(96)}
-      </g>
-      <g className="spin">
-        <circle cx="318" cy="236" r="44" fill="#1d1a1a" />
-        <circle cx="318" cy="236" r="27" fill={light} />
-        {spokes(318)}
-      </g>
-    </>
-  );
-}
-
-function CreamScooter({ seat = "#A8642F", body = "#EFE6CF", deck = "#cfc4ac" }: { seat?: string; body?: string; deck?: string }) {
-  return (
-    <>
-      <path d="M50 206 C42 150 86 116 150 120 L208 126 C222 164 232 186 268 192 L282 198 C266 222 140 230 56 216 Z" fill={body} />
-      <path d="M140 196 L268 192 L272 206 L140 212 Z" fill={deck} />
-      <path d="M258 198 C254 148 270 96 288 66 L306 70 C296 110 290 160 306 206 Z" fill={body} />
-      <path d="M268 214 C278 184 352 184 360 216 L346 216 C336 198 290 198 282 216 Z" fill={body} />
-      <path d="M92 118 C110 96 190 96 212 110 C212 126 100 130 92 118 Z" fill={seat} />
-      <path d="M292 68 L284 36M256 36 L318 32" stroke="#3a3330" strokeWidth="6" strokeLinecap="round" />
-    </>
-  );
-}
-
 export function HomePage() {
   const content = useSiteContent();
   const { specs } = useModels();
@@ -152,16 +119,6 @@ export function HomePage() {
                     <div className="foot-note" style={{ marginBottom: 8 }}>Aesthetic</div>
                     <div className="swatches">{RIVA_COLOURS.map((item) => <i key={item.id} style={{ background: item.swatch }} />)}</div>
                   </div>
-                </div>
-                <div className="prod has-photo prod-portrait" style={{ background: "#E4EEF1" }}>
-                  <img className="prod-photo" src="/media/riva-5" alt="RIVA" />
-                  <svg viewBox="0 0 420 300" aria-hidden="true">
-                    <Wheels />
-                    <CreamScooter />
-                    <circle cx="304" cy="54" r="15" fill="#EFE6CF" />
-                    <circle cx="306" cy="54" r="9" fill="#fff8e6" stroke="#b9ad92" strokeWidth="2" />
-                  </svg>
-                  <span className="ptag">RIVA</span>
                 </div>
                 <p className="desc">{specs.riva.summary}</p>
                 <div className="card-foot">
